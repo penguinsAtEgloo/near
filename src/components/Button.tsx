@@ -12,7 +12,7 @@ function Button({
 }) {
   return (
     <button
-      className={clsx('w-9 h-9 border border-gray-700 bg-gray-50', className)}
+      className={clsx('w-12 h-12 border border-gray-700 bg-gray-50', className)}
       onClick={onClick}
       type="button"
     >
