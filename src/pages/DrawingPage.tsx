@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import Button from '../components/Button';
 import SaveDialog from './SaveDialog';
 import CanvasDraw from 'react-canvas-draw';
+import chimchak from '../assets/chimchak.png';
 
 function DrawingPage() {
   const [isSaveMode, setSaveMode] = useState(false);
@@ -56,7 +57,7 @@ function DrawingPage() {
           hideGrid
           hideInterface
           // TODO: 사진 업로드
-          // imgSrc=""
+          imgSrc={chimchak}
         />
         <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
       </div>
