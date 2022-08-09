@@ -21,6 +21,7 @@
     "SharedArrayBuffer": "readonly"
   },
   "rules": {
+<<<<<<< HEAD
     "linebreak-style": 0,
     "import/prefer-default-export": 0,
     "import/extensions": 0,
@@ -31,6 +32,8 @@
     "no-shadow": 0,
     "jsx-a11y/no-noninteractive-element-interactions": 0,
     "@typescript-eslint/explicit-module-boundary-types": 0,
+=======
+>>>>>>> main
     "@typescript-eslint/prefer-optional-chain": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-parameter-properties": "off",
@@ -40,7 +43,11 @@
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-empty-function": "off",
     "react-hooks/exhaustive-deps": "error",
+<<<<<<< HEAD
     "prettier/prettier": ["error", { "endOfLine": "auto" }],
+=======
+    "prettier/prettier": ["warn"],
+>>>>>>> main
     "react/prop-types": "off"
   },
   "overrides": [

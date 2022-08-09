@@ -11,6 +11,7 @@ function MainPage() {
         친구야 내 초상화를 그려줘
       </div>
       <Link className="absolute bottom-48" to={'/pages/draw'}>
+      <div className="p-4 bg-white">친구야 내 초상화를 그려줘</div>
         <button className="px-4 py-2 bg-gray-800 text-white">
           초상화 그리러 가기 &gt;
         </button>
