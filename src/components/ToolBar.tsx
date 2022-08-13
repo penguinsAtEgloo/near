@@ -7,7 +7,7 @@ import { useRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import CanvasDraw from 'react-canvas-draw';
-import ClearDialog from './ClearDialog';
+import ClearDialog from '../dialog/ClearDialog';
 
 function ToolBar({
   canvasDraw,

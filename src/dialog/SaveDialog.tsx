@@ -1,6 +1,6 @@
 import React from 'react';
-import Button from '../components/Button';
-import Dialog, { DialogProps } from '../components/Dialog';
+import Button from '../ui/Button';
+import Dialog, { DialogProps } from '../ui/Dialog';
 
 type SaveDialogProps = Pick<DialogProps, 'isOpen' | 'onClose'>;
 
