@@ -7,6 +7,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import CanvasDraw from 'react-canvas-draw';
+import ClearDialog from './ClearDialog';
 
 function ToolBar({
   canvasDraw,
@@ -20,6 +21,8 @@ function ToolBar({
     () => setShowSlider((prev) => !prev),
     []
   );
+  const [showClearDialog, setShowClearDialog] = useState(false);
+  const closeClearDialog = useCallback(() => setShowClearDialog(false), []);
 
   const [penWidth, setPenWidth] = useRecoilState(penWidthState);
   const setPenColor = useSetRecoilState(penColorState);
@@ -31,7 +34,11 @@ function ToolBar({
     const value = e.target.value;
     setPenColor(value);
   };
+  const requestClear = useCallback(() => {
+    setShowClearDialog(true);
+  }, []);
   const clear = useCallback(() => {
+    setShowClearDialog(false);
     canvasDraw?.clear();
   }, [canvasDraw]);
   const undo = useCallback(() => {
@@ -60,7 +67,7 @@ function ToolBar({
         />
         <Palette />
       </label>
-      <button type="button" onClick={clear}>
+      <button type="button" onClick={requestClear}>
         <ClearAll />
       </button>
       <button type="button" onClick={undo}>
@@ -69,6 +76,11 @@ function ToolBar({
       <button className="text-white" type="button" onClick={onProceed}>
         &gt;
       </button>
+      <ClearDialog
+        isOpen={showClearDialog}
+        onClose={closeClearDialog}
+        onClear={clear}
+      />
     </div>
   );
 }
