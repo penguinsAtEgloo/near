@@ -46,11 +46,14 @@ function ToolBar({
   }, [canvasDraw]);
   return (
     <div className="flex px-11 py-4 space-x-7 items-center rounded-2xl bg-black">
-      <button className="relative" type="button" onClick={handleShowSlider}>
+      <button
+        className="relative flex space-x-6"
+        type="button"
+        onClick={handleShowSlider}
+      >
         <Brush />
         {showSlider && (
           <input
-            className="absolute -top-6 -left-10"
             type="range"
             value={penWidth}
             min={1}
@@ -59,32 +62,40 @@ function ToolBar({
           />
         )}
       </button>
-      <label className="relative flex cursor-pointer">
-        <div
-          className="absolute -left-2.5 w-2.5 h-2.5 rounded-full"
-          style={{ backgroundColor: penColor }}
-        />
-        <input
-          className="invisible w-0 h-0 bg-white"
-          type="color"
-          onChange={setColorValue}
-        />
-        <Palette />
-      </label>
-      <button type="button" onClick={requestClear}>
-        <ClearAll />
-      </button>
-      <button type="button" onClick={undo}>
-        <Undo />
-      </button>
-      <button className="text-white" type="button" onClick={onProceed}>
-        &gt;
-      </button>
-      <ClearDialog
-        isOpen={showClearDialog}
-        onClose={closeClearDialog}
-        onClear={clear}
-      />
+      {!showSlider && (
+        <>
+          <label className="relative flex cursor-pointer">
+            <div
+              className="absolute -left-2.5 w-2.5 h-2.5 rounded-full"
+              style={{ backgroundColor: penColor }}
+            />
+            <input
+              className="invisible w-0 h-0 bg-white"
+              type="color"
+              onChange={setColorValue}
+            />
+            <Palette />
+          </label>
+          <button type="button" onClick={requestClear}>
+            <ClearAll />
+          </button>
+          <button type="button" onClick={undo}>
+            <Undo />
+          </button>
+          <button
+            className="w-6 h-6 text-white"
+            type="button"
+            onClick={onProceed}
+          >
+            &gt;
+          </button>
+          <ClearDialog
+            isOpen={showClearDialog}
+            onClose={closeClearDialog}
+            onClear={clear}
+          />
+        </>
+      )}
     </div>
   );
 }
