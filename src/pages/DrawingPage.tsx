@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from 'react';
-import Button from '../components/Button';
-import SaveDialog from './SaveDialog';
+import Button from '../ui/Button';
+import SaveDialog from '../dialog/SaveDialog';
 import CanvasDraw from 'react-canvas-draw';
 import chimchak from '../assets/chimchak.png';
 import { useRecoilValue } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
-import ToolBar from './ToolBar';
+import ToolBar from '../components/ToolBar';
 
 function DrawingPage() {
   const [isSaveMode, setSaveMode] = useState(false);

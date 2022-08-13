@@ -1,5 +1,5 @@
 import React from 'react';
-import Dialog, { DialogProps } from '../components/Dialog';
+import Dialog, { DialogProps } from '../ui/Dialog';
 
 type ClearDialogProps = Pick<DialogProps, 'isOpen' | 'onClose'> & {
   onClear: () => void;
