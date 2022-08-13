@@ -3,6 +3,10 @@ import Button from '../components/Button';
 import SaveDialog from './SaveDialog';
 import CanvasDraw from 'react-canvas-draw';
 import chimchak from '../assets/chimchak.png';
+import { useRecoilValue } from 'recoil';
+import { penWidthState } from '../atoms/PenWidth';
+import { penColorState } from '../atoms/PenColor';
+import ToolBar from './ToolBar';
 
 function DrawingPage() {
   const [isSaveMode, setSaveMode] = useState(false);
@@ -13,29 +17,10 @@ function DrawingPage() {
   const openSaveDialog = useCallback(() => setShowSaveDialog(true), []);
   const closeSaveDialog = useCallback(() => setShowSaveDialog(false), []);
 
-  const [penColor, setPenColor] = useState('#000000');
-  const setColorValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setPenColor(value);
-  };
-  const [penWidth, setPenWidth] = useState(10);
-  const setWidthValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.valueAsNumber;
-    setPenWidth(value);
-  };
-  const [showSlider, setShowSlider] = useState(false);
-  const handleShowSlider = useCallback(
-    () => setShowSlider((prev) => !prev),
-    []
-  );
+  const penColor = useRecoilValue(penColorState);
+  const penWidth = useRecoilValue(penWidthState);
 
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
-  const clear = useCallback(() => {
-    canvasRef?.clear();
-  }, [canvasRef]);
-  const undo = useCallback(() => {
-    canvasRef?.undo();
-  }, [canvasRef]);
 
   return (
     <div className="fixed inset-0 flex flex-col">
@@ -49,7 +34,7 @@ function DrawingPage() {
           }}
           // TODO: 영역크기 계산하여 width, height 넣어주어야 함
           canvasWidth={375}
-          canvasHeight={587}
+          canvasHeight={667}
           catenaryColor=""
           brushColor={penColor}
           brushRadius={penWidth}
@@ -61,7 +46,7 @@ function DrawingPage() {
         />
         <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
       </div>
-      <div className="fixed inset-x-0 bottom-0 flex h-20 p-2 justify-between items-center">
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
         {isSaveMode ? (
           <>
             <Button>링크복사</Button>
@@ -70,32 +55,7 @@ function DrawingPage() {
             <Button onClick={openSaveDialog}>저장</Button>
           </>
         ) : (
-          <>
-            <input
-              className="w-12 h-12"
-              type="color"
-              onChange={setColorValue}
-            />
-            <Button className="relative" onClick={handleShowSlider}>
-              <>
-                굵기
-                {showSlider && (
-                  <input
-                    className="absolute -top-6 -left-10"
-                    type="range"
-                    value={penWidth}
-                    min={1}
-                    max={20}
-                    onChange={setWidthValue}
-                  />
-                )}
-              </>
-            </Button>
-            <Button onClick={clear}>모두 지우기</Button>
-            <Button onClick={undo}>실행취소</Button>
-            <Button>사진 업로드</Button>
-            <Button onClick={openSaveMode}>공유</Button>
-          </>
+          <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />
         )}
       </div>
     </div>
