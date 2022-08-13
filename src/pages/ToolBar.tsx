@@ -3,7 +3,7 @@ import Brush from '../icons/Brush';
 import Palette from '../icons/Palette';
 import ClearAll from '../icons/ClearAll';
 import Undo from '../icons/Undo';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import CanvasDraw from 'react-canvas-draw';
@@ -25,7 +25,7 @@ function ToolBar({
   const closeClearDialog = useCallback(() => setShowClearDialog(false), []);
 
   const [penWidth, setPenWidth] = useRecoilState(penWidthState);
-  const setPenColor = useSetRecoilState(penColorState);
+  const [penColor, setPenColor] = useRecoilState(penColorState);
   const setWidthValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.valueAsNumber;
     setPenWidth(value);
@@ -60,6 +60,10 @@ function ToolBar({
         )}
       </button>
       <label className="relative flex cursor-pointer">
+        <div
+          className="absolute -left-2.5 w-2.5 h-2.5 rounded-full"
+          style={{ backgroundColor: penColor }}
+        />
         <input
           className="invisible w-0 h-0 bg-white"
           type="color"
