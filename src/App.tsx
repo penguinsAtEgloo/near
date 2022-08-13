@@ -1,12 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import {
-  RecoilRoot,
-  // atom,
-  // selector,
-  // useRecoilState,
-  // useRecoilValue,
-} from 'recoil';
+import { RecoilRoot } from 'recoil';
 import DrawingPage from './pages/DrawingPage';
 import MainPage from './pages/MainPage';
 
