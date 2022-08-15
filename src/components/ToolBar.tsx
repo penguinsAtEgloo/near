@@ -15,7 +15,7 @@ function ToolBar({
 }: {
   canvasDraw: CanvasDraw | null;
   onProceed: () => void;
-}) {
+}): React.ReactElement {
   const [showSlider, setShowSlider] = useState(false);
   const handleShowSlider = useCallback(
     () => setShowSlider((prev) => !prev),
