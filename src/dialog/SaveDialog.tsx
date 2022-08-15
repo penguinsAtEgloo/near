@@ -4,7 +4,7 @@ import Dialog, { DialogProps } from '../ui/Dialog';
 
 type SaveDialogProps = Pick<DialogProps, 'isOpen' | 'onClose'>;
 
-function SaveDialog({ isOpen, onClose }: SaveDialogProps) {
+function SaveDialog({ isOpen, onClose }: SaveDialogProps): React.ReactElement {
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
       <div className="flex flex-col space-y-8">

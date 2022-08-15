@@ -16,7 +16,7 @@ function Dialog({
   title,
   closeContent,
   children,
-}: DialogProps) {
+}: DialogProps): React.ReactElement {
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <HeadlessDialog as="div" className="relative z-10" onClose={onClose}>

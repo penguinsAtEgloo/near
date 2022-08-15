@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import sample from '../assets/sample.png';
 
-function MainPage() {
+function MainPage(): React.ReactElement {
   return (
     <div className="fixed inset-0 flex flex-col justify-center items-center space-y-4 bg-gray-200">
       <img src={sample} />

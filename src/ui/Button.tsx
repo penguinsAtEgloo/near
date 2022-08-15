@@ -9,7 +9,7 @@ function Button({
   className?: string;
   children?: React.ReactElement | string | number;
   onClick?: () => void;
-}) {
+}): React.ReactElement {
   return (
     <button
       className={clsx('w-12 h-12 border border-gray-700 bg-gray-50', className)}

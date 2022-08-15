@@ -8,7 +8,7 @@ import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import ToolBar from '../components/ToolBar';
 
-function DrawingPage() {
+function DrawingPage(): React.ReactElement {
   const [isSaveMode, setSaveMode] = useState(false);
   const openSaveMode = useCallback(() => setSaveMode(true), []);
   const closeSaveMode = useCallback(() => setSaveMode(false), []);
