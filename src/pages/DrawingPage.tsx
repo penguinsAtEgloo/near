@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import Button from '../ui/Button';
 import SaveDialog from '../dialog/SaveDialog';
 import CanvasDraw from 'react-canvas-draw';
@@ -21,6 +21,26 @@ function DrawingPage() {
   const penWidth = useRecoilValue(penWidthState);
 
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
+  // const [minifiedRef, setMinifiedRef] useState<CanvasDraw | null >(null);
+
+  const minifiedCanvas = useRef(null);
+  const saveDrawing = () => {
+    //console.log('click');
+    // const data = canvasRef.current.getSaveData();
+    // console.log(data);
+    // minifiedCanvas.current.loadSaveData(data);
+    const data = canvasRef?.getSaveData();
+    console.log(data);
+    // minifiedRef?.loadSaveData(data);
+    // canvasDraw?.loadSaveData(data);
+  };
+
+  // const showDrawing = useCallback(() => {
+  //   CanvasDraw?.loadSaveData();
+  // })
+  // const undo = useCallback(() => {
+  //   canvasDraw?.undo();
+  // }, [canvasDraw]);
 
   return (
     <div className="fixed inset-0 flex flex-col">
@@ -44,6 +64,17 @@ function DrawingPage() {
           // TODO: 사진 업로드
           imgSrc={chimchak}
         />
+        <CanvasDraw
+          ref={minifiedCanvas}
+          // ref={(canvasDraw) => {
+          //   //setMinifiedRef(canvasDraw);
+          // }}
+          canvasWidth={375}
+          canvasHeight={667}
+          hideGrid={true}
+          disabled={true}
+        />
+        <button onClick={saveDrawing}>save</button>
         <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
       </div>
       <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
