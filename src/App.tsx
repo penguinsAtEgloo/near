@@ -1,3 +1,4 @@
+import ImageCropPage from 'pages/ImageCropPage';
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import {
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="pages/draw" element={<DrawingPage />} />
+          <Route path="pages/image" element={<ImageCropPage />} />
         </Routes>
       </BrowserRouter>
     </RecoilRoot>

@@ -2,9 +2,16 @@ import React, { useCallback, useState } from 'react';
 import Button from '../components/Button';
 import SaveDialog from './SaveDialog';
 import CanvasDraw from 'react-canvas-draw';
-import chimchak from '../assets/chimchak.png';
+// import chimchak from '../assets/chimchak.png';
+import { useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function DrawingPage() {
+  const location = useLocation();
+  const state = location.state as { imgSrc: string };
+  let imgSrc = '';
+  if (state !== null) imgSrc = state.imgSrc;
+
   const [isSaveMode, setSaveMode] = useState(false);
   const openSaveMode = useCallback(() => setSaveMode(true), []);
   const closeSaveMode = useCallback(() => setSaveMode(false), []);
@@ -56,8 +63,7 @@ function DrawingPage() {
           lazyRadius={0}
           hideGrid
           hideInterface
-          // TODO: 사진 업로드
-          imgSrc={chimchak}
+          imgSrc={imgSrc}
         />
         <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
       </div>
@@ -93,7 +99,9 @@ function DrawingPage() {
             </Button>
             <Button onClick={clear}>모두 지우기</Button>
             <Button onClick={undo}>실행취소</Button>
-            <Button>사진 업로드</Button>
+            <Link to={'/pages/image'}>
+              <Button>사진 업로드</Button>
+            </Link>
             <Button onClick={openSaveMode}>공유</Button>
           </>
         )}
