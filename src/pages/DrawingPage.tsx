@@ -51,8 +51,7 @@ function DrawingPage(): React.ReactElement {
           lazyRadius={0}
           hideGrid
           hideInterface
-          // TODO: 사진 업로드
-          imgSrc={chimchak}
+          imgSrc={imgSrc}
         />
         <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
         <LoadImageModal
