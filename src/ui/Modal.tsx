@@ -42,7 +42,7 @@ function Modal({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <HeadlessModal.Panel className="w-screen h-screen max-w-md transform overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <HeadlessModal.Panel className="w-screen h-screen max-w-md transform overflow-hidden bg-white text-left align-middle shadow-xl transition-all">
                 {title && (
                   <HeadlessModal.Title
                     as="h3"
@@ -51,12 +51,13 @@ function Modal({
                     {title}
                   </HeadlessModal.Title>
                 )}
-
-                <button onClick={onClose}>
+                <div className="mt-2">{children}</div>
+                <button
+                  className="absolute top-[30px] left-[30px]"
+                  onClick={onClose}
+                >
                   <Close></Close>
                 </button>
-
-                <div className="mt-2">{children}</div>
               </HeadlessModal.Panel>
             </Transition.Child>
           </div>

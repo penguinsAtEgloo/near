@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react';
 import React from 'react';
 
-const Camera: React.FC<React.SVGProps<SVGSVGElement>> = ({}): ReactElement => (
+const Camera: React.FC<React.SVGProps<SVGSVGElement>> = (): ReactElement => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="36"
