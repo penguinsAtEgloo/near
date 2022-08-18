@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import Button from '../ui/Button';
 import SaveDialog from '../dialog/SaveDialog';
 import CanvasDraw from 'react-canvas-draw';
+import LoadImageModal from '../components/LoadImageModal';
 import chimchak from '../assets/chimchak.png';
 import { useRecoilValue } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
@@ -18,6 +19,13 @@ function DrawingPage(): React.ReactElement {
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const openSaveDialog = useCallback(() => setShowSaveDialog(true), []);
   const closeSaveDialog = useCallback(() => setShowSaveDialog(false), []);
+
+  const [showLoadImageModal, setShowLoadImageModal] = useState(false);
+  const openLoadImageModal = useCallback(() => setShowLoadImageModal(true), []);
+  const closeLoadImageModal = useCallback(
+    () => setShowLoadImageModal(false),
+    []
+  );
 
   const penColor = useRecoilValue(penColorState);
   const penWidth = useRecoilValue(penWidthState);
@@ -47,9 +55,15 @@ function DrawingPage(): React.ReactElement {
           imgSrc={chimchak}
         />
         <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
+        <LoadImageModal
+          isOpen={showLoadImageModal}
+          onClose={closeLoadImageModal}
+        />
       </div>
       <div className="absolute top-4 right-4 flex w-[80px] justify-between">
-        <Camera></Camera>
+        <button onClick={openLoadImageModal}>
+          <Camera></Camera>
+        </button>
         <Check></Check>
       </div>
       <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
