@@ -40,5 +40,9 @@
         "@typescript-eslint/no-var-requires": "off"
       }
     }
-  ]
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.formatOnSave": true
 }
