@@ -7,6 +7,8 @@ import { useRecoilValue } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import ToolBar from '../components/ToolBar';
+import Camera from '../icons/Camera';
+import Check from '../icons/Check';
 
 function DrawingPage(): React.ReactElement {
   const [isSaveMode, setSaveMode] = useState(false);
@@ -45,6 +47,10 @@ function DrawingPage(): React.ReactElement {
           imgSrc={chimchak}
         />
         <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
+      </div>
+      <div className="absolute top-4 right-4 flex w-[80px] justify-between">
+        <Camera></Camera>
+        <Check></Check>
       </div>
       <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
         {isSaveMode ? (
