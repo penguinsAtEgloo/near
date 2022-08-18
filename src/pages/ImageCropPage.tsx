@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import Button from '../components/Button';
 import Cropper from 'react-easy-crop';
 import { Point, Area } from 'react-easy-crop/types';
 import { Link } from 'react-router-dom';
@@ -80,7 +79,7 @@ const ImageCropPage = () => {
         </div>
         {Boolean(imgSrc) && (
           <Link to={'/pages/draw'} state={{ imgSrc: croppedImage }}>
-            <Button className="z-10 absolute bottom-40 right-0">확인</Button>
+            <button className="z-10 absolute bottom-40 right-0">확인</button>
           </Link>
         )}
       </div>

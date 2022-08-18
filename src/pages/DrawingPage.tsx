@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Button from '../ui/Button';
 import SaveDialog from '../dialog/SaveDialog';
 import CanvasDraw from 'react-canvas-draw';
@@ -12,6 +13,11 @@ import Camera from '../icons/Camera';
 import Check from '../icons/Check';
 
 function DrawingPage(): React.ReactElement {
+  const location = useLocation();
+  const state = location.state as { imgSrc: string };
+  let imgSrc = '';
+  if (state !== null) imgSrc = state.imgSrc;
+
   const [isSaveMode, setSaveMode] = useState(false);
   const openSaveMode = useCallback(() => setSaveMode(true), []);
   const closeSaveMode = useCallback(() => setSaveMode(false), []);
