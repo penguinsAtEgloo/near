@@ -7,6 +7,7 @@ import { useRecoilValue } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import ToolBar from '../components/ToolBar';
+import Timer from './Timer';
 
 function DrawingPage(): React.ReactElement {
   const [isSaveMode, setSaveMode] = useState(false);
@@ -44,6 +45,7 @@ function DrawingPage(): React.ReactElement {
           // TODO: 사진 업로드
           imgSrc={chimchak}
         />
+        <Timer className="absolute" />
         <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
       </div>
       <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
