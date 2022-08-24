@@ -23,14 +23,33 @@ function DrawingPage(): React.ReactElement {
 
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
 
+  // Drawing
+  const [drawing, setDrawing] = useState('');
+
   const minifiedCanvas = useRef(null);
   const saveDrawing = useCallback(() => {
     if (!canvasRef) return;
     const data = canvasRef.getSaveData();
     if (!minifiedCanvas) return;
     canvasRef?.loadSaveData(data);
-    console.log(canvasRef.getDataURL('image/png', false, '#000000'));
+    console.log(canvasRef.getDataURL('image/png', false, '#FFFFFF'));
   }, [canvasRef]);
+  const saveAsPNG = () => {
+    const canvas = document.querySelector(
+      '.CanvasDraw canvas:nth-child(2)'
+    ) as HTMLCanvasElement;
+    const imageURL = canvas.toDataURL('image/png');
+    setDrawing(imageURL);
+    console.log('PNG image data');
+    console.log(imageURL);
+  };
+  const handleSaveClick = () => {
+    saveAsPNG();
+    const data = canvasRef?.getSaveData();
+    console.log('canvasRef => ' + canvasRef);
+    console.log('모든좌표 데이터', data);
+    // secondCanvas.current.loadSaveData(data);
+  };
 
   return (
     <div className="fixed inset-0 flex flex-col">
@@ -39,6 +58,7 @@ function DrawingPage(): React.ReactElement {
         onPointerDown={closeSaveMode}
       >
         <CanvasDraw
+          className="CanvasDraw"
           ref={(canvasDraw) => {
             setCanvasRef(canvasDraw);
           }}
@@ -54,7 +74,7 @@ function DrawingPage(): React.ReactElement {
           // TODO: 사진 업로드
           imgSrc={chimchak}
         />
-        <CanvasDraw
+        {/* <CanvasDraw
           ref={minifiedCanvas}
           // ref={(canvasDraw) => {
           //   //setMinifiedRef(canvasDraw);
@@ -63,8 +83,9 @@ function DrawingPage(): React.ReactElement {
           canvasHeight={667}
           hideGrid={true}
           disabled={true}
-        />
-        <button onClick={saveDrawing}>save</button>
+        /> */}
+        <button onClick={handleSaveClick}>save</button>
+        <img src={drawing} alt="사진" />
         <Timer className="absolute" />
         <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
       </div>
