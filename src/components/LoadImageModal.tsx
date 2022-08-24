@@ -4,7 +4,7 @@ import Cropper from 'react-easy-crop';
 
 import Check from '../icons/Check';
 
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { Point, Area } from 'react-easy-crop/types';
 import { backImageState } from '../atoms/BackImage';
 import { imageSourceState } from '../atoms/ImageSource';
@@ -15,15 +15,13 @@ function LoadImageModal({
   isOpen,
   onClose,
 }: LoadImageModalProps): React.ReactElement {
-  const [, setCroppedImage] = useRecoilState(backImageState);
+  const setCroppedImage = useSetRecoilState(backImageState);
   const [imgSrc, setImageSource] = useRecoilState(imageSourceState);
-  console.log('imgSrc:::', imgSrc);
 
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
 
   const beforeClose = useCallback(() => {
-    console.log('BeforeClose');
     setImageSource('');
     onClose();
   }, [onClose, setImageSource]);
@@ -42,7 +40,7 @@ function LoadImageModal({
         const canvas = document.createElement('canvas');
         const res = canvas?.getContext('2d');
         if (!res || !(res instanceof CanvasRenderingContext2D)) {
-          throw new Error('Failed to get 2D context');
+          return;
         }
         const ctx: CanvasRenderingContext2D = res;
         canvas.width =
@@ -86,8 +84,9 @@ function LoadImageModal({
           restrictPosition={false}
           objectFit={'contain'}
         />
-        {Boolean(imgSrc) && (
+        {imgSrc && (
           <button
+            type="button"
             onClick={onClose}
             className="z-10 absolute top-[30px] right-[30px]"
           >

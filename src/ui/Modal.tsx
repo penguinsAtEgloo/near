@@ -18,13 +18,17 @@ function Modal({
   title,
   children,
 }: ModalProps): React.ReactElement {
-  const onTemp = useCallback(() => {
+  const onCloseConfirm = useCallback(() => {
     onClose();
     onConfirm?.();
   }, [onClose, onConfirm]);
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <HeadlessModal as="div" className="relative z-10" onClose={onTemp}>
+      <HeadlessModal
+        as="div"
+        className="relative z-10"
+        onClose={onCloseConfirm}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

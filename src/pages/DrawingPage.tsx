@@ -6,7 +6,7 @@ import LoadImageModal from '../components/LoadImageModal';
 import ToolBar from '../components/ToolBar';
 import Camera from '../icons/Camera';
 import Check from '../icons/Check';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import { backImageState } from '../atoms/BackImage';
@@ -28,7 +28,7 @@ function DrawingPage(): React.ReactElement {
   const backImage = useRecoilValue(backImageState);
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
   const imageinput = useRef<HTMLInputElement>(null);
-  const [, setImgSrc] = useRecoilState(imageSourceState);
+  const setImgSrc = useSetRecoilState(imageSourceState);
 
   const [showLoadImageModal, setShowLoadImageModal] = useState(false);
   const openLoadImageModal = useCallback(() => setShowLoadImageModal(true), []);
@@ -66,6 +66,7 @@ function DrawingPage(): React.ReactElement {
             ref={(canvasDraw) => {
               setCanvasRef(canvasDraw);
             }}
+            // TODO: 영역크기 계산하여 width, height 넣어주어야 함
             canvasWidth={375}
             canvasHeight={667}
             catenaryColor=""
@@ -91,9 +92,9 @@ function DrawingPage(): React.ReactElement {
         </div>
         <div className="absolute top-4 right-4 flex w-[80px] justify-between">
           <button onClick={loadImage}>
-            <Camera></Camera>
+            <Camera />
           </button>
-          <Check></Check>
+          <Check />
         </div>
         <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
           {isSaveMode ? (
