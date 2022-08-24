@@ -27,33 +27,6 @@ function DrawingPage(): React.ReactElement {
 
   const backImage = useRecoilValue(backImageState);
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
-  const imageinput = useRef<HTMLInputElement>(null);
-  const setImgSrc = useSetRecoilState(imageSourceState);
-
-  const [showLoadImageModal, setShowLoadImageModal] = useState(false);
-  const openLoadImageModal = useCallback(() => setShowLoadImageModal(true), []);
-  const closeLoadImageModal = useCallback(
-    () => setShowLoadImageModal(false),
-    []
-  );
-
-  const onSelectFile = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files && e.target.files.length > 0) {
-        const reader = new FileReader();
-        reader.addEventListener('load', () => {
-          setImgSrc(reader.result?.toString() || '');
-        });
-        reader.readAsDataURL(e.target.files[0]);
-        openLoadImageModal();
-      }
-    },
-    [openLoadImageModal, setImgSrc]
-  );
-
-  const loadImage = useCallback(() => {
-    imageinput.current?.click();
-  }, []);
 
   return (
     <>
