@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import Button from '../ui/Button';
 import SaveDialog from '../dialog/SaveDialog';
 import CanvasDraw from 'react-canvas-draw';
@@ -23,6 +23,15 @@ function DrawingPage(): React.ReactElement {
 
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
 
+  const minifiedCanvas = useRef(null);
+  const saveDrawing = useCallback(() => {
+    if (!canvasRef) return;
+    const data = canvasRef.getSaveData();
+    if (!minifiedCanvas) return;
+    canvasRef?.loadSaveData(data);
+    console.log(canvasRef.getDataURL('image/png', false, '#000000'));
+  }, [canvasRef]);
+
   return (
     <div className="fixed inset-0 flex flex-col">
       <div
@@ -45,6 +54,17 @@ function DrawingPage(): React.ReactElement {
           // TODO: 사진 업로드
           imgSrc={chimchak}
         />
+        <CanvasDraw
+          ref={minifiedCanvas}
+          // ref={(canvasDraw) => {
+          //   //setMinifiedRef(canvasDraw);
+          // }}
+          canvasWidth={375}
+          canvasHeight={667}
+          hideGrid={true}
+          disabled={true}
+        />
+        <button onClick={saveDrawing}>save</button>
         <Timer className="absolute" />
         <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
       </div>
