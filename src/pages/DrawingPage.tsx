@@ -91,7 +91,7 @@ function DrawingPage(): React.ReactElement {
           />
         </div>
         <div className="absolute top-4 right-4 flex w-[80px] justify-between">
-          <button onClick={loadImage}>
+          <button type="button" onClick={loadImage}>
             <Camera />
           </button>
           <Check />
