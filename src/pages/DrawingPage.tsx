@@ -8,6 +8,8 @@ import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import ToolBar from '../components/ToolBar';
 import Timer from './Timer';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 function DrawingPage(): React.ReactElement {
   const [isSaveMode, setSaveMode] = useState(false);
@@ -43,12 +45,14 @@ function DrawingPage(): React.ReactElement {
     console.log('PNG image data');
     console.log(imageURL);
   };
+  const navigate = useNavigate();
   const handleSaveClick = () => {
     saveAsPNG();
     const data = canvasRef?.getSaveData();
-    console.log('canvasRef => ' + canvasRef);
-    console.log('모든좌표 데이터', data);
+    // console.log('canvasRef => ' + canvasRef);
+    // console.log('모든좌표 데이터', data);
     // secondCanvas.current.loadSaveData(data);
+    navigate('/pages/save', { state: canvasRef });
   };
 
   return (
@@ -95,7 +99,16 @@ function DrawingPage(): React.ReactElement {
             <Button>링크복사</Button>
             <Button>인스타</Button>
             <Button>페이스북</Button>
-            <Button onClick={openSaveDialog}>저장</Button>
+
+            {/* <Link
+              className="absolute bottom-48"
+              to={'/pages/save'}
+              state={{ canvasRef: canvasRef }}
+            >
+              
+            </Link> */}
+            <Button onClick={handleSaveClick}>프리뷰페이지</Button>
+            {/* <Button onClick={openSaveDialog}>저장</Button> */}
           </>
         ) : (
           <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />
