@@ -2,7 +2,6 @@ import React, { useCallback, useState, useRef, useEffect } from 'react';
 import Button from '../ui/Button';
 import SaveDialog from '../dialog/SaveDialog';
 import CanvasDraw from 'react-canvas-draw';
-<<<<<<< HEAD
 import LoadImageModal from '../components/LoadImageModal';
 import ToolBar from '../components/ToolBar';
 import Camera from '../icons/Camera';
@@ -12,17 +11,8 @@ import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import { backImageState } from '../atoms/BackImage';
 import { imageSourceState } from '../atoms/ImageSource';
-=======
-import chimchak from '../assets/chimchak.png';
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { penWidthState } from '../atoms/PenWidth';
-import { penColorState } from '../atoms/PenColor';
-import { canvasState } from 'atoms/CanvasState';
-import ToolBar from '../components/ToolBar';
->>>>>>> 423a756 (feat: add preview page)
 import Timer from './Timer';
-// import { Link } from 'react-router-dom';
-// import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
 function DrawingPage(): React.ReactElement {
   const [isSaveMode, setSaveMode] = useState(false);
@@ -30,36 +20,36 @@ function DrawingPage(): React.ReactElement {
   const closeSaveMode = useCallback(() => setSaveMode(false), []);
 
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const openSaveDialog = useCallback(() => setShowSaveDialog(true), []);
   const closeSaveDialog = useCallback(() => setShowSaveDialog(false), []);
 
   const penColor = useRecoilValue(penColorState);
   const penWidth = useRecoilValue(penWidthState);
 
-<<<<<<< HEAD
   const backImage = useRecoilValue(backImageState);
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
-=======
-  const [canvasRef, setCanvasRef] = useRecoilState(canvasState);
-  // const canvasRef = useRecoilValue(canvasState);
-  // const setCanvasRef = useSetRecoilState(canvasState);
->>>>>>> 423a756 (feat: add preview page)
+  const imageinput = useRef<HTMLInputElement>(null);
+  const setImgSrc = useSetRecoilState(imageSourceState);
 
-<<<<<<< HEAD
-=======
-  // Drawing
-  const [drawing, setDrawing] = useState('');
-  // const [imgURL, setImageURL] = useState<string | null>(null);
-  // const imgUrl = canvasRef?.getDataURL();
+  const [showLoadImageModal, setShowLoadImageModal] = useState(false);
+  const openLoadImageModal = useCallback(() => setShowLoadImageModal(true), []);
+  const closeLoadImageModal = useCallback(
+    () => setShowLoadImageModal(false),
+    []
+  );
 
-  // const minifiedCanvas = useRef(null);
-  // const saveDrawing = useCallback(() => {
-  //   if (!canvasRef) return;
-  //   const data = canvasRef.getSaveData();
-  //   if (!minifiedCanvas) return;
-  //   canvasRef?.loadSaveData(data);
-  //   console.log(canvasRef.getDataURL('image/png', false, '#FFFFFF'));
-  // }, [canvasRef]);
+  const onSelectFile = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files.length > 0) {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          setImgSrc(reader.result?.toString() || '');
+        });
+        reader.readAsDataURL(e.target.files[0]);
+        openLoadImageModal();
+      }
+    },
+    [openLoadImageModal, setImgSrc]
+  );
 
   useEffect(() => {
     saveAsPNG();
@@ -87,9 +77,7 @@ function DrawingPage(): React.ReactElement {
     // navigate('/pages/save', { state: canvasRef });
   };
 
->>>>>>> e75b3d3 (feat: add preview page #22)
   return (
-<<<<<<< HEAD
     <>
       <div className="fixed inset-0 flex flex-col">
         <div
@@ -97,6 +85,7 @@ function DrawingPage(): React.ReactElement {
           onPointerDown={closeSaveMode}
         >
           <CanvasDraw
+            className="CanvasDraw"
             ref={(canvasDraw) => {
               setCanvasRef(canvasDraw);
             }}
@@ -134,38 +123,37 @@ function DrawingPage(): React.ReactElement {
           {isSaveMode ? (
             <>
               <Button>링크복사</Button>
-              <Button>인스타</Button>
-              <Button>페이스북</Button>
-              <Button onClick={openSaveDialog}>저장</Button>
+              <Link to={'/pages/preview'}>
+                <Button onClick={saveAsPNG}>저장</Button>
+              </Link>
             </>
           ) : (
             <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />
           )}
         </div>
-=======
-    <div className="fixed inset-0 flex flex-col">
-      <div
-        className="flex grow w-full bg-gray-200"
-        onPointerDown={closeSaveMode}
-      >
-        <CanvasDraw
-          className="CanvasDraw"
-          ref={(canvasDraw) => {
-            setCanvasRef(canvasDraw);
-          }}
-          // TODO: 영역크기 계산하여 width, height 넣어주어야 함
-          canvasWidth={375}
-          canvasHeight={667}
-          catenaryColor=""
-          brushColor={penColor}
-          brushRadius={penWidth}
-          lazyRadius={0}
-          hideGrid
-          hideInterface
-          // TODO: 사진 업로드
-          imgSrc={chimchak}
-        />
-        {/* <CanvasDraw
+      </div>
+      <div className="fixed inset-0 flex flex-col">
+        <div
+          className="flex grow w-full bg-gray-200"
+          onPointerDown={closeSaveMode}
+        >
+          <CanvasDraw
+            className="CanvasDraw"
+            ref={(canvasDraw) => {
+              setCanvasRef(canvasDraw);
+            }}
+            // TODO: 영역크기 계산하여 width, height 넣어주어야 함
+            canvasWidth={375}
+            canvasHeight={667}
+            catenaryColor=""
+            brushColor={penColor}
+            brushRadius={penWidth}
+            lazyRadius={0}
+            hideGrid
+            hideInterface
+            // TODO: 사진 업로드
+          />
+          {/* <CanvasDraw
           ref={minifiedCanvas}
           // ref={(canvasDraw) => {
           //   //setMinifiedRef(canvasDraw);
@@ -175,41 +163,37 @@ function DrawingPage(): React.ReactElement {
           hideGrid={true}
           disabled={true}
         /> */}
-        <button onClick={handleSaveClick}>save</button>
-        {/* <img src={drawing} alt="사진" /> */}
-        <Timer className="absolute" />
-        <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
->>>>>>> 423a756 (feat: add preview page)
-      </div>
-<<<<<<< HEAD
-      <LoadImageModal
-        isOpen={showLoadImageModal}
-        onClose={closeLoadImageModal}
-      />
-    </>
-=======
-      <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
-        {isSaveMode ? (
-          <>
-            <Button>링크복사</Button>
-            <Button>인스타</Button>
-            <Button>페이스북</Button>
+          <button onClick={handleSaveClick}>save</button>
+          {/* <img src={drawing} alt="사진" /> */}
+          <Timer className="absolute" />
+          <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
+        </div>
+        <LoadImageModal
+          isOpen={showLoadImageModal}
+          onClose={closeLoadImageModal}
+        />
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
+          {isSaveMode ? (
+            <>
+              <Button>링크복사</Button>
+              <Button>인스타</Button>
+              <Button>페이스북</Button>
 
-            {/* <Link
+              {/* <Link
               className="absolute bottom-48"
               to={'/pages/save'}
               state={{ canvasRef: canvasRef }}
             >
             </Link> */}
-            {/* <Button onClick={handleSaveClick}>프리뷰페이지</Button> */}
-            <Button onClick={openSaveDialog}>저장</Button>
-          </>
-        ) : (
-          <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />
-        )}
+              {/* <Button onClick={handleSaveClick}>프리뷰페이지</Button> */}
+              <Button onClick={openSaveDialog}>저장</Button>
+            </>
+          ) : (
+            <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />
+          )}
+        </div>
       </div>
-    </div>
->>>>>>> e75b3d3 (feat: add preview page #22)
+    </>
   );
 }
 
