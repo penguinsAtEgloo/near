@@ -1,6 +1,7 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import CanvasDraw from 'react-canvas-draw';
 import LoadImageModal from '../components/LoadImageModal';
+import WebCamModal from '../components/WebCamModal';
 import ToolBar from '../components/ToolBar';
 import Camera from '../icons/Camera';
 import Check from '../icons/Check';
@@ -17,6 +18,7 @@ import { drawingState } from '../atoms/DrawingState';
 import { historyState } from '../atoms/HistoryState';
 
 function DrawingPage(): React.ReactElement {
+  const [isMobile, setIsMobile] = useState(false);
   const [isSaveMode, setSaveMode] = useState(false);
   const openSaveMode = useCallback(() => setSaveMode(true), []);
   const closeSaveMode = useCallback(() => setSaveMode(false), []);
@@ -42,14 +44,15 @@ function DrawingPage(): React.ReactElement {
   }, [canvasRef, setDrawing, setHistory]);
 
   const imageinput = useRef<HTMLInputElement>(null);
-  const setImgSrc = useSetRecoilState(imageSourceState);
+  const [imageSource, setImgSrc] = useRecoilState(imageSourceState);
 
   const [showLoadImageModal, setShowLoadImageModal] = useState(false);
-  const openLoadImageModal = useCallback(() => setShowLoadImageModal(true), []);
-  const closeLoadImageModal = useCallback(
-    () => setShowLoadImageModal(false),
-    []
-  );
+  const closeLoadImageModal = useCallback(() => {
+    setShowLoadImageModal(false);
+  }, []);
+
+  const [showWebCamModal, setShowWebCamModal] = useState(false);
+  const closeWebCamModal = useCallback(() => setShowWebCamModal(false), []);
 
   const onSelectFile = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,17 +60,40 @@ function DrawingPage(): React.ReactElement {
         const reader = new FileReader();
         reader.addEventListener('load', () => {
           setImgSrc(reader.result?.toString() || '');
+          e.target.value = '';
         });
         reader.readAsDataURL(e.target.files[0]);
-        openLoadImageModal();
       }
     },
-    [openLoadImageModal, setImgSrc]
+    [setImgSrc]
   );
 
   const loadImage = useCallback(() => {
     imageinput.current?.click();
   }, []);
+
+  useEffect(() => {
+    try {
+      document.createEvent('TouchEvent');
+      setIsMobile(true);
+    } catch (e) {
+      setIsMobile(false);
+    }
+  }, [setIsMobile]);
+
+  useEffect(() => {
+    if (imageSource) {
+      setShowLoadImageModal(true);
+    }
+  }, [imageSource]);
+
+  const loadCameraModals = useCallback(() => {
+    if (isMobile) {
+      loadImage();
+    } else {
+      setShowWebCamModal(true);
+    }
+  }, [isMobile, loadImage, setShowWebCamModal]);
 
   return (
     <>
@@ -105,7 +131,7 @@ function DrawingPage(): React.ReactElement {
           />
         </div>
         <div className="absolute top-4 right-4 flex w-[80px] justify-between">
-          <button type="button" onClick={loadImage}>
+          <button type="button" onClick={loadCameraModals}>
             <Camera />
           </button>
           <button type="button" onClick={openSaveMode}>
@@ -140,6 +166,7 @@ function DrawingPage(): React.ReactElement {
         isOpen={showLoadImageModal}
         onClose={closeLoadImageModal}
       />
+      <WebCamModal isOpen={showWebCamModal} onClose={closeWebCamModal} />
     </>
   );
 }

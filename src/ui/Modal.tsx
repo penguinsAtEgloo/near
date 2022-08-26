@@ -1,11 +1,10 @@
 import { Dialog as HeadlessModal, Transition } from '@headlessui/react';
-import React, { Fragment, useCallback } from 'react';
+import React, { Fragment } from 'react';
 import Close from '../icons/Close';
 
 export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm?: () => void;
   title?: string;
   children: React.ReactElement;
 }
@@ -14,21 +13,12 @@ export interface ModalProps {
 function Modal({
   isOpen,
   onClose,
-  onConfirm,
   title,
   children,
 }: ModalProps): React.ReactElement {
-  const onCloseConfirm = useCallback(() => {
-    onClose();
-    onConfirm?.();
-  }, [onClose, onConfirm]);
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <HeadlessModal
-        as="div"
-        className="relative z-10"
-        onClose={onCloseConfirm}
-      >
+      <HeadlessModal as="div" className="relative z-10" onClose={onClose}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -52,7 +42,7 @@ function Modal({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <HeadlessModal.Panel className="w-screen h-screen max-w-md transform overflow-hidden bg-white text-left align-middle shadow-xl transition-all">
+              <HeadlessModal.Panel className="w-screen h-screen transform overflow-hidden bg-white text-left align-middle shadow-xl transition-all">
                 {title && (
                   <HeadlessModal.Title
                     as="h3"
