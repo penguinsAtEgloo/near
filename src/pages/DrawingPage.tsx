@@ -7,7 +7,7 @@ import Camera from '../icons/Camera';
 import Check from '../icons/Check';
 import Download from 'icons/Download';
 import Share from 'icons/Share';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import { backImageState } from '../atoms/BackImage';
