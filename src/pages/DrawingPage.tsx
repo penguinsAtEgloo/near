@@ -12,6 +12,9 @@ import { penColorState } from '../atoms/PenColor';
 import { backImageState } from '../atoms/BackImage';
 import { imageSourceState } from '../atoms/ImageSource';
 import Timer from './Timer';
+import { Link } from 'react-router-dom';
+import { drawingState } from '../atoms/DrawingState';
+import { historyState } from '../atoms/HistoryState';
 
 function DrawingPage(): React.ReactElement {
   const [isSaveMode, setSaveMode] = useState(false);
@@ -19,7 +22,6 @@ function DrawingPage(): React.ReactElement {
   const closeSaveMode = useCallback(() => setSaveMode(false), []);
 
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const openSaveDialog = useCallback(() => setShowSaveDialog(true), []);
   const closeSaveDialog = useCallback(() => setShowSaveDialog(false), []);
 
   const penColor = useRecoilValue(penColorState);
@@ -27,6 +29,20 @@ function DrawingPage(): React.ReactElement {
 
   const backImage = useRecoilValue(backImageState);
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
+  const setDrawing = useSetRecoilState(drawingState);
+  const setHistory = useSetRecoilState(historyState);
+
+  const saveAsPNG = useCallback(() => {
+    const canvas = document.querySelector(
+      '.CanvasDraw canvas:nth-child(2)'
+    ) as HTMLCanvasElement;
+    const imageURL = canvas.toDataURL('image/png');
+    setDrawing(imageURL);
+
+    if (!canvasRef) return;
+    setHistory(canvasRef.getSaveData());
+  }, [canvasRef, setDrawing, setHistory]);
+
   const imageinput = useRef<HTMLInputElement>(null);
   const setImgSrc = useSetRecoilState(imageSourceState);
 
@@ -63,6 +79,7 @@ function DrawingPage(): React.ReactElement {
           onPointerDown={closeSaveMode}
         >
           <CanvasDraw
+            className="CanvasDraw"
             ref={(canvasDraw) => {
               setCanvasRef(canvasDraw);
             }}
@@ -100,9 +117,9 @@ function DrawingPage(): React.ReactElement {
           {isSaveMode ? (
             <>
               <Button>링크복사</Button>
-              <Button>인스타</Button>
-              <Button>페이스북</Button>
-              <Button onClick={openSaveDialog}>저장</Button>
+              <Link to={'/pages/preview'}>
+                <Button onClick={saveAsPNG}>저장</Button>
+              </Link>
             </>
           ) : (
             <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />
