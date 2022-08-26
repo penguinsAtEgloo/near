@@ -3,11 +3,23 @@ import Brush from '../icons/Brush';
 import Palette from '../icons/Palette';
 import ClearAll from '../icons/ClearAll';
 import Undo from '../icons/Undo';
-import { useRecoilState } from 'recoil';
-import { penWidthState } from '../atoms/PenWidth';
-import { penColorState } from '../atoms/PenColor';
 import CanvasDraw from 'react-canvas-draw';
 import ClearDialog from '../dialog/ClearDialog';
+import ColorButton from './ColorButton';
+import BrushButton from './BrushButton';
+import { useRecoilState } from 'recoil';
+import { penColorState } from '../atoms/PenColor';
+
+const TOOL_MODE = { color: 'color', width: 'width' } as const;
+type ToolMode = typeof TOOL_MODE[keyof typeof TOOL_MODE];
+
+const COLOR_SET = {
+  white: '#FFFFFF',
+  black: '#000000',
+  red: '#FF0000',
+  yellow: '#FFF500',
+  blue: '#001AFF',
+};
 
 function ToolBar({
   canvasDraw,
@@ -16,66 +28,101 @@ function ToolBar({
   canvasDraw: CanvasDraw | null;
   onProceed: () => void;
 }): React.ReactElement {
-  const [showSlider, setShowSlider] = useState(false);
-  const handleShowSlider = useCallback(
-    () => setShowSlider((prev) => !prev),
-    []
-  );
+  const [toolMode, setToolMode] = useState<ToolMode | null>(null);
+
   const [showClearDialog, setShowClearDialog] = useState(false);
   const closeClearDialog = useCallback(() => setShowClearDialog(false), []);
+  const requestClear = useCallback(() => setShowClearDialog(true), []);
 
-  const [penWidth, setPenWidth] = useRecoilState(penWidthState);
-  const [penColor, setPenColor] = useRecoilState(penColorState);
-  const setWidthValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.valueAsNumber;
-    setPenWidth(value);
-  };
-  const setColorValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setPenColor(value);
-  };
-  const requestClear = useCallback(() => {
-    setShowClearDialog(true);
-  }, []);
   const clear = useCallback(() => {
     setShowClearDialog(false);
     canvasDraw?.clear();
   }, [canvasDraw]);
+
   const undo = useCallback(() => {
     canvasDraw?.undo();
   }, [canvasDraw]);
+
+  const [penColor, setPenColor] = useRecoilState(penColorState);
+  const setColorValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPenColor(value);
+  };
+
+  const handleWidthButton = useCallback(() => {
+    if (toolMode) {
+      setToolMode(null);
+      return;
+    }
+    setToolMode('width');
+  }, [toolMode]);
+
+  const handleColorButton = useCallback(() => {
+    if (toolMode) {
+      setToolMode(null);
+      return;
+    }
+    setToolMode('color');
+  }, [toolMode]);
+
   return (
-    <div className="flex px-11 py-4 space-x-7 items-center rounded-2xl bg-black">
-      <button
-        className="relative flex space-x-6"
-        type="button"
-        onClick={handleShowSlider}
-      >
-        <Brush />
-        {showSlider && (
-          <input
-            type="range"
-            value={penWidth}
-            min={1}
-            max={20}
-            onChange={setWidthValue}
-          />
-        )}
-      </button>
-      {!showSlider && (
+    <div className="w-[320px] flex px-11 py-4 space-x-7 items-center rounded-2xl bg-black">
+      {toolMode !== 'color' && (
         <>
-          <label className="relative flex cursor-pointer">
-            <div
-              className="absolute -left-2.5 w-2.5 h-2.5 rounded-full"
-              style={{ backgroundColor: penColor }}
-            />
-            <input
-              className="invisible w-0 h-0 bg-white"
-              type="color"
-              onChange={setColorValue}
-            />
+          <button
+            className="flex space-x-6"
+            type="button"
+            onClick={handleWidthButton}
+          >
+            <Brush />
+          </button>
+          {toolMode === 'width' && (
+            <div className="w-full flex justify-between items-center">
+              <BrushButton size={1} />
+              <BrushButton size={2} />
+              <BrushButton size={4} />
+              <BrushButton size={7} />
+              <BrushButton size={10} />
+            </div>
+          )}
+        </>
+      )}
+      {toolMode !== 'width' && (
+        <>
+          <button
+            className="flex space-x-6 items-center"
+            type="button"
+            onClick={handleColorButton}
+          >
             <Palette />
-          </label>
+          </button>
+          {toolMode === 'color' && (
+            <div className="w-full flex justify-between">
+              <ColorButton color={COLOR_SET.white} />
+              <ColorButton
+                className="border border-white"
+                color={COLOR_SET.black}
+              />
+              <ColorButton color={COLOR_SET.red} />
+              <ColorButton color={COLOR_SET.yellow} />
+              <ColorButton color={COLOR_SET.blue} />
+              <label className="relative flex cursor-pointer">
+                <div
+                  className="w-3.5 h-3.5 rounded-full bg-gradient-to-b from-red-600 to-blue-600"
+                  style={{ backgroundColor: penColor }}
+                />
+                <input
+                  className="invisible w-0 h-0 bg-white"
+                  type="color"
+                  onChange={setColorValue}
+                />
+              </label>
+            </div>
+          )}
+        </>
+      )}
+      {!toolMode && (
+        <>
           <button type="button" onClick={requestClear}>
             <ClearAll />
           </button>

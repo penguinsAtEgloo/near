@@ -15,33 +15,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-input[type='range'] {
-  height: 2px;
-  -webkit-appearance: none;
-  margin: 10px 0;
-  width: 184px;
-  background: transparent;
-}
-
-input[type='range']:focus {
-  outline: none;
-}
-
-input[type='range']::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  border-radius: 5px;
-  border: 2px solid #ffffff;
-}
-
-input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
-  background: #ffffff;
-  cursor: pointer;
-  border-radius: 9999px;
-  transform: translateY(-50%);
-}
