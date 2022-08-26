@@ -1,6 +1,5 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import Button from '../ui/Button';
-import SaveDialog from '../dialog/SaveDialog';
 import CanvasDraw from 'react-canvas-draw';
 import LoadImageModal from '../components/LoadImageModal';
 import ToolBar from '../components/ToolBar';
@@ -18,9 +17,6 @@ function DrawingPage(): React.ReactElement {
   const [isSaveMode, setSaveMode] = useState(false);
   const openSaveMode = useCallback(() => setSaveMode(true), []);
   const closeSaveMode = useCallback(() => setSaveMode(false), []);
-
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const closeSaveDialog = useCallback(() => setShowSaveDialog(false), []);
 
   const penColor = useRecoilValue(penColorState);
   const penWidth = useRecoilValue(penWidthState);
@@ -104,7 +100,6 @@ function DrawingPage(): React.ReactElement {
             zoomExtents={{ min: 0.33, max: 3 }}
           />
           <Timer className="absolute" />
-          <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
           <input
             ref={imageinput}
             onChange={onSelectFile}
