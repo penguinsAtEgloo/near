@@ -1,15 +1,16 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import Button from '../ui/Button';
 import SaveDialog from '../dialog/SaveDialog';
 import CanvasDraw from 'react-canvas-draw';
 import chimchak from '../assets/chimchak.png';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
+import { canvasState } from 'atoms/CanvasState';
 import ToolBar from '../components/ToolBar';
 import Timer from './Timer';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router';
+// import { Link } from 'react-router-dom';
+// import { useNavigate } from 'react-router';
 
 function DrawingPage(): React.ReactElement {
   const [isSaveMode, setSaveMode] = useState(false);
@@ -23,19 +24,31 @@ function DrawingPage(): React.ReactElement {
   const penColor = useRecoilValue(penColorState);
   const penWidth = useRecoilValue(penWidthState);
 
-  const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
+  const [canvasRef, setCanvasRef] = useRecoilState(canvasState);
+  // const canvasRef = useRecoilValue(canvasState);
+  // const setCanvasRef = useSetRecoilState(canvasState);
 
   // Drawing
   const [drawing, setDrawing] = useState('');
+  // const [imgURL, setImageURL] = useState<string | null>(null);
+  // const imgUrl = canvasRef?.getDataURL();
 
-  const minifiedCanvas = useRef(null);
-  const saveDrawing = useCallback(() => {
-    if (!canvasRef) return;
-    const data = canvasRef.getSaveData();
-    if (!minifiedCanvas) return;
-    canvasRef?.loadSaveData(data);
-    console.log(canvasRef.getDataURL('image/png', false, '#FFFFFF'));
+  // const minifiedCanvas = useRef(null);
+  // const saveDrawing = useCallback(() => {
+  //   if (!canvasRef) return;
+  //   const data = canvasRef.getSaveData();
+  //   if (!minifiedCanvas) return;
+  //   canvasRef?.loadSaveData(data);
+  //   console.log(canvasRef.getDataURL('image/png', false, '#FFFFFF'));
+  // }, [canvasRef]);
+
+  useEffect(() => {
+    saveAsPNG();
+    const data = canvasRef?.getSaveData();
+    console.log('canvasRef => ' + canvasRef);
+    console.log('모든좌표 데이터', data);
   }, [canvasRef]);
+
   const saveAsPNG = () => {
     const canvas = document.querySelector(
       '.CanvasDraw canvas:nth-child(2)'
@@ -45,14 +58,14 @@ function DrawingPage(): React.ReactElement {
     console.log('PNG image data');
     console.log(imageURL);
   };
-  const navigate = useNavigate();
+
   const handleSaveClick = () => {
     saveAsPNG();
     const data = canvasRef?.getSaveData();
-    // console.log('canvasRef => ' + canvasRef);
-    // console.log('모든좌표 데이터', data);
+    console.log('canvasRef => ' + canvasRef);
+    console.log('모든좌표 데이터', data);
     // secondCanvas.current.loadSaveData(data);
-    navigate('/pages/save', { state: canvasRef });
+    // navigate('/pages/save', { state: canvasRef });
   };
 
   return (
@@ -89,7 +102,7 @@ function DrawingPage(): React.ReactElement {
           disabled={true}
         /> */}
         <button onClick={handleSaveClick}>save</button>
-        <img src={drawing} alt="사진" />
+        {/* <img src={drawing} alt="사진" /> */}
         <Timer className="absolute" />
         <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
       </div>
@@ -105,10 +118,9 @@ function DrawingPage(): React.ReactElement {
               to={'/pages/save'}
               state={{ canvasRef: canvasRef }}
             >
-              
             </Link> */}
-            <Button onClick={handleSaveClick}>프리뷰페이지</Button>
-            {/* <Button onClick={openSaveDialog}>저장</Button> */}
+            {/* <Button onClick={handleSaveClick}>프리뷰페이지</Button> */}
+            <Button onClick={openSaveDialog}>저장</Button>
           </>
         ) : (
           <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />

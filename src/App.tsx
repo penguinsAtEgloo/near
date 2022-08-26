@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import DrawingPage from './pages/DrawingPage';
 import MainPage from './pages/MainPage';
+import PreviewPage from 'pages/PreviewPage';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="pages/draw" element={<DrawingPage />} />
+          <Route path="pages/save" element={<PreviewPage />} />
         </Routes>
       </BrowserRouter>
     </RecoilRoot>
