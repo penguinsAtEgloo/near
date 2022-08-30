@@ -2,8 +2,7 @@ import clsx from 'clsx';
 import React, { useState, useEffect } from 'react';
 
 function Timer({ className }: { className?: string }): React.ReactElement {
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(5);
+  const [seconds, setSeconds] = useState(10);
 
   useEffect(() => {
     const countdown = setInterval(() => {
@@ -11,24 +10,18 @@ function Timer({ className }: { className?: string }): React.ReactElement {
         setSeconds(seconds - 1);
       }
       if (seconds === 0) {
-        if (minutes === 0) {
-          //0분 0초일때
-          clearInterval(countdown);
-          alert('시간이 종료되었습니다.');
-        } else {
-          // x분 0초가 될때
-          setMinutes(minutes - 1);
-          setSeconds(59);
-        }
+        // 0초일때
+        clearInterval(countdown);
+        alert('시간이 종료되었습니다.');
       }
     }, 1000);
     return () => clearInterval(countdown);
-  }, [minutes, seconds]);
+  }, [seconds]);
 
   return (
-    <div className={clsx(className)}>
-      {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-    </div>
+      <div className={clsx(className)}>
+        {Math.floor(seconds / 60)}:{(seconds % 60) < 10 ? `0${seconds % 60}` : seconds % 60}
+      </div>
   );
 }
 
