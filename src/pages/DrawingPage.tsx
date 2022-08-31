@@ -106,7 +106,9 @@ function DrawingPage(): React.ReactElement {
           <button type="button" onClick={loadImage}>
             <Camera />
           </button>
-          <Check />
+          <button type="button" onClick={openSaveMode}>
+            <Check />
+          </button>
         </div>
         <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
           {isSaveMode ? (
