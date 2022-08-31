@@ -1,10 +1,11 @@
 import React, { useCallback, useState, useRef } from 'react';
-import Button from '../ui/Button';
 import CanvasDraw from 'react-canvas-draw';
 import LoadImageModal from '../components/LoadImageModal';
 import ToolBar from '../components/ToolBar';
 import Camera from '../icons/Camera';
 import Check from '../icons/Check';
+import Download from 'icons/Download';
+import Share from 'icons/Share';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
@@ -110,17 +111,28 @@ function DrawingPage(): React.ReactElement {
             <Check />
           </button>
         </div>
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
-          {isSaveMode ? (
-            <>
-              <Button>링크복사</Button>
-              <Link to={'/pages/preview'}>
-                <Button onClick={saveAsPNG}>저장</Button>
-              </Link>
-            </>
-          ) : (
-            <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />
-          )}
+        <div className="flex absolute left-1/2 -translate-x-1/2 bottom-11 space-x-2 justify-center">
+          <div>
+            {isSaveMode ? (
+              <>
+                <button className="flex items-center justify-center gap-4 w-full h-16 px-4 py-2 bg-black text-white rounded-full align-center">
+                  친구에게 공유하기
+                  <Share />
+                </button>
+                <Link to={'/pages/preview'}>
+                  <button
+                    className="flex items-center justify-center gap-4 w-full h-16 px-4 py-2 bg-black text-white rounded-full align-center"
+                    onClick={saveAsPNG}
+                  >
+                    파일 저장하기
+                    <Download />
+                  </button>
+                </Link>
+              </>
+            ) : (
+              <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />
+            )}
+          </div>
         </div>
       </div>
       <LoadImageModal
