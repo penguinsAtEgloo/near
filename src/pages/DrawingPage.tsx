@@ -35,6 +35,7 @@ function DrawingPage(): React.ReactElement {
     ) as HTMLCanvasElement;
     const imageURL = canvas.toDataURL('image/png');
     setDrawing(imageURL);
+    console.log(imageURL);
 
     if (!canvasRef) return;
     setHistory(canvasRef.getSaveData());
