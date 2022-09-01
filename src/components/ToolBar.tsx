@@ -7,8 +7,10 @@ import CanvasDraw from 'react-canvas-draw';
 import ClearDialog from '../dialog/ClearDialog';
 import ColorButton from './ColorButton';
 import BrushButton from './BrushButton';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { penColorState } from '../atoms/PenColor';
+import { erasedLinesState } from '../atoms/ErasedLines';
+import { linesState } from '../atoms/Lines';
 
 const TOOL_MODE = { color: 'color', width: 'width' } as const;
 type ToolMode = typeof TOOL_MODE[keyof typeof TOOL_MODE];
@@ -33,6 +35,8 @@ function ToolBar({
   const [showClearDialog, setShowClearDialog] = useState(false);
   const closeClearDialog = useCallback(() => setShowClearDialog(false), []);
   const requestClear = useCallback(() => setShowClearDialog(true), []);
+  const [erasedLines, setErasedLines] = useRecoilState(erasedLinesState);
+  const lines = useRecoilValue(linesState);
 
   const clear = useCallback(() => {
     setShowClearDialog(false);
@@ -40,8 +44,27 @@ function ToolBar({
   }, [canvasDraw]);
 
   const undo = useCallback(() => {
+    if (canvasDraw) {
+      const lineStr: string | undefined = canvasDraw.getSaveData();
+      if (lineStr) {
+        const lineObj = JSON.parse(lineStr);
+        const lines: never[] = lineObj.lines;
+        const newErased: never[] = [...erasedLines, lines[lines.length - 1]];
+        setErasedLines(newErased);
+      }
+    }
     canvasDraw?.undo();
-  }, [canvasDraw]);
+  }, [canvasDraw, erasedLines, setErasedLines]);
+
+  const redo = useCallback(() => {
+    if (canvasDraw && erasedLines.length > 0) {
+      const toDraw = erasedLines[erasedLines.length - 1];
+      const curLines = JSON.parse(lines);
+      curLines.lines.push(toDraw);
+      setErasedLines(erasedLines.slice(0, -1));
+      canvasDraw.loadSaveData(JSON.stringify(curLines), true);
+    }
+  }, [canvasDraw, erasedLines, lines, setErasedLines]);
 
   const [penColor, setPenColor] = useRecoilState(penColorState);
   const setColorValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,11 +152,7 @@ function ToolBar({
           <button type="button" onClick={undo}>
             <Undo />
           </button>
-          <button
-            className="w-6 h-6 text-white"
-            type="button"
-            onClick={onProceed}
-          >
+          <button className="w-6 h-6 text-white" type="button" onClick={redo}>
             &gt;
           </button>
           <ClearDialog

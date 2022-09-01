@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 function Timer({ className }: { className?: string }): React.ReactElement {
   const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(5);
+  const [seconds, setSeconds] = useState(500);
 
   useEffect(() => {
     const countdown = setInterval(() => {

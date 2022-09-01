@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import CanvasDraw from 'react-canvas-draw';
 import LoadImageModal from '../components/LoadImageModal';
+// import WebCamModal from '../components/WebCamModal';
 import WebCamModal from '../components/WebCamModal';
 import ToolBar from '../components/ToolBar';
 import Camera from '../icons/Camera';
@@ -12,6 +13,7 @@ import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import { backImageState } from '../atoms/BackImage';
 import { imageSourceState } from '../atoms/ImageSource';
+import { linesState } from '../atoms/Lines';
 import Timer from './Timer';
 import { Link } from 'react-router-dom';
 import { drawingState } from '../atoms/DrawingState';
@@ -45,6 +47,7 @@ function DrawingPage(): React.ReactElement {
 
   const imageinput = useRef<HTMLInputElement>(null);
   const [imageSource, setImgSrc] = useRecoilState(imageSourceState);
+  const setLines = useSetRecoilState(linesState);
 
   const [showLoadImageModal, setShowLoadImageModal] = useState(false);
   const closeLoadImageModal = useCallback(() => {
@@ -92,16 +95,26 @@ function DrawingPage(): React.ReactElement {
   const loadCameraModals = useCallback(() => {
     if (isMobile) {
       loadImage();
-    } else {
-      setShowWebCamModal(true);
     }
-  }, [isMobile, loadImage, setShowWebCamModal]);
+  }, [isMobile, loadImage]);
 
   const onChangeOpacity = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setOpacity(parseInt(e.target.value) / 100);
     },
     [setOpacity]
+  );
+
+  const onChangeCanvas = useCallback(
+    (e: CanvasDraw) => {
+      if (canvasRef) {
+        const lineStr: string | undefined = canvasRef.getSaveData();
+        if (lineStr) {
+          setLines(lineStr);
+        }
+      }
+    },
+    [canvasRef, setLines]
   );
 
   return (
@@ -125,6 +138,7 @@ function DrawingPage(): React.ReactElement {
             ref={(canvasDraw) => {
               setCanvasRef(canvasDraw);
             }}
+            onChange={onChangeCanvas}
             // TODO: 영역크기 계산하여 width, height 넣어주어야 함
             canvasWidth={375}
             canvasHeight={667}
