@@ -40,8 +40,9 @@ function ToolBar({
 
   const clear = useCallback(() => {
     setShowClearDialog(false);
+    setErasedLines([]);
     canvasDraw?.clear();
-  }, [canvasDraw]);
+  }, [canvasDraw, setErasedLines]);
 
   const undo = useCallback(() => {
     if (canvasDraw) {

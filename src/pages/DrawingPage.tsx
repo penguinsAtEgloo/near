@@ -14,6 +14,7 @@ import { penColorState } from '../atoms/PenColor';
 import { backImageState } from '../atoms/BackImage';
 import { imageSourceState } from '../atoms/ImageSource';
 import { linesState } from '../atoms/Lines';
+import { erasedLinesState } from '../atoms/ErasedLines';
 import Timer from './Timer';
 import { Link } from 'react-router-dom';
 import { drawingState } from '../atoms/DrawingState';
@@ -48,6 +49,7 @@ function DrawingPage(): React.ReactElement {
   const imageinput = useRef<HTMLInputElement>(null);
   const [imageSource, setImgSrc] = useRecoilState(imageSourceState);
   const setLines = useSetRecoilState(linesState);
+  const setErasedLines = useSetRecoilState(erasedLinesState);
 
   const [showLoadImageModal, setShowLoadImageModal] = useState(false);
   const closeLoadImageModal = useCallback(() => {
@@ -112,9 +114,12 @@ function DrawingPage(): React.ReactElement {
         if (lineStr) {
           setLines(lineStr);
         }
+        if (!(canvasRef as any).valuesChanged) {
+          setErasedLines([]);
+        }
       }
     },
-    [canvasRef, setLines]
+    [canvasRef, setLines, setErasedLines]
   );
 
   return (
