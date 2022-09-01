@@ -16,7 +16,7 @@ function LoadImageModal({
   onClose,
 }: LoadImageModalProps): React.ReactElement {
   const setCroppedImage = useSetRecoilState(backImageState);
-  const [tempCropped, setTempCropped] = useState('');
+  const [localCropped, setLocalCropped] = useState('');
   const [imgSrc, setImageSource] = useRecoilState(imageSourceState);
 
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
@@ -31,14 +31,14 @@ function LoadImageModal({
     onClose();
   }, [onClose, setImageSource, setCroppedImage]);
 
-  const beforeConFirm = useCallback(() => {
-    setCroppedImage(tempCropped);
+  const onConfirm = useCallback(() => {
+    setCroppedImage(localCropped);
     // 초기화
     setImageSource('');
     setCrop({ x: 0, y: 0 });
     setZoom(1);
     onClose();
-  }, [onClose, setCroppedImage, setImageSource, tempCropped]);
+  }, [onClose, setCroppedImage, setImageSource, localCropped]);
 
   const onCropComplete = useCallback(
     (croppedArea: Area, croppedAreaPixels: Area) => {
@@ -75,10 +75,10 @@ function LoadImageModal({
         canvas.height = croppedAreaPixels.height;
         ctx.putImageData(data, 0, 0);
 
-        setTempCropped(canvas.toDataURL('image/jpeg'));
+        setLocalCropped(canvas.toDataURL('image/jpeg'));
       }
     },
-    [imgSrc, setTempCropped]
+    [imgSrc, setLocalCropped]
   );
 
   return (
@@ -99,7 +99,7 @@ function LoadImageModal({
         {imgSrc && (
           <button
             type="button"
-            onClick={beforeConFirm}
+            onClick={onConfirm}
             className="z-10 absolute top-[30px] right-[30px]"
           >
             <Check></Check>

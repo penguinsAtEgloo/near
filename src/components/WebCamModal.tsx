@@ -7,22 +7,18 @@ import { useSetRecoilState } from 'recoil';
 
 type WebCamModalProps = Pick<ModalProps, 'isOpen' | 'onClose'>;
 
-function getWindowDimensions() {
-  const { innerWidth: width, innerHeight: height } = window;
-  return {
-    width,
-    height,
-  };
-}
-
 function useWindowDimensions() {
-  const [windowDimensions, setWindowDimensions] = useState(
-    getWindowDimensions()
-  );
+  const [windowDimensions, setWindowDimensions] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   useEffect(() => {
     function handleResize() {
-      setWindowDimensions(getWindowDimensions());
+      setWindowDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
     }
 
     window.addEventListener('resize', handleResize);
@@ -74,14 +70,14 @@ function WebCamModal({
             type="button"
             onClick={beforeConFirm}
           >
-            <Check></Check>
+            <Check />
           </button>
         </div>
         <div>
           <div className="absolute top-[100px] bottom-[100px] h-screen">
             {image === '' ? (
               <Webcam
-                className="webcam w-screen "
+                className="webcam w-screen"
                 audio={false}
                 ref={webcamRef}
                 screenshotFormat="image/jpeg"
@@ -98,6 +94,7 @@ function WebCamModal({
             )}
           </div>
           <button
+            type="button"
             onClick={capture}
             className="absolute bottom-[50px] right-[30px]"
           >
