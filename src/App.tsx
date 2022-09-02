@@ -12,7 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="pages/draw" element={<DrawingPage />} />
-          <Route path="pages/preview" element={<PreviewPage />} />
+          <Route path="pages/save" element={<PreviewPage />} />
         </Routes>
       </BrowserRouter>
     </RecoilRoot>
