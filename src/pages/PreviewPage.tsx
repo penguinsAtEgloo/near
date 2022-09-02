@@ -1,23 +1,21 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import clsx from 'clsx';
 import CanvasDraw from 'react-canvas-draw';
 import Button from '../ui/Button';
 import Dialog, { DialogProps } from '../ui/Dialog';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-// type SaveDialogProps = Pick<DialogProps, 'isOpen' | 'onClose'>;
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { canvasState } from 'atoms/CanvasState';
+type SaveDialogProps = Pick<DialogProps, 'isOpen' | 'onClose'>;
 
 const PreviewPage = () => {
-  // const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
-  // const [drawing, setDrawing] = useState('');
+  const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
+  const [drawing, setDrawing] = useState('');
   //   const state = useNavigate().state;
   //   console.log(state);
   //   const location = useLocation();
   //   const state = location.state as { canvasRef: CanvasDraw };
   //   console.log(state);
   //   const canvasRef = state?.canvasRef;
-  const canvasRef = useRecoilValue(canvasState);
 
   useEffect(() => {
     saveAsPNG();
@@ -44,7 +42,9 @@ const PreviewPage = () => {
         </div>
         <div className="flex justify-between">
           <Button>이미지 저장</Button>
+          <Button>동영상 저장</Button>
           <Button>히스토리 저장</Button>
+          <Button>필터 +</Button>
         </div>
       </div>
     </div>
