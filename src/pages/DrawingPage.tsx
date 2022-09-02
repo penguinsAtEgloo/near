@@ -1,32 +1,46 @@
 import React, { useCallback, useState, useRef } from 'react';
-import Button from '../ui/Button';
-import SaveDialog from '../dialog/SaveDialog';
 import CanvasDraw from 'react-canvas-draw';
 import LoadImageModal from '../components/LoadImageModal';
 import ToolBar from '../components/ToolBar';
 import Camera from '../icons/Camera';
 import Check from '../icons/Check';
+import Download from 'icons/Download';
+import Share from 'icons/Share';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import { backImageState } from '../atoms/BackImage';
 import { imageSourceState } from '../atoms/ImageSource';
 import Timer from './Timer';
+import { Link } from 'react-router-dom';
+import { drawingState } from '../atoms/DrawingState';
+import { historyState } from '../atoms/HistoryState';
 
 function DrawingPage(): React.ReactElement {
   const [isSaveMode, setSaveMode] = useState(false);
   const openSaveMode = useCallback(() => setSaveMode(true), []);
   const closeSaveMode = useCallback(() => setSaveMode(false), []);
 
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const openSaveDialog = useCallback(() => setShowSaveDialog(true), []);
-  const closeSaveDialog = useCallback(() => setShowSaveDialog(false), []);
-
   const penColor = useRecoilValue(penColorState);
   const penWidth = useRecoilValue(penWidthState);
 
   const backImage = useRecoilValue(backImageState);
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
+  const setDrawing = useSetRecoilState(drawingState);
+  const setHistory = useSetRecoilState(historyState);
+
+  const saveAsPNG = useCallback(() => {
+    const canvas = document.querySelector(
+      '.CanvasDraw canvas:nth-child(2)'
+    ) as HTMLCanvasElement;
+    const imageURL = canvas.toDataURL('image/png');
+    setDrawing(imageURL);
+    console.log(imageURL);
+
+    if (!canvasRef) return;
+    setHistory(canvasRef.getSaveData());
+  }, [canvasRef, setDrawing, setHistory]);
+
   const imageinput = useRef<HTMLInputElement>(null);
   const setImgSrc = useSetRecoilState(imageSourceState);
 
@@ -63,6 +77,7 @@ function DrawingPage(): React.ReactElement {
           onPointerDown={closeSaveMode}
         >
           <CanvasDraw
+            className="CanvasDraw"
             ref={(canvasDraw) => {
               setCanvasRef(canvasDraw);
             }}
@@ -81,7 +96,6 @@ function DrawingPage(): React.ReactElement {
             zoomExtents={{ min: 0.33, max: 3 }}
           />
           <Timer className="absolute" />
-          <SaveDialog isOpen={showSaveDialog} onClose={closeSaveDialog} />
           <input
             ref={imageinput}
             onChange={onSelectFile}
@@ -94,19 +108,32 @@ function DrawingPage(): React.ReactElement {
           <button type="button" onClick={loadImage}>
             <Camera />
           </button>
-          <Check />
+          <button type="button" onClick={openSaveMode}>
+            <Check />
+          </button>
         </div>
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
-          {isSaveMode ? (
-            <>
-              <Button>링크복사</Button>
-              <Button>인스타</Button>
-              <Button>페이스북</Button>
-              <Button onClick={openSaveDialog}>저장</Button>
-            </>
-          ) : (
-            <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />
-          )}
+        <div className="flex absolute left-1/2 -translate-x-1/2 bottom-11 space-x-2 justify-center">
+          <div>
+            {isSaveMode ? (
+              <>
+                <button className="flex items-center justify-center gap-4 w-full h-16 px-4 py-2 bg-black text-white rounded-full align-center">
+                  친구에게 공유하기
+                  <Share />
+                </button>
+                <Link to={'/pages/preview'}>
+                  <button
+                    className="flex items-center justify-center gap-4 w-full h-16 px-4 py-2 bg-black text-white rounded-full align-center"
+                    onClick={saveAsPNG}
+                  >
+                    파일 저장하기
+                    <Download />
+                  </button>
+                </Link>
+              </>
+            ) : (
+              <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />
+            )}
+          </div>
         </div>
       </div>
       <LoadImageModal
