@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import DrawingPage from './pages/DrawingPage';
 import MainPage from './pages/MainPage';
+import PreviewPage from 'pages/PreviewPage';
 
 function App() {
   return (
