@@ -38,10 +38,19 @@ function DrawingPage(): React.ReactElement {
     const imageURL = canvas.toDataURL('image/png');
     setDrawing(imageURL);
     console.log(imageURL);
+    downloadImage(imageURL, 'NE_AR.png');
 
     if (!canvasRef) return;
     setHistory(canvasRef.getSaveData());
   }, [canvasRef, setDrawing, setHistory]);
+
+  function downloadImage(data: string, filename: string) {
+    const a = document.createElement('a');
+    a.href = data;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+  }
 
   const imageinput = useRef<HTMLInputElement>(null);
   const [imageSource, setImgSrc] = useRecoilState(imageSourceState);
