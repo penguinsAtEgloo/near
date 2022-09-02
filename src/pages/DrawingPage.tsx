@@ -5,8 +5,6 @@ import LoadImageModal from '../components/LoadImageModal';
 import ToolBar from '../components/ToolBar';
 import Camera from '../icons/Camera';
 import Check from '../icons/Check';
-import Download from 'icons/Download';
-import Share from 'icons/Share';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
@@ -25,24 +23,6 @@ function DrawingPage(): React.ReactElement {
 
   const backImage = useRecoilValue(backImageState);
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
-<<<<<<< HEAD
-=======
-  const setDrawing = useSetRecoilState(drawingState);
-  const setHistory = useSetRecoilState(historyState);
-
-  const saveAsPNG = useCallback(() => {
-    const canvas = document.querySelector(
-      '.CanvasDraw canvas:nth-child(2)'
-    ) as HTMLCanvasElement;
-    const imageURL = canvas.toDataURL('image/png');
-    setDrawing(imageURL);
-    console.log(imageURL);
-
-    if (!canvasRef) return;
-    setHistory(canvasRef.getSaveData());
-  }, [canvasRef, setDrawing, setHistory]);
-
->>>>>>> 5fc55f2 (feat: add export button)
   const imageinput = useRef<HTMLInputElement>(null);
   const setImgSrc = useSetRecoilState(imageSourceState);
 
@@ -132,32 +112,19 @@ function DrawingPage(): React.ReactElement {
           <button type="button" onClick={loadImage}>
             <Camera />
           </button>
-          <button type="button" onClick={openSaveMode}>
-            <Check />
-          </button>
+          <Check />
         </div>
-        <div className="flex absolute left-1/2 -translate-x-1/2 bottom-11 space-x-2 justify-center">
-          <div>
-            {isSaveMode ? (
-              <>
-                <button className="flex items-center justify-center gap-4 w-full h-16 px-4 py-2 bg-black text-white rounded-full align-center">
-                  친구에게 공유하기
-                  <Share />
-                </button>
-                <Link to={'/pages/preview'}>
-                  <button
-                    className="flex items-center justify-center gap-4 w-full h-16 px-4 py-2 bg-black text-white rounded-full align-center"
-                    onClick={saveAsPNG}
-                  >
-                    파일 저장하기
-                    <Download />
-                  </button>
-                </Link>
-              </>
-            ) : (
-              <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />
-            )}
-          </div>
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
+          {isSaveMode ? (
+            <>
+              <Button>링크복사</Button>
+              <Link to={'/pages/preview'}>
+                <Button onClick={saveAsPNG}>저장</Button>
+              </Link>
+            </>
+          ) : (
+            <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />
+          )}
         </div>
       </div>
       <div className="fixed inset-0 flex flex-col">
