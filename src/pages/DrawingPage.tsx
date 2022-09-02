@@ -54,6 +54,8 @@ function DrawingPage(): React.ReactElement {
   const [showWebCamModal, setShowWebCamModal] = useState(false);
   const closeWebCamModal = useCallback(() => setShowWebCamModal(false), []);
 
+  const [opacity, setOpacity] = useState<number>(0.5);
+
   const onSelectFile = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files && e.target.files.length > 0) {
@@ -95,13 +97,29 @@ function DrawingPage(): React.ReactElement {
     }
   }, [isMobile, loadImage, setShowWebCamModal]);
 
+  const onChangeOpacity = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setOpacity(parseInt(e.target.value) / 100);
+    },
+    [setOpacity]
+  );
+
   return (
     <>
       <div className="fixed inset-0 flex flex-col">
-        <div
-          className="flex grow w-full bg-gray-200"
-          onPointerDown={closeSaveMode}
-        >
+        <div className="grow w-full bg-gray-200" onPointerDown={closeSaveMode}>
+          <div className="bg-black">
+            <input type="range" onChange={onChangeOpacity} />
+          </div>
+          {backImage && (
+            <div className="absolute">
+              <img
+                src={backImage}
+                alt="배경이미지"
+                style={{ opacity: opacity, width: '375px', height: '667px' }}
+              />
+            </div>
+          )}
           <CanvasDraw
             className="CanvasDraw"
             ref={(canvasDraw) => {
@@ -116,7 +134,6 @@ function DrawingPage(): React.ReactElement {
             lazyRadius={0}
             hideGrid
             hideInterface
-            imgSrc={backImage}
             enablePanAndZoom={true}
             mouseZoomFactor={1}
             zoomExtents={{ min: 0.33, max: 3 }}
