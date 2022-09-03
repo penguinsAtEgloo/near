@@ -3,10 +3,13 @@ import CanvasDraw from 'react-canvas-draw';
 import LoadImageModal from '../components/LoadImageModal';
 import WebCamModal from '../components/WebCamModal';
 import ToolBar from '../components/ToolBar';
+
 import Camera from '../icons/Camera';
 import Check from '../icons/Check';
 import Download from 'icons/Download';
 import Share from 'icons/Share';
+import Opacity from 'icons/Opacity';
+
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
@@ -142,9 +145,11 @@ function DrawingPage(): React.ReactElement {
     <>
       <div className="fixed inset-0 flex flex-col">
         <div className="grow w-full bg-gray-200" onPointerDown={closeSaveMode}>
-          <div className="bg-black">
-            <input type="range" onChange={onChangeOpacity} />
+          <div className="absolute z-10 top-[295px] left-[45px]">
+            <Opacity />
           </div>
+          <rect className="absolute box-border bg-black w-[185px] h-[38px] top-[350px] left-[-40px] border-solid border-1 shadow-[0_4px_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90" />
+          <input id="slider" type="range" onChange={onChangeOpacity} />
           {backImage && (
             <div className="absolute">
               <img
