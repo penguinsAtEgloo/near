@@ -52,20 +52,15 @@ function DrawingPage(): React.ReactElement {
   const saveAsPNG = useCallback(() => {
     const imageURL = (canvasRef as any).getDataURL();
     setDrawing(imageURL);
-    downloadImage(imageURL, 'NE_AR.png');
+    const canvas = document.createElement('a');
+    canvas.href = imageURL;
+    canvas.download = 'NEAR.png';
+    document.body.appendChild(canvas);
+    canvas.click();
 
     if (!canvasRef) return;
     setHistory(canvasRef.getSaveData());
   }, [canvasRef, setDrawing, setHistory]);
-
-  // download image
-  function downloadImage(data: string, filename: string) {
-    const a = document.createElement('a');
-    a.href = data;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-  }
 
   const imageinput = useRef<HTMLInputElement>(null);
   const [imageSource, setImgSrc] = useRecoilState(imageSourceState);
@@ -166,7 +161,6 @@ function DrawingPage(): React.ReactElement {
           <div>
             {isSaveMode ? (
               <>
-                {/* copy URL button */}
                 <button
                   className="flex items-center justify-center gap-4 w-full h-16 px-4 py-2 bg-black text-white rounded-full align-center"
                   onClick={copyURL}
@@ -174,7 +168,6 @@ function DrawingPage(): React.ReactElement {
                   친구에게 공유하기
                   <Share />
                 </button>
-                {/* download image button */}
                 <Link to={'/pages/preview'}>
                   <button
                     className="flex items-center justify-center gap-4 w-full h-16 px-4 py-2 bg-black text-white rounded-full align-center"
