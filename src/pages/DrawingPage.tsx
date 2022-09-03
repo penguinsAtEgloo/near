@@ -31,34 +31,31 @@ function DrawingPage(): React.ReactElement {
   const [drawing, setDrawing] = useRecoilState(drawingState);
   const setHistory = useSetRecoilState(historyState);
 
-  // copy URL
   const copyURL = useCallback(() => {
-    const imageURL = (canvasRef as any).getDataURL();
-    setDrawing(imageURL);
-    window.navigator.clipboard.writeText(drawing).then(
-      function () {
-        alert('복사 완료');
-        console.log('Async: Copying to clipboard was successful!');
-      },
-      function (err) {
-        console.error('Async: Could not copy text: ', err);
-      }
-    );
-
     if (!canvasRef) return;
+    const canvas = document.querySelector(
+      '.CanvasDraw canvas:nth-child(2)'
+    ) as HTMLCanvasElement;
+    const imageURL = canvas.toDataURL('image/png');
+    setDrawing(imageURL);
+    window.navigator.clipboard.writeText(drawing).then(() => {
+      alert('복사 완료!');
+    });
   }, [canvasRef, drawing, setDrawing]);
 
-  // save as PNG
   const saveAsPNG = useCallback(() => {
-    const imageURL = (canvasRef as any).getDataURL();
-    setDrawing(imageURL);
-    const canvas = document.createElement('a');
-    canvas.href = imageURL;
-    canvas.download = 'NEAR.png';
-    document.body.appendChild(canvas);
-    canvas.click();
-
     if (!canvasRef) return;
+    const canvas = document.querySelector(
+      '.CanvasDraw canvas:nth-child(2)'
+    ) as HTMLCanvasElement;
+    const imageURL = canvas.toDataURL('image/png');
+    setDrawing(imageURL);
+    const canvasImage = document.createElement('a');
+    canvasImage.href = imageURL;
+    canvasImage.download = 'NEAR.png';
+    document.body.appendChild(canvasImage);
+    canvasImage.click();
+
     setHistory(canvasRef.getSaveData());
   }, [canvasRef, setDrawing, setHistory]);
 
