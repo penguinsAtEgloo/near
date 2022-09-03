@@ -96,7 +96,7 @@ function WebCamModal({
           {image === '' ? (
             <Webcam
               key={image}
-              className="webcam "
+              className="webcam"
               audio={false}
               ref={webcamRef}
               screenshotFormat="image/jpeg"
