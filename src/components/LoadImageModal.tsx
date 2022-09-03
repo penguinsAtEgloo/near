@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import Modal, { ModalProps } from '../ui/Modal';
 import Cropper from 'react-easy-crop';
 
@@ -21,6 +21,12 @@ function LoadImageModal({
 
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+
+  const size = useMemo(() => {
+    return window.innerWidth < window.innerHeight
+      ? window.innerWidth
+      : window.innerHeight;
+  }, []);
 
   const beforeClose = useCallback(() => {
     setCroppedImage('');
@@ -89,7 +95,7 @@ function LoadImageModal({
           crop={crop}
           zoom={zoom}
           rotation={0}
-          aspect={320 / 586}
+          aspect={size / size}
           onCropChange={setCrop}
           onCropComplete={onCropComplete}
           onZoomChange={setZoom}
