@@ -41,66 +41,93 @@ function WebCamModal({
     const imageSrc = webcamRef?.current.getScreenshot();
     setImage(imageSrc);
   }, [webcamRef]);
+  const setImgSrc = useSetRecoilState(imageSourceState);
 
   const videoConstraints: MediaTrackConstraints = {
     facingMode: 'user',
     width: width,
     height: height - 200,
   };
-  const setImageSource = useSetRecoilState(imageSourceState);
+
+  const imageinput = useRef<HTMLInputElement>(null);
 
   const beforeConFirm = useCallback(() => {
     if (image) {
-      setImageSource(image);
+      setImgSrc(image);
       // 초기화
       setImage('');
       onClose();
     }
-  }, [onClose, image, setImageSource]);
+  }, [onClose, image, setImgSrc]);
+
+  const loadImage = useCallback(() => {
+    imageinput.current?.click();
+  }, []);
+
+  const onSelectFile = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files.length > 0) {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          setImgSrc(reader.result?.toString() || '');
+          e.target.value = '';
+          onClose();
+        });
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    },
+    [setImgSrc, onClose]
+  );
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="h-full">
-        <div className="absolute top-[30px] w-screen">
-          <p className="absolute w-full text-center font-normal leading-[30px] text-base">
-            이미지 불러오기
-          </p>
-          <button
-            className="absolute right-[30px]"
-            type="button"
-            onClick={beforeConFirm}
-          >
-            <Check />
-          </button>
+      <div className="h-screen w-screen">
+        <p className="absolute w-full top-[30px] text-center font-normal leading-[30px] text-base">
+          이미지 불러오기
+        </p>
+        <button
+          className="absolute right-[30px] top-[30px]"
+          type="button"
+          onClick={beforeConFirm}
+        >
+          <Check />
+        </button>
+        <div className="absolute w-full top-[100px] bottom-[100px] flex justify-center">
+          {image === '' ? (
+            <Webcam
+              key={image}
+              className="webcam "
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              videoConstraints={videoConstraints}
+              screenshotQuality={1}
+            />
+          ) : (
+            <img src={image} alt="Scan" />
+          )}
         </div>
-        <div>
-          <div className="absolute top-[100px] bottom-[100px] h-screen">
-            {image === '' ? (
-              <Webcam
-                className="webcam w-screen"
-                audio={false}
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-                videoConstraints={videoConstraints}
-                screenshotQuality={1}
-              />
-            ) : (
-              <img
-                className="w-full"
-                src={image}
-                alt="Scan"
-                style={{ width: width, height: height }}
-              />
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={capture}
-            className="absolute bottom-[50px] right-[30px]"
-          >
-            찍기
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={capture}
+          className="absolute bottom-[50px] right-[30px]"
+        >
+          찍기
+        </button>
+        <button
+          className="absolute inset-x-0 bottom-[50px]"
+          type="button"
+          onClick={loadImage}
+        >
+          파일 선택...needs design
+        </button>
+        <input
+          ref={imageinput}
+          className="invisible"
+          onChange={onSelectFile}
+          type="file"
+          accept="image/*"
+        />
       </div>
     </Modal>
   );
