@@ -45,26 +45,25 @@ function ToolBar({
   }, [canvasDraw, setErasedLines]);
 
   const undo = useCallback(() => {
-    if (canvasDraw) {
-      const lineStr: string | undefined = canvasDraw.getSaveData();
-      if (lineStr) {
-        const lineObj = JSON.parse(lineStr);
-        const lines: never[] = lineObj.lines;
-        const newErased: never[] = [...erasedLines, lines[lines.length - 1]];
-        setErasedLines(newErased);
-      }
+    if (!canvasDraw) return;
+    const lineStr: string | undefined = canvasDraw.getSaveData();
+    if (lineStr) {
+      const lineObj = JSON.parse(lineStr);
+      const lines: never[] = lineObj.lines;
+      const newErased: never[] = [...erasedLines, lines[lines.length - 1]];
+      setErasedLines(newErased);
     }
     canvasDraw?.undo();
   }, [canvasDraw, erasedLines, setErasedLines]);
 
   const redo = useCallback(() => {
-    if (canvasDraw && erasedLines.length > 0) {
-      const toDraw = erasedLines[erasedLines.length - 1];
-      const curLines = JSON.parse(lines);
-      curLines.lines.push(toDraw);
-      setErasedLines(erasedLines.slice(0, -1));
-      canvasDraw.loadSaveData(JSON.stringify(curLines), true);
-    }
+    if (!canvasDraw) return;
+    if (erasedLines.length === 0) return;
+    const lastErased = erasedLines[erasedLines.length - 1];
+    const curLines = JSON.parse(lines);
+    curLines.lines.push(lastErased);
+    setErasedLines(erasedLines.slice(0, -1));
+    canvasDraw.loadSaveData(JSON.stringify(curLines), true);
   }, [canvasDraw, erasedLines, lines, setErasedLines]);
 
   const [penColor, setPenColor] = useRecoilState(penColorState);
