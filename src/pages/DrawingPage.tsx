@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import CanvasDraw from 'react-canvas-draw';
 import LoadImageModal from '../components/LoadImageModal';
-// import WebCamModal from '../components/WebCamModal';
 import WebCamModal from '../components/WebCamModal';
 import ToolBar from '../components/ToolBar';
 import Camera from '../icons/Camera';
@@ -113,8 +112,10 @@ function DrawingPage(): React.ReactElement {
   const loadCameraModals = useCallback(() => {
     if (isMobile) {
       loadImage();
+    } else {
+      setShowWebCamModal(true);
     }
-  }, [isMobile, loadImage]);
+  }, [isMobile, loadImage, setShowWebCamModal]);
 
   const onChangeOpacity = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
