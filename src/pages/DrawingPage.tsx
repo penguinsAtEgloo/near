@@ -1,4 +1,11 @@
-import React, { useCallback, useState, useRef, useEffect } from 'react';
+import React, {
+  useCallback,
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+} from 'react';
+import clsx from 'clsx';
 import CanvasDraw from 'react-canvas-draw';
 import LoadImageModal from '../components/LoadImageModal';
 import WebCamModal from '../components/WebCamModal';
@@ -79,6 +86,12 @@ function DrawingPage(): React.ReactElement {
 
   const [opacity, setOpacity] = useState<number>(0.5);
 
+  const size = useMemo(() => {
+    return window.innerWidth < window.innerHeight
+      ? window.innerWidth
+      : window.innerHeight;
+  }, []);
+
   const onSelectFile = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files && e.target.files.length > 0) {
@@ -150,34 +163,34 @@ function DrawingPage(): React.ReactElement {
           </div>
           <rect className="absolute box-border bg-black w-[185px] h-[38px] top-[350px] left-[-40px] border-solid border-1 shadow-[0_4px_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90" />
           <input id="slider" type="range" onChange={onChangeOpacity} />
-          {backImage && (
-            <div className="absolute">
+          <div className={clsx('absolute', `w-[${size}px]`, `h-[${size}px]`)}>
+            {backImage && (
               <img
                 src={backImage}
+                className={clsx('absolute', `opacity-[${opacity}%]`)}
                 alt="배경이미지"
-                style={{ opacity: opacity, width: '375px', height: '667px' }}
               />
-            </div>
-          )}
-          <CanvasDraw
-            className="CanvasDraw"
-            ref={(canvasDraw) => {
-              setCanvasRef(canvasDraw);
-            }}
-            onChange={onChangeCanvas}
-            // TODO: 영역크기 계산하여 width, height 넣어주어야 함
-            canvasWidth={375}
-            canvasHeight={667}
-            catenaryColor=""
-            brushColor={penColor}
-            brushRadius={penWidth}
-            lazyRadius={0}
-            hideGrid
-            hideInterface
-            enablePanAndZoom={true}
-            mouseZoomFactor={1}
-            zoomExtents={{ min: 0.33, max: 3 }}
-          />
+            )}
+            <CanvasDraw
+              className="CanvasDraw"
+              ref={(canvasDraw) => {
+                setCanvasRef(canvasDraw);
+              }}
+              onChange={onChangeCanvas}
+              // TODO: 영역크기 계산하여 width, height 넣어주어야 함
+              canvasWidth={size}
+              canvasHeight={size}
+              catenaryColor=""
+              brushColor={penColor}
+              brushRadius={penWidth}
+              lazyRadius={0}
+              hideGrid
+              hideInterface
+              enablePanAndZoom={true}
+              mouseZoomFactor={1}
+              zoomExtents={{ min: 0.33, max: 3 }}
+            />
+          </div>
           <Timer className="absolute" />
           <input
             ref={imageinput}
