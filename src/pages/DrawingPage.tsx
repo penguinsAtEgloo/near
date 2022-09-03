@@ -28,9 +28,28 @@ function DrawingPage(): React.ReactElement {
 
   const backImage = useRecoilValue(backImageState);
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
-  const setDrawing = useSetRecoilState(drawingState);
+  const [drawing, setDrawing] = useRecoilState(drawingState);
   const setHistory = useSetRecoilState(historyState);
-  const drawing = useRecoilState(drawingState);
+
+  // copy URL
+  const copyURL = useCallback(() => {
+    const canvas = document.querySelector(
+      '.CanvasDraw canvas:nth-child(2)'
+    ) as HTMLCanvasElement;
+    const imageURL = canvas.toDataURL('image/png');
+    setDrawing(imageURL);
+    window.navigator.clipboard.writeText(drawing).then(
+      function () {
+        alert('복사 완료');
+        console.log('Async: Copying to clipboard was successful!');
+      },
+      function (err) {
+        console.error('Async: Could not copy text: ', err);
+      }
+    );
+
+    if (!canvasRef) return;
+  }, [canvasRef, drawing, setDrawing]);
 
   // save as PNG
   const saveAsPNG = useCallback(() => {
@@ -39,7 +58,6 @@ function DrawingPage(): React.ReactElement {
     ) as HTMLCanvasElement;
     const imageURL = canvas.toDataURL('image/png');
     setDrawing(imageURL);
-    console.log(imageURL);
     downloadImage(imageURL, 'NE_AR.png');
 
     if (!canvasRef) return;
@@ -54,38 +72,6 @@ function DrawingPage(): React.ReactElement {
     document.body.appendChild(a);
     a.click();
   }
-
-  // copy URL
-  const copyURL = () => {
-    const canvas = document.querySelector(
-      '.CanvasDraw canvas:nth-child(2)'
-    ) as HTMLCanvasElement;
-    const imageURL = canvas.toDataURL('image/png');
-    setDrawing(imageURL);
-    console.log(imageURL);
-    if (!canvasRef) return;
-    setHistory(canvasRef.getSaveData());
-    console.log('드로잉 찍을게여~');
-    console.log(drawing);
-    // navigator.clipboard.writeText(drawing[0]).then(() => {
-    //   // 복사가 완료되면 호출된다.
-    //   alert('복사완료');
-    // });
-    // window.navigator.clipboard.writeText(drawing[0]).then
-    // window.navigator.clipboard.writeText(drawing[0]).then(() => {
-    //   // 복사가 완료되면 호출된다.
-    //   alert('복사완료');
-    // });
-
-    // window.navigator.clipboard.writeText(drawing[0]).then(
-    //   function () {
-    //     console.log('Async: Copying to clipboard was successful!');
-    //   },
-    //   function (err) {
-    //     console.error('Async: Could not copy text: ', err);
-    //   }
-    // );
-  };
 
   const imageinput = useRef<HTMLInputElement>(null);
   const [imageSource, setImgSrc] = useRecoilState(imageSourceState);
@@ -203,22 +189,10 @@ function DrawingPage(): React.ReactElement {
           <div>
             {isSaveMode ? (
               <>
-                {/* drawing 찍어보기 */}
-                <button className="bg-red-300" onClick={copyURL}>
-                  copyURL함수임. console.log(drawing)해서 콘솔 보면 drawing[0]이
-                  imageURL인데 drawing[0]에서 에러가 납니다..
-                </button>
                 {/* copy URL button */}
                 <button
                   className="flex items-center justify-center gap-4 w-full h-16 px-4 py-2 bg-black text-white rounded-full align-center"
-                  // onClick={copyToClipboard}
-                  onClick={() =>
-                    navigator.clipboard
-                      .writeText('클립보드에 복사될 거다 이 텍스트는')
-                      .then(() => {
-                        alert('클립보드에 복사됐음. 주소창에 붙여넣기 해보셈');
-                      })
-                  }
+                  onClick={copyURL}
                 >
                   친구에게 공유하기
                   <Share />
