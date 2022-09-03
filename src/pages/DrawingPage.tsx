@@ -110,14 +110,13 @@ function DrawingPage(): React.ReactElement {
 
   const onChangeCanvas = useCallback(
     (e: CanvasDraw) => {
-      if (canvasRef) {
-        const lineStr: string | undefined = canvasRef.getSaveData();
-        if (lineStr) {
-          setLines(lineStr);
-        }
-        if (!(canvasRef as any).valuesChanged) {
-          setErasedLines([]);
-        }
+      if (!canvasRef) return;
+      const lineStr = canvasRef.getSaveData();
+      setLines(lineStr);
+      // 사용자가 직접 쓰는 경우 false, canvasRef.loadSaveData 를 쓸 경우 true
+      const valuesChanged: boolean = (canvasRef as any).valuesChanged;
+      if (!valuesChanged) {
+        setErasedLines([]);
       }
     },
     [canvasRef, setLines, setErasedLines]
