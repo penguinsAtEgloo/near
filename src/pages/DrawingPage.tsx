@@ -33,10 +33,7 @@ function DrawingPage(): React.ReactElement {
 
   // copy URL
   const copyURL = useCallback(() => {
-    const canvas = document.querySelector(
-      '.CanvasDraw canvas:nth-child(2)'
-    ) as HTMLCanvasElement;
-    const imageURL = canvas.toDataURL('image/png');
+    const imageURL = (canvasRef as any).getDataURL();
     setDrawing(imageURL);
     window.navigator.clipboard.writeText(drawing).then(
       function () {
@@ -53,10 +50,7 @@ function DrawingPage(): React.ReactElement {
 
   // save as PNG
   const saveAsPNG = useCallback(() => {
-    const canvas = document.querySelector(
-      '.CanvasDraw canvas:nth-child(2)'
-    ) as HTMLCanvasElement;
-    const imageURL = canvas.toDataURL('image/png');
+    const imageURL = (canvasRef as any).getDataURL();
     setDrawing(imageURL);
     downloadImage(imageURL, 'NE_AR.png');
 
