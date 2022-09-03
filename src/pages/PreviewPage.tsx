@@ -10,9 +10,11 @@ function PreviewPage(): React.ReactElement {
   const history = useRecoilValue(historyState);
 
   useEffect(() => {
-    console.log({ history });
+    if (!canvasRef) return;
     if (!history) return;
-    canvasRef?.loadSaveData(history);
+    setTimeout(() => {
+      canvasRef?.loadSaveData(history);
+    }, 500);
   }, [canvasRef, history]);
 
   return (
