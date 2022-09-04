@@ -53,7 +53,7 @@ function ToolBar({
 
   const undo = useCallback(() => {
     if (!canvasDraw) return;
-    if (!parsedLines) return;
+    if (parsedLines.length === 0) return;
     const newErasedLines: string[] = [
       ...erasedLines,
       parsedLines[parsedLines.length - 1],
