@@ -93,6 +93,11 @@ function DrawingPage(): React.ReactElement {
       : window.innerHeight;
   }, []);
 
+  const [showOpacityController, setShowOpacityController] = useState(false);
+  useEffect(() => {
+    setShowOpacityController(!!backImage);
+  }, [backImage]);
+
   const onSelectFile = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files && e.target.files.length > 0) {
@@ -209,10 +214,12 @@ function DrawingPage(): React.ReactElement {
               mouseZoomFactor={1}
               zoomExtents={{ min: 0.33, max: 3 }}
             />
-            <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
-              <Opacity />
-              <input type="range" onChange={onChangeOpacity} />
-            </div>
+            {showOpacityController && (
+              <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
+                <Opacity />
+                <input type="range" onChange={onChangeOpacity} />
+              </div>
+            )}
           </div>
           <Timer className="absolute" />
           <input
