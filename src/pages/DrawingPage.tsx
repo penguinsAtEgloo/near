@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useMemo,
 } from 'react';
-import clsx from 'clsx';
 import CanvasDraw from 'react-canvas-draw';
 import LoadImageModal from '../components/LoadImageModal';
 import WebCamModal from '../components/WebCamModal';
@@ -157,18 +156,17 @@ function DrawingPage(): React.ReactElement {
   return (
     <>
       <div className="fixed inset-0 flex flex-col">
-        <div className="grow w-full bg-gray-200" onPointerDown={closeSaveMode}>
-          <div className="absolute z-10 top-[295px] left-[45px]">
-            <Opacity />
-          </div>
-          <rect className="absolute box-border bg-black w-[185px] h-[38px] top-[350px] left-[-40px] border-solid border-1 shadow-[0_4px_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90" />
-          <input id="slider" type="range" onChange={onChangeOpacity} />
-          <div className={clsx('absolute', `w-[${size}px]`, `h-[${size}px]`)}>
+        <div className="grow w-full bg-gray-100" onPointerDown={closeSaveMode}>
+          <div
+            className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
+            style={{ width: size, height: size }}
+          >
             {backImage && (
               <img
                 src={backImage}
-                className={clsx('absolute', `opacity-[${opacity}%]`)}
+                className="absolute"
                 alt="배경이미지"
+                style={{ opacity }}
               />
             )}
             <CanvasDraw
@@ -177,7 +175,6 @@ function DrawingPage(): React.ReactElement {
                 setCanvasRef(canvasDraw);
               }}
               onChange={onChangeCanvas}
-              // TODO: 영역크기 계산하여 width, height 넣어주어야 함
               canvasWidth={size}
               canvasHeight={size}
               catenaryColor=""
@@ -190,6 +187,10 @@ function DrawingPage(): React.ReactElement {
               mouseZoomFactor={1}
               zoomExtents={{ min: 0.33, max: 3 }}
             />
+            <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
+              <Opacity />
+              <input type="range" onChange={onChangeOpacity} />
+            </div>
           </div>
           <Timer className="absolute" />
           <input
