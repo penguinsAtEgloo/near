@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import CanvasDraw from 'react-canvas-draw';
 import { useRecoilValue } from 'recoil';
-import { drawingState } from '../atoms/DrawingState';
-import { historyState } from '../atoms/HistoryState';
+import { drawingState } from '../atoms/Drawing';
+import { historyState } from '../atoms/History';
 
 function PreviewPage(): React.ReactElement {
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
@@ -35,7 +35,7 @@ function PreviewPage(): React.ReactElement {
         mouseZoomFactor={1}
         zoomExtents={{ min: 0.33, max: 3 }}
       />
-      <img src={drawing} alt="미리보기" />
+      {drawing && <img src={drawing} alt="미리보기" />}
     </div>
   );
 }

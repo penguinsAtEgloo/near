@@ -21,12 +21,12 @@ import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import { backImageState } from '../atoms/BackImage';
 import { imageSourceState } from '../atoms/ImageSource';
-import { linesState } from '../atoms/LinesState';
-import { erasedLinesState } from '../atoms/ErasedLinesState';
+import { linesState } from '../atoms/Lines';
+import { erasedLinesState } from '../atoms/ErasedLines';
 import Timer from './Timer';
 import { Link, useNavigate } from 'react-router-dom';
-import { drawingState } from '../atoms/DrawingState';
-import { historyState } from '../atoms/HistoryState';
+import { drawingState } from '../atoms/Drawing';
+import { historyState } from '../atoms/History';
 
 function DrawingPage(): React.ReactElement {
   const [isMobile, setIsMobile] = useState(false);
@@ -49,6 +49,8 @@ function DrawingPage(): React.ReactElement {
     ) as HTMLCanvasElement;
     const imageURL = canvas.toDataURL('image/png');
     setDrawing(imageURL);
+
+    if (!drawing) return;
     window.navigator.clipboard.writeText(drawing).then(() => {
       alert('복사 완료!');
     });
@@ -96,7 +98,7 @@ function DrawingPage(): React.ReactElement {
       if (e.target.files && e.target.files.length > 0) {
         const reader = new FileReader();
         reader.addEventListener('load', () => {
-          setImgSrc(reader.result?.toString() || '');
+          setImgSrc(reader.result?.toString() || null);
           e.target.value = '';
         });
         reader.readAsDataURL(e.target.files[0]);
