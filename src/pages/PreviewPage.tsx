@@ -35,7 +35,7 @@ function PreviewPage(): React.ReactElement {
         mouseZoomFactor={1}
         zoomExtents={{ min: 0.33, max: 3 }}
       />
-      <img src={drawing} alt="미리보기" />
+      {drawing && <img src={drawing} alt="미리보기" />}
     </div>
   );
 }

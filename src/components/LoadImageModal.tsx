@@ -16,7 +16,7 @@ function LoadImageModal({
   onClose,
 }: LoadImageModalProps): React.ReactElement {
   const setCroppedImage = useSetRecoilState(backImageState);
-  const [localCropped, setLocalCropped] = useState('');
+  const [localCropped, setLocalCropped] = useState<string | null>(null);
   const [imgSrc, setImageSource] = useRecoilState(imageSourceState);
 
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
@@ -29,9 +29,9 @@ function LoadImageModal({
   }, []);
 
   const beforeClose = useCallback(() => {
-    setCroppedImage('');
+    setCroppedImage(null);
     // 초기화
-    setImageSource('');
+    setImageSource(null);
     setCrop({ x: 0, y: 0 });
     setZoom(1);
     onClose();
@@ -40,7 +40,7 @@ function LoadImageModal({
   const onConfirm = useCallback(() => {
     setCroppedImage(localCropped);
     // 초기화
-    setImageSource('');
+    setImageSource(null);
     setCrop({ x: 0, y: 0 });
     setZoom(1);
     onClose();
@@ -90,18 +90,20 @@ function LoadImageModal({
   return (
     <Modal isOpen={isOpen} onClose={beforeClose}>
       <>
-        <Cropper
-          image={imgSrc}
-          crop={crop}
-          zoom={zoom}
-          rotation={0}
-          aspect={size / size}
-          onCropChange={setCrop}
-          onCropComplete={onCropComplete}
-          onZoomChange={setZoom}
-          restrictPosition={false}
-          objectFit={'contain'}
-        />
+        {imgSrc && (
+          <Cropper
+            image={imgSrc}
+            crop={crop}
+            zoom={zoom}
+            rotation={0}
+            aspect={size / size}
+            onCropChange={setCrop}
+            onCropComplete={onCropComplete}
+            onZoomChange={setZoom}
+            restrictPosition={false}
+            objectFit={'contain'}
+          />
+        )}
         {imgSrc && (
           <button
             type="button"

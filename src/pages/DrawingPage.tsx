@@ -49,6 +49,8 @@ function DrawingPage(): React.ReactElement {
     ) as HTMLCanvasElement;
     const imageURL = canvas.toDataURL('image/png');
     setDrawing(imageURL);
+
+    if (!drawing) return;
     window.navigator.clipboard.writeText(drawing).then(() => {
       alert('복사 완료!');
     });
@@ -96,7 +98,7 @@ function DrawingPage(): React.ReactElement {
       if (e.target.files && e.target.files.length > 0) {
         const reader = new FileReader();
         reader.addEventListener('load', () => {
-          setImgSrc(reader.result?.toString() || '');
+          setImgSrc(reader.result?.toString() || null);
           e.target.value = '';
         });
         reader.readAsDataURL(e.target.files[0]);
