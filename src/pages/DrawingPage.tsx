@@ -21,12 +21,12 @@ import { penWidthState } from '../atoms/PenWidth';
 import { penColorState } from '../atoms/PenColor';
 import { backImageState } from '../atoms/BackImage';
 import { imageSourceState } from '../atoms/ImageSource';
-import { linesState } from '../atoms/LinesState';
-import { erasedLinesState } from '../atoms/ErasedLinesState';
+import { linesState } from '../atoms/Lines';
+import { erasedLinesState } from '../atoms/ErasedLines';
 import Timer from './Timer';
 import { Link, useNavigate } from 'react-router-dom';
-import { drawingState } from '../atoms/DrawingState';
-import { historyState } from '../atoms/HistoryState';
+import { drawingState } from '../atoms/Drawing';
+import { historyState } from '../atoms/History';
 
 function DrawingPage(): React.ReactElement {
   const [isMobile, setIsMobile] = useState(false);

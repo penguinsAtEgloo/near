@@ -9,8 +9,8 @@ import ColorButton from './ColorButton';
 import BrushButton from './BrushButton';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { penColorState } from '../atoms/PenColor';
-import { erasedLinesState } from '../atoms/ErasedLinesState';
-import { linesState } from '../atoms/LinesState';
+import { erasedLinesState } from '../atoms/ErasedLines';
+import { linesState } from '../atoms/Lines';
 import Redo from '../icons/Redo';
 
 const TOOL_MODE = { color: 'color', width: 'width' } as const;
