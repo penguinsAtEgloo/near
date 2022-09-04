@@ -13,7 +13,7 @@ function PreviewPage(): React.ReactElement {
     if (!canvasRef) return;
     if (!history) return;
     setTimeout(() => {
-      canvasRef?.loadSaveData(history);
+      canvasRef.loadSaveData(history);
     }, 500);
   }, [canvasRef, history]);
 
