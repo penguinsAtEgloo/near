@@ -79,8 +79,13 @@ function WebCamModal({
     [setImgSrc, onClose]
   );
 
+  const beforeClose = useCallback(() => {
+    setImage('');
+    onClose();
+  }, [onClose, setImage]);
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={beforeClose}>
       <div className="h-screen w-screen">
         <p className="absolute w-full top-[30px] text-center font-normal leading-[30px] text-base">
           이미지 불러오기
@@ -107,20 +112,18 @@ function WebCamModal({
             <img src={image} alt="Scan" />
           )}
         </div>
-        <button
-          type="button"
-          onClick={capture}
-          className="absolute bottom-[50px] right-[30px]"
-        >
-          찍기
-        </button>
-        <button
-          className="absolute inset-x-0 bottom-[50px]"
-          type="button"
-          onClick={loadImage}
-        >
-          파일 선택...needs design
-        </button>
+        <div className="absolute bottom-[50px] inset-x-0 w-full text-center">
+          <button type="button" onClick={loadImage}>
+            파일 선택...needs design
+          </button>
+          <button
+            className="absolute right-[30px]"
+            type="button"
+            onClick={capture}
+          >
+            찍기
+          </button>
+        </div>
         <input
           ref={imageinput}
           className="invisible"
