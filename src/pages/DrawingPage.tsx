@@ -128,11 +128,8 @@ function DrawingPage(): React.ReactElement {
 
   const complete = useCallback(() => {
     if (!canvasRef) return;
-    const canvas = document.querySelector(
-      '.CanvasDraw canvas:nth-child(2)'
-    ) as HTMLCanvasElement;
-    const imageURL = canvas.toDataURL('image/png');
-    setDrawing(imageURL);
+    const imageUrl = (canvasRef as any).getDataURL('image/png');
+    setDrawing(imageUrl);
     setHistory(canvasRef.getSaveData());
   }, [canvasRef, setDrawing, setHistory]);
 
