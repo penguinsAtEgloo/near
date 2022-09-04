@@ -17,17 +17,11 @@ code {
 }
 
 input[type='range'] {
-  position: absolute;
   height: 6px;
-  margin: 10px 0;
   width: 121px;
-  top: 375px;
-  left: -8px;
   -webkit-appearance: none;
   background-color: white;
   border-radius: 100px;
-  transform: rotate(270deg);
-  z-index: 100;
   accent-color: #5b5b5b;
   outline: none;
 }
