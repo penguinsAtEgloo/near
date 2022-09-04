@@ -11,8 +11,8 @@ import LoadImageModal from '../components/LoadImageModal';
 import WebCamModal from '../components/WebCamModal';
 import ToolBar from '../components/ToolBar';
 
-import Camera from '../icons/Camera';
-import Check from '../icons/Check';
+import Picture from '../icons/Picture';
+import Back from '../icons/Back';
 import Download from 'icons/Download';
 import Share from 'icons/Share';
 import Opacity from 'icons/Opacity';
@@ -25,7 +25,7 @@ import { imageSourceState } from '../atoms/ImageSource';
 import { linesState } from '../atoms/Lines';
 import { erasedLinesState } from '../atoms/ErasedLines';
 import Timer from './Timer';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { drawingState } from '../atoms/DrawingState';
 import { historyState } from '../atoms/HistoryState';
 
@@ -153,11 +153,31 @@ function DrawingPage(): React.ReactElement {
     },
     [canvasRef, setLines, setErasedLines]
   );
+  const navigate = useNavigate();
+
+  const moveBack = useCallback(() => {
+    navigate(-1);
+  }, [navigate]);
 
   return (
     <>
       <div className="fixed inset-0 flex flex-col">
         <div className="grow w-full bg-gray-200" onPointerDown={closeSaveMode}>
+          <div className="h-[75px] w-full gap-x-1 flex flex-row bg-white">
+            <button type="button" className="pl-4" onClick={moveBack}>
+              <Back />
+            </button>
+            <button type="button" onClick={loadCameraModals}>
+              <Picture />
+            </button>
+          </div>
+          <button
+            type="button"
+            className="absolute top-0 right-4 h-[75px]"
+            onClick={openSaveMode}
+          >
+            완료
+          </button>
           <div className="absolute z-10 top-[295px] left-[45px]">
             <Opacity />
           </div>
@@ -200,14 +220,7 @@ function DrawingPage(): React.ReactElement {
             accept="image/*"
           />
         </div>
-        <div className="absolute top-4 right-4 flex w-[80px] justify-between">
-          <button type="button" onClick={loadCameraModals}>
-            <Camera />
-          </button>
-          <button type="button" onClick={openSaveMode}>
-            <Check />
-          </button>
-        </div>
+
         <div className="flex absolute left-1/2 -translate-x-1/2 bottom-11 space-x-2 justify-center">
           <div>
             {isSaveMode ? (
