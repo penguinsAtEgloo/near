@@ -5,15 +5,20 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
 } from '@mui/material';
 
 function Timer({ className }: { className?: string }): React.ReactElement {
-  const [seconds, setSeconds] = useState<number>(3);
-  const [isStart, setIsStart] = useState<boolean>(false);
-  const [open, setOpen] = useState(false); // 시간 끝날때 다이얼로그
-  const [over, setOver] = useState(false); // 완료버튼 눌렀을때 다이얼로그
+  const [seconds, setSeconds] = useState(3);
+  const [isStart, setIsStart] = useState(false);
+
+  const [over, setOver] = useState(false); // 시간 끝날때 다이얼로그
+  const openSetOver = useCallback(() => setOver(true), []);
+  const closeSetOver = useCallback(() => setOver(false), []);
+
+  const [open, setOpen] = useState(false); // 완료버튼 눌렀을때 다이얼로그
+  const openSetOpen = useCallback(() => setOpen(true), []);
+  const closeSetOpen = useCallback(() => setOpen(false), []);
 
   const start = useCallback(() => {
     if (!isStart) {
@@ -30,7 +35,7 @@ function Timer({ className }: { className?: string }): React.ReactElement {
         if (seconds === 0) {
           //0초일때
           clearInterval(countdown);
-          setOpen(true);
+          setOver(true);
         }
       }, 1000);
       return () => clearInterval(countdown);
@@ -44,56 +49,39 @@ function Timer({ className }: { className?: string }): React.ReactElement {
     if (seconds <= 59) {
       return 'text-orange-500';
     }
-    if (seconds <= 180) {
-      return 'text-slate-900';
-    }
     return 'text-slate-900';
   }, [seconds]);
 
   return (
-    <div className={clsx(className)}>
-      <div className={clsx(timeStyle)}>
+    <div className={className}>
+      <div className={timeStyle}>
         {Math.floor(seconds / 60)}:
         {seconds % 60 < 10 ? `0${seconds % 60}` : seconds % 60}
       </div>
       <Button onClick={start}>시작</Button>
-      <Button onClick={() => setOver(true)}>완료</Button>
+      <Button onClick={openSetOpen}>완료</Button>
       <Dialog // 시간끝날때 다이얼로그
-        aria-labelledby="dialog-title"
-        aria-describedby="dialog-description"
-        open={open}
-        onClose={() => setOpen(false)}
-      >
-        <DialogTitle id="dialog-title">
-          그리기 시간이 종료되었습니다.
-        </DialogTitle>
-        <DialogContent>
-          {/*<DialogContentText id="dialog-description">*/}
-          {/*  그리기 시간이 종료되었습니다.1212*/}
-          {/*</DialogContentText>*/}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>다시 도전!</Button>
-          <Button onClick={() => setOpen(false)}>저장하기</Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog // 완료버튼 다이얼로그
-        aria-labelledby="dialog-title"
-        aria-describedby="dialog-description"
         open={over}
         onClose={() => setOver(false)}
       >
         <DialogTitle id="dialog-title">
+          그리기 시간이 종료되었습니다.
+        </DialogTitle>
+        <DialogActions>
+          <Button onClick={closeSetOver}>다시 도전!</Button>
+          <Button onClick={closeSetOver}>저장하기</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog // 완료버튼 다이얼로그
+        open={open}
+        onClose={closeSetOpen}
+      >
+        <DialogTitle id="dialog-title">
           그리기 시간이 종료되지 않았습니다. 완료하시겠어요?
         </DialogTitle>
-        <DialogContent>
-          {/*<DialogContentText id="dialog-description">*/}
-          {/*  그리기 시간이 종료되었습니다.1212*/}
-          {/*</DialogContentText>*/}
-        </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOver(false)}>아니요</Button>
-          <Button onClick={() => setOver(false)}>예</Button>
+          <Button onClick={closeSetOpen}>아니요</Button>
+          <Button onClick={closeSetOpen}>예</Button>
         </DialogActions>
       </Dialog>
     </div>
