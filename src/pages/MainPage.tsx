@@ -1,9 +1,17 @@
 /* eslint-disable jsx-a11y/alt-text */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Face from '../icons/Face';
+import face from '../assets/face.png';
+import drawingface from '../assets/drawing-face.png';
 
 function MainPage(): React.ReactElement {
+  const [isDrawing, setDrawing] = useState(false);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDrawing((prev) => !prev);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
   return (
     <div className="fixed inset-0 flex flex-col justify-center items-center space-y-5 bg-white">
       <div className="space-y-1.5">
@@ -14,10 +22,12 @@ function MainPage(): React.ReactElement {
           3분 안에 그리는 내 친구
         </div>
       </div>
-      <Face color="black" />
+      <div className="w-[250px] h-[290px] flex justify-center items-center">
+        <img src={isDrawing ? drawingface : face} />
+      </div>
       <Link to={'/pages/draw'}>
-        <button className="px-4 py-2 bg-gray-800 text-white">
-          그림 그리기 Start!
+        <button className="px-24 py-6 rounded-[100px] bg-black font-semibold text-xl text-white">
+          친구 그려주기
         </button>
       </Link>
     </div>
