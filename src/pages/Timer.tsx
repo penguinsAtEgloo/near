@@ -62,7 +62,7 @@ function Timer({ className }: { className?: string }): React.ReactElement {
       <Button onClick={openSetOpen}>완료</Button>
       <Dialog // 시간끝날때 다이얼로그
         open={over}
-        onClose={() => setOver(false)}
+        onClose={closeSetOver}
       >
         <DialogTitle id="dialog-title">
           그리기 시간이 종료되었습니다.
