@@ -158,7 +158,6 @@ function ToolBar({
           </button>
           <button type="button" onClick={undo}>
             <Undo color={parsedLines.length === 0 ? 'gray' : 'white'} />
-            {/* <Undo color="white" /> */}
           </button>
           <button type="button" onClick={redo}>
             <Redo color={erasedLines.length === 0 ? 'gray' : 'white'} />
