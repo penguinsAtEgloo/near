@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import Brush from '../icons/Brush';
 import Palette from '../icons/Palette';
-import ClearAll from '../icons/ClearAll';
+import Refresh from '../icons/Refresh';
 import Undo from '../icons/Undo';
 import CanvasDraw from 'react-canvas-draw';
 import ClearDialog from '../dialog/ClearDialog';
@@ -154,7 +154,7 @@ function ToolBar({
       {!toolMode && (
         <>
           <button type="button" onClick={requestClear}>
-            <ClearAll />
+            <Refresh />
           </button>
           <button type="button" onClick={undo}>
             <Undo color={parsedLines.length === 0 ? 'gray' : 'white'} />
