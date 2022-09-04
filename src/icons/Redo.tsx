@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react';
 import React from 'react';
 
-const Undo: React.FC<React.SVGProps<SVGSVGElement>> = ({
+const Redo: React.FC<React.SVGProps<SVGSVGElement>> = ({
   color = 'white',
   ...props
 }): ReactElement => (
@@ -14,7 +14,7 @@ const Undo: React.FC<React.SVGProps<SVGSVGElement>> = ({
     {...props}
   >
     <path
-      d="M4 7H14C17.3137 7 20 9.68629 20 13C20 16.3137 17.3137 19 14 19H4M4 7L8 3M4 7L8 11"
+      d="M20 7H10C6.68629 7 4 9.68629 4 13C4 16.3137 6.68629 19 10 19H20M20 7L16 3M20 7L16 11"
       stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
@@ -23,4 +23,4 @@ const Undo: React.FC<React.SVGProps<SVGSVGElement>> = ({
   </svg>
 );
 
-export default Undo;
+export default Redo;

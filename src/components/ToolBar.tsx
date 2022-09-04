@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import Brush from '../icons/Brush';
 import Palette from '../icons/Palette';
 import ClearAll from '../icons/ClearAll';
@@ -9,8 +9,9 @@ import ColorButton from './ColorButton';
 import BrushButton from './BrushButton';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { penColorState } from '../atoms/PenColor';
-import { erasedLinesState } from '../atoms/ErasedLines';
-import { linesState } from '../atoms/Lines';
+import { erasedLinesState } from '../atoms/ErasedLinesState';
+import { linesState } from '../atoms/LinesState';
+import Redo from '../icons/Redo';
 
 const TOOL_MODE = { color: 'color', width: 'width' } as const;
 type ToolMode = typeof TOOL_MODE[keyof typeof TOOL_MODE];
@@ -44,21 +45,27 @@ function ToolBar({
     canvasDraw?.clear();
   }, [canvasDraw, setErasedLines]);
 
+  const parsedLines: string[] = useMemo(() => {
+    if (!lines) return [];
+    const lineObj = JSON.parse(lines);
+    return lineObj.lines;
+  }, [lines]);
+
   const undo = useCallback(() => {
     if (!canvasDraw) return;
-    const lineStr: string | undefined = canvasDraw.getSaveData();
-    if (lineStr) {
-      const lineObj = JSON.parse(lineStr);
-      const lines: never[] = lineObj.lines;
-      const newErased: never[] = [...erasedLines, lines[lines.length - 1]];
-      setErasedLines(newErased);
-    }
-    canvasDraw?.undo();
-  }, [canvasDraw, erasedLines, setErasedLines]);
+    if (!parsedLines) return;
+    const newErasedLines: string[] = [
+      ...erasedLines,
+      parsedLines[parsedLines.length - 1],
+    ];
+    setErasedLines(newErasedLines);
+    canvasDraw.undo();
+  }, [canvasDraw, erasedLines, parsedLines, setErasedLines]);
 
   const redo = useCallback(() => {
     if (!canvasDraw) return;
     if (erasedLines.length === 0) return;
+    if (!lines) return;
     const lastErased = erasedLines[erasedLines.length - 1];
     const curLines = JSON.parse(lines);
     curLines.lines.push(lastErased);
@@ -150,10 +157,11 @@ function ToolBar({
             <ClearAll />
           </button>
           <button type="button" onClick={undo}>
-            <Undo />
+            <Undo color={parsedLines.length === 0 ? 'gray' : 'white'} />
+            {/* <Undo color="white" /> */}
           </button>
-          <button className="w-6 h-6 text-white" type="button" onClick={redo}>
-            &gt;
+          <button type="button" onClick={redo}>
+            <Redo color={erasedLines.length === 0 ? 'gray' : 'white'} />
           </button>
           <ClearDialog
             isOpen={showClearDialog}
