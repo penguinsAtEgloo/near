@@ -26,10 +26,8 @@ const COLOR_SET = {
 
 function ToolBar({
   canvasDraw,
-  onProceed,
 }: {
   canvasDraw: CanvasDraw | null;
-  onProceed: () => void;
 }): React.ReactElement {
   const [toolMode, setToolMode] = useState<ToolMode | null>(null);
 

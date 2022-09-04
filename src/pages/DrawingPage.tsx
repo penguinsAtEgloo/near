@@ -12,8 +12,6 @@ import ToolBar from '../components/ToolBar';
 
 import Picture from '../icons/Picture';
 import Back from '../icons/Back';
-import Download from 'icons/Download';
-import Share from 'icons/Share';
 import Opacity from 'icons/Opacity';
 
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
@@ -30,47 +28,12 @@ import { historyState } from '../atoms/History';
 
 function DrawingPage(): React.ReactElement {
   const [isMobile, setIsMobile] = useState(false);
-  const [isSaveMode, setSaveMode] = useState(false);
-  const openSaveMode = useCallback(() => setSaveMode(true), []);
-  const closeSaveMode = useCallback(() => setSaveMode(false), []);
 
   const penColor = useRecoilValue(penColorState);
   const penWidth = useRecoilValue(penWidthState);
 
   const backImage = useRecoilValue(backImageState);
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
-  const [drawing, setDrawing] = useRecoilState(drawingState);
-  const setHistory = useSetRecoilState(historyState);
-
-  const copyURL = useCallback(() => {
-    if (!canvasRef) return;
-    const canvas = document.querySelector(
-      '.CanvasDraw canvas:nth-child(2)'
-    ) as HTMLCanvasElement;
-    const imageURL = canvas.toDataURL('image/png');
-    setDrawing(imageURL);
-
-    if (!drawing) return;
-    window.navigator.clipboard.writeText(drawing).then(() => {
-      alert('복사 완료!');
-    });
-  }, [canvasRef, drawing, setDrawing]);
-
-  const saveAsPNG = useCallback(() => {
-    if (!canvasRef) return;
-    const canvas = document.querySelector(
-      '.CanvasDraw canvas:nth-child(2)'
-    ) as HTMLCanvasElement;
-    const imageURL = canvas.toDataURL('image/png');
-    setDrawing(imageURL);
-    const canvasImage = document.createElement('a');
-    canvasImage.href = imageURL;
-    canvasImage.download = 'NEAR.png';
-    document.body.appendChild(canvasImage);
-    canvasImage.click();
-
-    setHistory(canvasRef.getSaveData());
-  }, [canvasRef, setDrawing, setHistory]);
 
   const imageinput = useRef<HTMLInputElement>(null);
   const [imageSource, setImgSrc] = useRecoilState(imageSourceState);
@@ -86,6 +49,9 @@ function DrawingPage(): React.ReactElement {
   const closeWebCamModal = useCallback(() => setShowWebCamModal(false), []);
 
   const [opacity, setOpacity] = useState<number>(0.5);
+
+  const setDrawing = useSetRecoilState(drawingState);
+  const setHistory = useSetRecoilState(historyState);
 
   const size = useMemo(() => {
     return window.innerWidth < window.innerHeight
@@ -154,108 +120,95 @@ function DrawingPage(): React.ReactElement {
     },
     [canvasRef, setLines, setErasedLines]
   );
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const moveBack = useCallback(() => {
     navigate(-1);
   }, [navigate]);
 
+  const complete = useCallback(() => {
+    if (!canvasRef) return;
+    const canvas = document.querySelector(
+      '.CanvasDraw canvas:nth-child(2)'
+    ) as HTMLCanvasElement;
+    const imageURL = canvas.toDataURL('image/png');
+    setDrawing(imageURL);
+    setHistory(canvasRef.getSaveData());
+  }, [canvasRef, setDrawing, setHistory]);
+
   return (
-    <>
-      <div className="fixed inset-0 flex flex-col">
-        <div className="grow w-full bg-gray-100" onPointerDown={closeSaveMode}>
-          <div className="h-[75px] w-full gap-x-1 flex flex-row bg-white">
-            <button type="button" className="pl-4" onClick={moveBack}>
-              <Back />
-            </button>
-            <button type="button" onClick={loadCameraModals}>
-              <Picture />
-            </button>
-          </div>
+    <div className="fixed inset-0 flex flex-col">
+      <div className="grow w-full bg-gray-200">
+        <div className="h-[75px] w-full gap-x-1 flex flex-row bg-white">
+          <button type="button" className="pl-4" onClick={moveBack}>
+            <Back />
+          </button>
+          <button type="button" onClick={loadCameraModals}>
+            <Picture />
+          </button>
+        </div>
+        <Link to={'/pages/preview'}>
           <button
             type="button"
             className="absolute top-0 right-4 h-[75px]"
-            onClick={openSaveMode}
+            onClick={complete}
           >
             완료
           </button>
-          <div
-            className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
-            style={{ width: size, height: size }}
-          >
-            {backImage && (
-              <img
-                src={backImage}
-                className="absolute"
-                alt="배경이미지"
-                style={{ opacity }}
-              />
-            )}
-            <CanvasDraw
-              className="CanvasDraw"
-              ref={(canvasDraw) => {
-                setCanvasRef(canvasDraw);
-              }}
-              onChange={onChangeCanvas}
-              canvasWidth={size}
-              canvasHeight={size}
-              catenaryColor=""
-              brushColor={penColor}
-              brushRadius={penWidth}
-              lazyRadius={0}
-              hideGrid
-              hideInterface
-              enablePanAndZoom={true}
-              mouseZoomFactor={1}
-              zoomExtents={{ min: 0.33, max: 3 }}
+        </Link>
+        <div
+          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          style={{ width: size, height: size }}
+        >
+          {backImage && (
+            <img
+              src={backImage}
+              className="absolute"
+              alt="배경이미지"
+              style={{ opacity }}
             />
-            <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
-              <Opacity />
-              <input type="range" onChange={onChangeOpacity} />
-            </div>
-          </div>
-          <Timer className="absolute" />
-          <input
-            ref={imageinput}
-            onChange={onSelectFile}
-            type="file"
-            className="invisible"
-            accept="image/*"
+          )}
+          <CanvasDraw
+            className="CanvasDraw"
+            ref={(canvasDraw) => {
+              setCanvasRef(canvasDraw);
+            }}
+            onChange={onChangeCanvas}
+            canvasWidth={size}
+            canvasHeight={size}
+            catenaryColor=""
+            brushColor={penColor}
+            brushRadius={penWidth}
+            lazyRadius={0}
+            hideGrid
+            hideInterface
+            enablePanAndZoom={true}
+            mouseZoomFactor={1}
+            zoomExtents={{ min: 0.33, max: 3 }}
           />
-        </div>
-        <div className="flex absolute left-1/2 -translate-x-1/2 bottom-11 space-x-2 justify-center">
-          <div>
-            {isSaveMode ? (
-              <>
-                <button
-                  className="flex items-center justify-center gap-4 w-full h-16 px-4 py-2 bg-black text-white rounded-full align-center"
-                  onClick={copyURL}
-                >
-                  친구에게 공유하기
-                  <Share />
-                </button>
-                <Link to={'/pages/preview'}>
-                  <button
-                    className="flex items-center justify-center gap-4 w-full h-16 px-4 py-2 bg-black text-white rounded-full align-center"
-                    onClick={saveAsPNG}
-                  >
-                    파일 저장하기
-                    <Download />
-                  </button>
-                </Link>
-              </>
-            ) : (
-              <ToolBar canvasDraw={canvasRef} onProceed={openSaveMode} />
-            )}
+          <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
+            <Opacity />
+            <input type="range" onChange={onChangeOpacity} />
           </div>
         </div>
+        <Timer className="absolute" />
+        <input
+          ref={imageinput}
+          onChange={onSelectFile}
+          type="file"
+          className="invisible"
+          accept="image/*"
+        />
+      </div>
+      <div className="flex absolute left-1/2 -translate-x-1/2 bottom-11 space-x-2 justify-center">
+        <ToolBar canvasDraw={canvasRef} />
       </div>
       <LoadImageModal
         isOpen={showLoadImageModal}
         onClose={closeLoadImageModal}
       />
       <WebCamModal isOpen={showWebCamModal} onClose={closeWebCamModal} />
-    </>
+    </div>
   );
 }
 
