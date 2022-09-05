@@ -27,7 +27,7 @@ function PreviewPage(): React.ReactElement {
     if (!drawing) return;
     const canvasImage = document.createElement('a');
     canvasImage.href = drawing;
-    canvasImage.download = 'NEAR.png';
+    canvasImage.download = 'IMAGE.png';
     document.body.appendChild(canvasImage);
     canvasImage.click();
   }, [canvasRef, drawing]);
