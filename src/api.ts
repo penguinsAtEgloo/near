@@ -6,3 +6,14 @@ export const GET_IMAGES = async (CUID: string) => {
   });
   return await response;
 };
+
+export const POST_IMAGES = async (file: File) => {
+  const formData = new FormData();
+  formData.append('image', file);
+  //   return await fetch(`http://localhost:3000/v1/images`, {
+  return await fetch(`https://egloo.com/i/images`, {
+    method: 'POST',
+    headers: {},
+    body: formData, // content: content
+  });
+};
