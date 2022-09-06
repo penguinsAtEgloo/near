@@ -25,6 +25,7 @@ import Timer from './Timer';
 import { Link, useNavigate } from 'react-router-dom';
 import { drawingState } from '../atoms/Drawing';
 import { historyState } from '../atoms/History';
+import { postImages, getImages } from '../api';
 
 function DrawingPage(): React.ReactElement {
   const [isMobile, setIsMobile] = useState(false);
@@ -131,6 +132,10 @@ function DrawingPage(): React.ReactElement {
     const imageUrl = (canvasRef as any).getDataURL('image/png');
     setDrawing(imageUrl);
     setHistory(canvasRef.getSaveData());
+
+    postImages(imageUrl).then((res) => {
+      console.log(res);
+    });
   }, [canvasRef, setDrawing, setHistory]);
 
   return (
