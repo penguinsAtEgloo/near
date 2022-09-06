@@ -25,7 +25,8 @@ import Timer from './Timer';
 import { Link, useNavigate } from 'react-router-dom';
 import { drawingState } from '../atoms/Drawing';
 import { historyState } from '../atoms/History';
-import { postImages, getImages } from '../api';
+import axios from 'axios';
+import { postImages, getImages, postImages2, getImages2 } from '../api/images';
 
 function DrawingPage(): React.ReactElement {
   const [isMobile, setIsMobile] = useState(false);
@@ -133,9 +134,14 @@ function DrawingPage(): React.ReactElement {
     setDrawing(imageUrl);
     setHistory(canvasRef.getSaveData());
 
-    postImages(imageUrl).then((res) => {
-      console.log(res);
-    });
+    // postImages(imageUrl).then((res) => {
+    //   console.log(res);
+    // });
+    postImages2(imageUrl)
+      .then((res) => console.log(res))
+      .catch((error) => {
+        console.log(error.response);
+      });
   }, [canvasRef, setDrawing, setHistory]);
 
   return (
