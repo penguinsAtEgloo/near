@@ -8,7 +8,6 @@ import { historyState } from '../atoms/History';
 import Back from '../icons/Back';
 import Download from '../icons/Download';
 import Share from '../icons/Share';
-import { postImages, getImages } from '../api';
 
 function PreviewPage(): React.ReactElement {
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
@@ -18,7 +17,7 @@ function PreviewPage(): React.ReactElement {
 
   const copyURL = useCallback(() => {
     if (!drawing) return;
-    window.navigator.clipboard.writeText(drawing).then(() => {
+    window.navigator.clipboard.writeText(drawing || '').then(() => {
       alert('복사 완료!');
     });
   }, [drawing]);
