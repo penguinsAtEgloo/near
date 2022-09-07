@@ -25,8 +25,7 @@ import Timer from './Timer';
 import { Link, useNavigate } from 'react-router-dom';
 import { drawingState } from '../atoms/Drawing';
 import { historyState } from '../atoms/History';
-import axios from 'axios';
-import { postImages, getImages, postImages2, getImages2 } from '../api/images';
+import { postImage, getImage } from '../api/images';
 
 function DrawingPage(): React.ReactElement {
   const [isMobile, setIsMobile] = useState(false);
@@ -131,18 +130,31 @@ function DrawingPage(): React.ReactElement {
   const complete = useCallback(() => {
     if (!canvasRef) return;
     const imageUrl = (canvasRef as any).getDataURL('image/png');
+    const blob = dataURLtoBlob(imageUrl);
+    const fd = new FormData();
+    fd.append('image', blob);
+
     setDrawing(imageUrl);
     setHistory(canvasRef.getSaveData());
 
-    // postImages(imageUrl).then((res) => {
-    //   console.log(res);
-    // });
-    postImages2(imageUrl)
+    postImage(fd)
       .then((res) => console.log(res))
       .catch((error) => {
         console.log(error.response);
       });
   }, [canvasRef, setDrawing, setHistory]);
+
+  function dataURLtoBlob(dataurl: any) {
+    const arr = dataurl.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr]);
+  }
 
   return (
     <div className="fixed inset-0 flex flex-col">
