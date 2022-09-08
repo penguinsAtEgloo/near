@@ -25,6 +25,7 @@ import Timer from './Timer';
 import { Link, useNavigate } from 'react-router-dom';
 import { drawingState } from '../atoms/Drawing';
 import { historyState } from '../atoms/History';
+import { drawingStepState } from '../atoms/DrawingStep';
 
 function DrawingPage(): React.ReactElement {
   const [isMobile, setIsMobile] = useState(false);
@@ -127,16 +128,14 @@ function DrawingPage(): React.ReactElement {
     navigate(-1);
   }, [navigate, setBackImg]);
 
+  const [drawingStep, setDrawingStep] = useRecoilState(drawingStepState);
   const complete = useCallback(() => {
     if (!canvasRef) return;
     const imageUrl = (canvasRef as any).getDataURL('image/png');
     setDrawing(imageUrl);
     setHistory(canvasRef.getSaveData());
-  }, [canvasRef, setDrawing, setHistory]);
-
-  const [disabled, setDisabled] = useState(true);
-  const enable = useCallback(() => setDisabled(false), [setDisabled]);
-  const disable = useCallback(() => setDisabled(true), [setDisabled]);
+    setDrawingStep('wait');
+  }, [canvasRef, setDrawing, setDrawingStep, setHistory]);
 
   return (
     <div className="fixed inset-0 flex flex-col">
@@ -187,20 +186,14 @@ function DrawingPage(): React.ReactElement {
             enablePanAndZoom={true}
             mouseZoomFactor={1}
             zoomExtents={{ min: 0.33, max: 3 }}
-            disabled={disabled}
+            disabled={drawingStep !== 'play'}
           />
           <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
             <Opacity />
             <input type="range" onChange={onChangeOpacity} />
           </div>
         </div>
-        <Timer
-          className="absolute"
-          canvasDraw={canvasRef}
-          onComplete={complete}
-          onStart={enable}
-          onTimeout={disable}
-        />
+        <Timer className="absolute" onComplete={complete} />
         <input
           ref={imageinput}
           onChange={onSelectFile}
