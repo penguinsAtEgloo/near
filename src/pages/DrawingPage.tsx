@@ -134,6 +134,10 @@ function DrawingPage(): React.ReactElement {
     setHistory(canvasRef.getSaveData());
   }, [canvasRef, setDrawing, setHistory]);
 
+  const [disabled, setDisabled] = useState(true);
+  const enable = useCallback(() => setDisabled(false), [setDisabled]);
+  const disable = useCallback(() => setDisabled(true), [setDisabled]);
+
   return (
     <div className="fixed inset-0 flex flex-col">
       <div className="grow w-full bg-gray-200">
@@ -183,13 +187,20 @@ function DrawingPage(): React.ReactElement {
             enablePanAndZoom={true}
             mouseZoomFactor={1}
             zoomExtents={{ min: 0.33, max: 3 }}
+            disabled={disabled}
           />
           <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
             <Opacity />
             <input type="range" onChange={onChangeOpacity} />
           </div>
         </div>
-        <Timer className="absolute" />
+        <Timer
+          className="absolute"
+          canvasDraw={canvasRef}
+          onComplete={complete}
+          onStart={enable}
+          onTimeout={disable}
+        />
         <input
           ref={imageinput}
           onChange={onSelectFile}
