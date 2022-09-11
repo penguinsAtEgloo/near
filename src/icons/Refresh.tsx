@@ -5,14 +5,15 @@ const Refresh: React.FC<React.SVGProps<SVGSVGElement>> = ({
   ...props
 }): ReactElement => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="33"
-    height="33"
-    viewBox="0 0 33 33"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
     fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
     <path
-      d="M18.6111 7C18.6111 7 21.4947 9.00498 23.2152 10.6338C24.9357 12.2627 26 14.5136 26 17C26 21.9706 21.7467 26 16.5 26C11.2533 26 7 21.9706 7 17C7 12.8969 9.89826 9.43511 13.8611 8.35177M18.6111 7L24.9444 7M18.6111 7L18.6111 13"
+      d="M2 10C2 10 4.00498 7.26822 5.63384 5.63824C7.26269 4.00827 9.5136 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.89691 21 4.43511 18.2543 3.35177 14.5M2 10V4M2 10H8"
       stroke="white"
       strokeWidth="2"
       strokeLinecap="round"
