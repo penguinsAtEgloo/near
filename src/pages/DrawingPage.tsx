@@ -49,9 +49,7 @@ function DrawingPage(): React.ReactElement {
   const setHistory = useSetRecoilState(historyState);
 
   const size = useMemo(() => {
-    return window.innerWidth < window.innerHeight
-      ? window.innerWidth
-      : window.innerHeight;
+    return { width: window.innerWidth, height: window.innerHeight };
   }, []);
 
   const onSelectFile = useCallback(
@@ -116,70 +114,67 @@ function DrawingPage(): React.ReactElement {
 
   return (
     <div className="fixed inset-0 flex flex-col">
-      <div className="grow w-full bg-gray-200">
-        <div className="h-[75px] w-full gap-x-1 flex flex-row bg-white">
-          <button type="button" className="pl-4" onClick={moveBack}>
+      <div className="absolute w-full h-full">
+        {backImage && (
+          <img
+            className="absolute"
+            src={backImage}
+            alt="배경이미지"
+            style={{ opacity }}
+          />
+        )}
+        <CanvasDraw
+          className="CanvasDraw"
+          ref={(canvasDraw) => {
+            setCanvasRef(canvasDraw);
+          }}
+          onChange={onChangeCanvas}
+          canvasWidth={size.width}
+          canvasHeight={size.height}
+          catenaryColor=""
+          brushColor={penColor}
+          brushRadius={penWidth}
+          lazyRadius={0}
+          hideGrid
+          hideInterface
+          enablePanAndZoom={true}
+          mouseZoomFactor={1}
+          zoomExtents={{ min: 0.33, max: 3 }}
+          disabled={drawingStep !== 'play'}
+        />
+      </div>
+      <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
+        <Opacity />
+        <input type="range" onChange={onChangeOpacity} />
+      </div>
+      <div className="absolute w-full h-[75px] flex p-4 justify-between">
+        <div className="flex space-x-1">
+          <button type="button" onClick={moveBack}>
             <Back />
           </button>
           <button type="button" onClick={loadImage}>
             <Picture />
           </button>
+          <input
+            ref={imageinput}
+            onChange={onSelectFile}
+            type="file"
+            className="invisible w-0 h-0"
+            accept="image/*"
+          />
         </div>
-        <Link to={'/pages/preview'}>
+        <Link className="flex items-center" to={'/pages/preview'}>
           <button
+            className="px-2 rounded-full bg-white"
             type="button"
-            className="absolute top-0 right-4 h-[75px]"
             onClick={complete}
           >
             완료
           </button>
         </Link>
-        <div
-          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
-          style={{ width: size, height: size }}
-        >
-          {backImage && (
-            <img
-              src={backImage}
-              className="absolute"
-              alt="배경이미지"
-              style={{ opacity }}
-            />
-          )}
-          <CanvasDraw
-            className="CanvasDraw"
-            ref={(canvasDraw) => {
-              setCanvasRef(canvasDraw);
-            }}
-            onChange={onChangeCanvas}
-            canvasWidth={size}
-            canvasHeight={size}
-            catenaryColor=""
-            brushColor={penColor}
-            brushRadius={penWidth}
-            lazyRadius={0}
-            hideGrid
-            hideInterface
-            enablePanAndZoom={true}
-            mouseZoomFactor={1}
-            zoomExtents={{ min: 0.33, max: 3 }}
-            disabled={drawingStep !== 'play'}
-          />
-          <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
-            <Opacity />
-            <input type="range" onChange={onChangeOpacity} />
-          </div>
-        </div>
-        <Timer className="absolute" onComplete={complete} />
-        <input
-          ref={imageinput}
-          onChange={onSelectFile}
-          type="file"
-          className="invisible"
-          accept="image/*"
-        />
       </div>
-      <div className="flex absolute left-1/2 -translate-x-1/2 bottom-11 space-x-2 justify-center">
+      <Timer className="absolute top-20 left-4 flex" onComplete={complete} />
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
         <ToolBar canvasDraw={canvasRef} />
       </div>
       <LoadImageModal
