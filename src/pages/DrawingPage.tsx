@@ -136,41 +136,9 @@ function DrawingPage(): React.ReactElement {
 
   return (
     <div className="fixed inset-0 flex flex-col">
-      <div className="absolute w-full h-full">
-        {backImage && (
-          <img
-            className="absolute"
-            src={backImage}
-            alt="배경이미지"
-            style={{ opacity }}
-          />
-        )}
-        <CanvasDraw
-          className="CanvasDraw"
-          ref={(canvasDraw) => {
-            setCanvasRef(canvasDraw);
-          }}
-          onChange={onChangeCanvas}
-          canvasWidth={size.width}
-          canvasHeight={size.height}
-          catenaryColor=""
-          brushColor={penColor}
-          brushRadius={penWidth}
-          lazyRadius={0}
-          hideGrid
-          hideInterface
-          enablePanAndZoom={true}
-          mouseZoomFactor={1}
-          zoomExtents={{ min: 0.33, max: 3 }}
-          disabled={drawingStep !== 'play'}
-        />
-      </div>
-      <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
-        <Opacity />
-        <input type="range" onChange={onChangeOpacity} />
-      </div>
-      <div className="absolute w-full h-[75px] flex p-4 justify-between">
-        <div className="flex space-x-1">
+      <div className="w-full h-[75px] flex p-4 justify-between">
+        {/* to prevent occupying full width in safari browser */}
+        <div className="w-20 flex space-x-1">
           <button type="button" onClick={moveBack}>
             <Back />
           </button>
@@ -194,6 +162,39 @@ function DrawingPage(): React.ReactElement {
             완료
           </button>
         </Link>
+      </div>
+      <div className="absolute bottom-0 w-full">
+        {backImage && (
+          <img
+            className="absolute"
+            src={backImage}
+            alt="배경이미지"
+            style={{ opacity, height: `${size.height - 75}px` }}
+          />
+        )}
+        <CanvasDraw
+          className="CanvasDraw"
+          ref={(canvasDraw) => {
+            setCanvasRef(canvasDraw);
+          }}
+          onChange={onChangeCanvas}
+          canvasWidth={size.width}
+          canvasHeight={size.height - 75}
+          catenaryColor=""
+          brushColor={penColor}
+          brushRadius={penWidth}
+          lazyRadius={0}
+          hideGrid
+          hideInterface
+          enablePanAndZoom={true}
+          mouseZoomFactor={1}
+          zoomExtents={{ min: 0.33, max: 3 }}
+          disabled={drawingStep !== 'play'}
+        />
+      </div>
+      <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
+        <Opacity />
+        <input type="range" onChange={onChangeOpacity} />
       </div>
       <Timer className="absolute top-20 left-4 flex" onComplete={complete} />
       <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
