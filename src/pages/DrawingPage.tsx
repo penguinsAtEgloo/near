@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import CanvasDraw from 'react-canvas-draw';
 import LoadImageModal from '../components/LoadImageModal';
-import WebCamModal from '../components/WebCamModal';
 import ToolBar from '../components/ToolBar';
 
 import Picture from '../icons/Picture';
@@ -27,8 +26,6 @@ import { drawingState } from '../atoms/Drawing';
 import { historyState } from '../atoms/History';
 
 function DrawingPage(): React.ReactElement {
-  const [isMobile, setIsMobile] = useState(false);
-
   const penColor = useRecoilValue(penColorState);
   const penWidth = useRecoilValue(penWidthState);
 
@@ -44,9 +41,6 @@ function DrawingPage(): React.ReactElement {
   const closeLoadImageModal = useCallback(() => {
     setShowLoadImageModal(false);
   }, []);
-
-  const [showWebCamModal, setShowWebCamModal] = useState(false);
-  const closeWebCamModal = useCallback(() => setShowWebCamModal(false), []);
 
   const [opacity, setOpacity] = useState<number>(0.5);
 
@@ -78,27 +72,10 @@ function DrawingPage(): React.ReactElement {
   }, []);
 
   useEffect(() => {
-    try {
-      document.createEvent('TouchEvent');
-      setIsMobile(true);
-    } catch (e) {
-      setIsMobile(false);
-    }
-  }, [setIsMobile]);
-
-  useEffect(() => {
     if (imageSource) {
       setShowLoadImageModal(true);
     }
   }, [imageSource]);
-
-  const loadCameraModals = useCallback(() => {
-    if (isMobile) {
-      loadImage();
-    } else {
-      setShowWebCamModal(true);
-    }
-  }, [isMobile, loadImage, setShowWebCamModal]);
 
   const onChangeOpacity = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,7 +118,7 @@ function DrawingPage(): React.ReactElement {
           <button type="button" className="pl-4" onClick={moveBack}>
             <Back />
           </button>
-          <button type="button" onClick={loadCameraModals}>
+          <button type="button" onClick={loadImage}>
             <Picture />
           </button>
         </div>
@@ -205,7 +182,6 @@ function DrawingPage(): React.ReactElement {
         isOpen={showLoadImageModal}
         onClose={closeLoadImageModal}
       />
-      <WebCamModal isOpen={showWebCamModal} onClose={closeWebCamModal} />
     </div>
   );
 }
