@@ -17,8 +17,8 @@ function PreviewPage(): React.ReactElement {
 
   const copyURL = useCallback(() => {
     if (!drawing) return;
-    window.navigator.clipboard.writeText(drawing || '').then(() => {
-      alert('복사 완료!');
+    window.navigator.clipboard.writeText(drawing).then(() => {
+      alert('링크가 복사되었습니다! 그림을 친구에게 전달해보세요.');
     });
   }, [drawing]);
 
