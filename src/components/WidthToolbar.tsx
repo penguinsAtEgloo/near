@@ -3,16 +3,14 @@ import React from 'react';
 import { useSetRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 
-const PEN_WIDTH_LIST = [1, 2, 4, 7, 10];
+const PEN_WIDTH_LIST = [0.25, 0.5, 1, 2, 4];
 
 function WidthToolbar({
   className,
   isShown,
-  onClose,
 }: {
   className?: string;
   isShown: boolean;
-  onClose: () => void;
 }): React.ReactElement {
   const setPenWidth = useSetRecoilState(penWidthState);
 
