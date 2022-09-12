@@ -42,7 +42,8 @@ function PreviewPage(): React.ReactElement {
 
   const navigate = useNavigate();
   const moveBack = useCallback(() => {
-    navigate(-1);
+    navigate('/');
+    window.location.reload();
   }, [navigate]);
 
   const size = useMemo(() => {
@@ -120,7 +121,6 @@ function PreviewPage(): React.ReactElement {
           />
         )}
       </div>
-
       <div className="space-y-2.5">
         <button
           className="flex w-[318px] h-[64px] space-x-3.5 justify-center items-center bg-black rounded-full"

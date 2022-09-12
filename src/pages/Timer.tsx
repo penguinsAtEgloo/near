@@ -67,7 +67,7 @@ function Timer({
         {seconds % 60 < 10 ? `0${seconds % 60}` : seconds % 60}
       </div>
       <button
-        className="px-2 py-1 rounded-full bg-black text-white text-xs"
+        className="w-[54px] px-2 py-1 rounded-full bg-black text-white text-xs"
         type="button"
         onClick={toggleDrawing}
       >

@@ -1,9 +1,10 @@
 import clsx from 'clsx';
 import React from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
 
-const PEN_WIDTH_LIST = [0.25, 0.5, 1, 2, 4];
+const PEN_WIDTH_LIST = [0.5, 1, 2, 4, 7];
+const CIRCLE_SIZE_LIST = [7, 10, 13, 16, 20];
 
 function WidthToolbar({
   className,
@@ -12,7 +13,7 @@ function WidthToolbar({
   className?: string;
   isShown: boolean;
 }): React.ReactElement {
-  const setPenWidth = useSetRecoilState(penWidthState);
+  const [penWidth, setPenWidth] = useRecoilState(penWidthState);
 
   return (
     <div
@@ -22,23 +23,29 @@ function WidthToolbar({
         className
       )}
     >
-      {PEN_WIDTH_LIST.map((width) => {
+      {PEN_WIDTH_LIST.map((width, i) => {
+        const size = CIRCLE_SIZE_LIST[i];
         return (
           <button
             key={width}
             className="flex justify-center items-center"
-            style={{ padding: `${10 - width}px` }}
+            style={{ padding: `${7 - width}px` }}
             type="button"
             onClick={() => setPenWidth(width)}
           >
             <div
-              className="rounded-full bg-white"
-              style={{ width: `${width * 2}px`, height: `${width * 2}px` }}
+              className={clsx(
+                'rounded-full',
+                width === penWidth
+                  ? 'bg-black, border-2 border-yellow-300'
+                  : 'bg-white'
+              )}
+              style={{ width: `${size}px`, height: `${size}px` }}
             />
           </button>
         );
       })}
-      <div className="Triangle absolute left-0 -bottom-3.5" />
+      <div className="Triangle absolute left-0 -bottom-[13px]" />
     </div>
   );
 }

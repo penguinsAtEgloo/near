@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import face from '../assets/face.png';
+import near from '../assets/near.png';
 import drawingface from '../assets/drawing-face.png';
 
 function MainPage(): React.ReactElement {
@@ -23,7 +23,7 @@ function MainPage(): React.ReactElement {
         </div>
       </div>
       <div className="w-[250px] h-[290px] flex justify-center items-center">
-        <img src={isDrawing ? drawingface : face} />
+        <img src={isDrawing ? drawingface : near} />
       </div>
       <Link to={'/pages/draw'}>
         <button className="px-24 py-5 rounded-[100px] bg-black font-semibold text-xl text-white">

@@ -37,7 +37,8 @@ function ColorToolbar({
             <div
               className={clsx(
                 'w-3.5 h-3.5 rounded-full',
-                color === '#000000' && 'border border-white'
+                color === '#000000' && 'border border-white',
+                color === penColor && 'border-2 border-yellow-300'
               )}
               style={{ backgroundColor: color }}
             />
@@ -46,8 +47,10 @@ function ColorToolbar({
       })}
       <label className="relative flex cursor-pointer">
         <div
-          className="w-3.5 h-3.5 rounded-full bg-gradient-to-b from-red-600 to-blue-600"
-          style={{ backgroundColor: penColor }}
+          className="w-3.5 h-3.5 rounded-full"
+          style={{
+            backgroundImage: 'linear-gradient(180deg, green, yellow, red)',
+          }}
         />
         <input
           className="invisible w-0 h-0 bg-white"
@@ -55,7 +58,7 @@ function ColorToolbar({
           onChange={setColorValue}
         />
       </label>
-      <div className="Triangle absolute left-[52px] -bottom-3.5" />
+      <div className="Triangle absolute left-[52px] -bottom-[13px]" />
     </div>
   );
 }
