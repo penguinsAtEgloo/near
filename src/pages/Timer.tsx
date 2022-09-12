@@ -6,8 +6,8 @@ import PauseDialog from '../dialog/PauseDialog';
 import clsx from 'clsx';
 
 // TODO: replace
-// const TIME_LIMIT = 180;
-const TIME_LIMIT = 3;
+const TIME_LIMIT = 180;
+// const TIME_LIMIT = 3;
 
 function Timer({
   className,

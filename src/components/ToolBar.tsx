@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Brush from '../icons/Brush';
 import Palette from '../icons/Palette';
 import Refresh from '../icons/Refresh';
@@ -78,8 +84,13 @@ function ToolBar({
     setToolMode('color');
   }, [toolMode]);
 
+  const targetRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const handleToolMode = () => {
+    const handleToolMode = (event: Event) => {
+      if (!event.target) return;
+      const targetElement = targetRef.current;
+      if (!targetElement) return;
+      if (targetElement.contains(event.target as HTMLElement)) return;
       setToolMode(null);
     };
     document.addEventListener('pointerdown', handleToolMode);
@@ -113,16 +124,16 @@ function ToolBar({
           <Redo color={erasedLines.length === 0 ? 'gray' : 'white'} />
         </button>
       </div>
-      <WidthToolbar
-        className="absolute -top-16 "
-        isShown={toolMode === 'width'}
-        onClose={() => {}}
-      />
-      <ColorToolbar
-        className="absolute -top-16 "
-        isShown={toolMode === 'color'}
-        onClose={() => {}}
-      />
+      <div ref={targetRef}>
+        <WidthToolbar
+          className="absolute -top-16 "
+          isShown={toolMode === 'width'}
+        />
+        <ColorToolbar
+          className="absolute -top-16 "
+          isShown={toolMode === 'color'}
+        />
+      </div>
       <ClearDialog
         isOpen={showClearDialog}
         onClose={closeClearDialog}

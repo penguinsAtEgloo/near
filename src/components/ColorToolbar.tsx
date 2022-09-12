@@ -8,11 +8,9 @@ const COLOR_SET = ['#FFFFFF', '#000000', '#FF0000', '#FFF500', '#001AFF'];
 function ColorToolbar({
   className,
   isShown,
-  onClose,
 }: {
   className?: string;
   isShown: boolean;
-  onClose: () => void;
 }): React.ReactElement {
   const [penColor, setPenColor] = useRecoilState(penColorState);
   const setColorValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,9 +32,7 @@ function ColorToolbar({
             className="flex"
             key={color}
             type="button"
-            onClick={() => {
-              setPenColor(color);
-            }}
+            onClick={() => setPenColor(color)}
           >
             <div
               className={clsx(
