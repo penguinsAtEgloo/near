@@ -1,8 +1,9 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 
-function createBasicInstance() {
+function createBasicInstance(): AxiosInstance {
   const instance = axios.create({
-    baseURL: process.env.REACT_APP_BASE_URL,
+    baseURL:
+      process.env.REACT_APP_BASE_URL || process.env.REACT_APP_LOCALHOST_URL,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -10,9 +11,10 @@ function createBasicInstance() {
   return instance;
 }
 
-function createFileInstance() {
+function createFileInstance(): AxiosInstance {
   const instance = axios.create({
-    baseURL: process.env.REACT_APP_BASE_URL,
+    baseURL:
+      process.env.REACT_APP_BASE_URL || process.env.REACT_APP_LOCALHOST_URL,
     headers: {
       'Content-Type': 'multipart/form-data',
     },
