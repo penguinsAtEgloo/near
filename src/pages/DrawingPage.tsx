@@ -113,11 +113,12 @@ function DrawingPage(): React.ReactElement {
   const navigate = useNavigate();
   const moveBack = useCallback(() => {
     setBackImg(null);
-    navigate(-1);
+    navigate('/');
   }, [navigate, setBackImg]);
 
   const [drawingStep, setDrawingStep] = useRecoilState(drawingStepState);
   const complete = useCallback(() => {
+    setDrawingStep('wait');
     if (!canvasRef) return;
     const imageUrl = (canvasRef as any).getDataURL('image/png');
     const blob = dataURLtoBlob(imageUrl);
@@ -126,7 +127,6 @@ function DrawingPage(): React.ReactElement {
 
     setDrawing(imageUrl);
     setHistory(canvasRef.getSaveData());
-    setDrawingStep('wait');
     postImage(formData)
       .then((res) => console.log(res))
       .catch((error) => {
