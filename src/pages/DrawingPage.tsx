@@ -36,7 +36,7 @@ const dataURLtoBlob = (dataurl: any) => {
   while (n--) {
     u8arr[n] = bstr.charCodeAt(n);
   }
-  return new Blob([u8arr]);
+  return new Blob([u8arr], { type: mime });
 };
 
 function DrawingPage(): React.ReactElement {
