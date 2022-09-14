@@ -25,6 +25,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { drawingState } from '../atoms/Drawing';
 import { historyState } from '../atoms/History';
 import { drawingStepState } from '../atoms/DrawingStep';
+import { postImage } from '../api/images';
+
+const dataURLtoBlob = (dataurl: any) => {
+  const arr = dataurl.split(','),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+};
 
 function DrawingPage(): React.ReactElement {
   const penColor = useRecoilValue(penColorState);
@@ -107,9 +120,18 @@ function DrawingPage(): React.ReactElement {
   const complete = useCallback(() => {
     if (!canvasRef) return;
     const imageUrl = (canvasRef as any).getDataURL('image/png');
+    const blob = dataURLtoBlob(imageUrl);
+    const formData = new FormData();
+    formData.append('image', blob);
+
     setDrawing(imageUrl);
     setHistory(canvasRef.getSaveData());
     setDrawingStep('wait');
+    postImage(formData)
+      .then((res) => console.log(res))
+      .catch((error) => {
+        console.log(error.response);
+      });
   }, [canvasRef, setDrawing, setDrawingStep, setHistory]);
 
   return (
