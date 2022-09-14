@@ -26,7 +26,7 @@ function MainPage(): React.ReactElement {
         <img src={isDrawing ? drawingface : face} />
       </div>
       <Link to={'/pages/draw'}>
-        <button className="px-24 py-6 rounded-[100px] bg-black font-semibold text-xl text-white">
+        <button className="px-24 py-5 rounded-[100px] bg-black font-semibold text-xl text-white">
           친구 그려주기
         </button>
       </Link>

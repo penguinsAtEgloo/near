@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import CanvasDraw from 'react-canvas-draw';
 import LoadImageModal from '../components/LoadImageModal';
-import WebCamModal from '../components/WebCamModal';
 import ToolBar from '../components/ToolBar';
 
 import Picture from '../icons/Picture';
@@ -25,6 +24,7 @@ import Timer from './Timer';
 import { Link, useNavigate } from 'react-router-dom';
 import { drawingState } from '../atoms/Drawing';
 import { historyState } from '../atoms/History';
+import { drawingStepState } from '../atoms/DrawingStep';
 import { postImage } from '../api/images';
 
 const dataURLtoBlob = (dataurl: any) => {
@@ -40,12 +40,10 @@ const dataURLtoBlob = (dataurl: any) => {
 };
 
 function DrawingPage(): React.ReactElement {
-  const [isMobile, setIsMobile] = useState(false);
-
   const penColor = useRecoilValue(penColorState);
   const penWidth = useRecoilValue(penWidthState);
 
-  const backImage = useRecoilValue(backImageState);
+  const [backImage, setBackImg] = useRecoilState(backImageState);
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
 
   const imageinput = useRef<HTMLInputElement>(null);
@@ -58,18 +56,13 @@ function DrawingPage(): React.ReactElement {
     setShowLoadImageModal(false);
   }, []);
 
-  const [showWebCamModal, setShowWebCamModal] = useState(false);
-  const closeWebCamModal = useCallback(() => setShowWebCamModal(false), []);
-
   const [opacity, setOpacity] = useState<number>(0.5);
 
   const setDrawing = useSetRecoilState(drawingState);
   const setHistory = useSetRecoilState(historyState);
 
   const size = useMemo(() => {
-    return window.innerWidth < window.innerHeight
-      ? window.innerWidth
-      : window.innerHeight;
+    return { width: window.innerWidth, height: window.innerHeight };
   }, []);
 
   const onSelectFile = useCallback(
@@ -91,27 +84,10 @@ function DrawingPage(): React.ReactElement {
   }, []);
 
   useEffect(() => {
-    try {
-      document.createEvent('TouchEvent');
-      setIsMobile(true);
-    } catch (e) {
-      setIsMobile(false);
-    }
-  }, [setIsMobile]);
-
-  useEffect(() => {
     if (imageSource) {
       setShowLoadImageModal(true);
     }
   }, [imageSource]);
-
-  const loadCameraModals = useCallback(() => {
-    if (isMobile) {
-      loadImage();
-    } else {
-      setShowWebCamModal(true);
-    }
-  }, [isMobile, loadImage, setShowWebCamModal]);
 
   const onChangeOpacity = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,9 +112,11 @@ function DrawingPage(): React.ReactElement {
 
   const navigate = useNavigate();
   const moveBack = useCallback(() => {
+    setBackImg(null);
     navigate(-1);
-  }, [navigate]);
+  }, [navigate, setBackImg]);
 
+  const [drawingStep, setDrawingStep] = useRecoilState(drawingStepState);
   const complete = useCallback(() => {
     if (!canvasRef) return;
     const imageUrl = (canvasRef as any).getDataURL('image/png');
@@ -148,86 +126,83 @@ function DrawingPage(): React.ReactElement {
 
     setDrawing(imageUrl);
     setHistory(canvasRef.getSaveData());
-
+    setDrawingStep('wait');
     postImage(formData)
       .then((res) => console.log(res))
       .catch((error) => {
         console.log(error.response);
       });
-  }, [canvasRef, setDrawing, setHistory]);
+  }, [canvasRef, setDrawing, setDrawingStep, setHistory]);
 
   return (
     <div className="fixed inset-0 flex flex-col">
-      <div className="grow w-full bg-gray-200">
-        <div className="h-[75px] w-full gap-x-1 flex flex-row bg-white">
-          <button type="button" className="pl-4" onClick={moveBack}>
+      <div className="absolute w-full h-full">
+        {backImage && (
+          <img
+            className="absolute"
+            src={backImage}
+            alt="배경이미지"
+            style={{ opacity }}
+          />
+        )}
+        <CanvasDraw
+          className="CanvasDraw"
+          ref={(canvasDraw) => {
+            setCanvasRef(canvasDraw);
+          }}
+          onChange={onChangeCanvas}
+          canvasWidth={size.width}
+          canvasHeight={size.height}
+          catenaryColor=""
+          brushColor={penColor}
+          brushRadius={penWidth}
+          lazyRadius={0}
+          hideGrid
+          hideInterface
+          enablePanAndZoom={true}
+          mouseZoomFactor={1}
+          zoomExtents={{ min: 0.33, max: 3 }}
+          disabled={drawingStep !== 'play'}
+        />
+      </div>
+      <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
+        <Opacity />
+        <input type="range" onChange={onChangeOpacity} />
+      </div>
+      <div className="absolute w-full h-[75px] flex p-4 justify-between">
+        <div className="flex space-x-1">
+          <button type="button" onClick={moveBack}>
             <Back />
           </button>
-          <button type="button" onClick={loadCameraModals}>
+          <button type="button" onClick={loadImage}>
             <Picture />
           </button>
+          <input
+            ref={imageinput}
+            onChange={onSelectFile}
+            type="file"
+            className="invisible w-0 h-0"
+            accept="image/*"
+          />
         </div>
-        <Link to={'/pages/preview'}>
+        <Link className="flex items-center" to={'/pages/preview'}>
           <button
+            className="px-2 rounded-full bg-white"
             type="button"
-            className="absolute top-0 right-4 h-[75px]"
             onClick={complete}
           >
             완료
           </button>
         </Link>
-        <div
-          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
-          style={{ width: size, height: size }}
-        >
-          {backImage && (
-            <img
-              src={backImage}
-              className="absolute"
-              alt="배경이미지"
-              style={{ opacity }}
-            />
-          )}
-          <CanvasDraw
-            className="CanvasDraw"
-            ref={(canvasDraw) => {
-              setCanvasRef(canvasDraw);
-            }}
-            onChange={onChangeCanvas}
-            canvasWidth={size}
-            canvasHeight={size}
-            catenaryColor=""
-            brushColor={penColor}
-            brushRadius={penWidth}
-            lazyRadius={0}
-            hideGrid
-            hideInterface
-            enablePanAndZoom={true}
-            mouseZoomFactor={1}
-            zoomExtents={{ min: 0.33, max: 3 }}
-          />
-          <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
-            <Opacity />
-            <input type="range" onChange={onChangeOpacity} />
-          </div>
-        </div>
-        <Timer className="absolute" />
-        <input
-          ref={imageinput}
-          onChange={onSelectFile}
-          type="file"
-          className="invisible"
-          accept="image/*"
-        />
       </div>
-      <div className="flex absolute left-1/2 -translate-x-1/2 bottom-11 space-x-2 justify-center">
+      <Timer className="absolute top-20 left-4 flex" onComplete={complete} />
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
         <ToolBar canvasDraw={canvasRef} />
       </div>
       <LoadImageModal
         isOpen={showLoadImageModal}
         onClose={closeLoadImageModal}
       />
-      <WebCamModal isOpen={showWebCamModal} onClose={closeWebCamModal} />
     </div>
   );
 }

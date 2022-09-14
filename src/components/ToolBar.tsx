@@ -1,28 +1,25 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Brush from '../icons/Brush';
 import Palette from '../icons/Palette';
 import Refresh from '../icons/Refresh';
 import Undo from '../icons/Undo';
 import CanvasDraw from 'react-canvas-draw';
 import ClearDialog from '../dialog/ClearDialog';
-import ColorButton from './ColorButton';
-import BrushButton from './BrushButton';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { penColorState } from '../atoms/PenColor';
 import { erasedLinesState } from '../atoms/ErasedLines';
 import { linesState } from '../atoms/Lines';
 import Redo from '../icons/Redo';
+import WidthToolbar from './WidthToolbar';
+import ColorToolbar from './ColorToolbar';
 
 const TOOL_MODE = { color: 'color', width: 'width' } as const;
 type ToolMode = typeof TOOL_MODE[keyof typeof TOOL_MODE];
-
-const COLOR_SET = {
-  white: '#FFFFFF',
-  black: '#000000',
-  red: '#FF0000',
-  yellow: '#FFF500',
-  blue: '#001AFF',
-};
 
 function ToolBar({
   canvasDraw,
@@ -71,12 +68,6 @@ function ToolBar({
     canvasDraw.loadSaveData(JSON.stringify(curLines), true);
   }, [canvasDraw, erasedLines, lines, setErasedLines]);
 
-  const [penColor, setPenColor] = useRecoilState(penColorState);
-  const setColorValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setPenColor(value);
-  };
-
   const handleWidthButton = useCallback(() => {
     if (toolMode) {
       setToolMode(null);
@@ -93,81 +84,62 @@ function ToolBar({
     setToolMode('color');
   }, [toolMode]);
 
+  const targetRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleToolMode = (event: Event) => {
+      if (!event.target) return;
+      const targetElement = targetRef.current;
+      if (!targetElement) return;
+      if (targetElement.contains(event.target as HTMLElement)) return;
+      setToolMode(null);
+    };
+    document.addEventListener('pointerdown', handleToolMode);
+    return () => document.removeEventListener('pointerdown', handleToolMode);
+  }, []);
+
   return (
-    <div className="w-[320px] flex px-11 py-4 space-x-7 items-center rounded-2xl bg-black">
-      {toolMode !== 'color' && (
-        <>
-          <button
-            className="flex space-x-6"
-            type="button"
-            onClick={handleWidthButton}
-          >
-            <Brush />
-          </button>
-          {toolMode === 'width' && (
-            <div className="w-full flex justify-between items-center">
-              <BrushButton size={1} />
-              <BrushButton size={2} />
-              <BrushButton size={4} />
-              <BrushButton size={7} />
-              <BrushButton size={10} />
-            </div>
-          )}
-        </>
-      )}
-      {toolMode !== 'width' && (
-        <>
-          <button
-            className="flex space-x-6 items-center"
-            type="button"
-            onClick={handleColorButton}
-          >
-            <Palette />
-          </button>
-          {toolMode === 'color' && (
-            <div className="w-full flex justify-between">
-              <ColorButton color={COLOR_SET.white} />
-              <ColorButton
-                className="border border-white"
-                color={COLOR_SET.black}
-              />
-              <ColorButton color={COLOR_SET.red} />
-              <ColorButton color={COLOR_SET.yellow} />
-              <ColorButton color={COLOR_SET.blue} />
-              <label className="relative flex cursor-pointer">
-                <div
-                  className="w-3.5 h-3.5 rounded-full bg-gradient-to-b from-red-600 to-blue-600"
-                  style={{ backgroundColor: penColor }}
-                />
-                <input
-                  className="invisible w-0 h-0 bg-white"
-                  type="color"
-                  onChange={setColorValue}
-                />
-              </label>
-            </div>
-          )}
-        </>
-      )}
-      {!toolMode && (
-        <>
-          <button type="button" onClick={requestClear}>
-            <Refresh />
-          </button>
-          <button type="button" onClick={undo}>
-            <Undo color={parsedLines.length === 0 ? 'gray' : 'white'} />
-          </button>
-          <button type="button" onClick={redo}>
-            <Redo color={erasedLines.length === 0 ? 'gray' : 'white'} />
-          </button>
-          <ClearDialog
-            isOpen={showClearDialog}
-            onClose={closeClearDialog}
-            onClear={clear}
-          />
-        </>
-      )}
-    </div>
+    <>
+      <div className="relative w-[280px] flex py-4 space-x-7 justify-center items-center rounded-full bg-black">
+        <button
+          className="flex space-x-6"
+          type="button"
+          onClick={handleWidthButton}
+        >
+          <Brush />
+        </button>
+        <button
+          className="flex space-x-6 items-center"
+          type="button"
+          onClick={handleColorButton}
+        >
+          <Palette />
+        </button>
+        <button type="button" onClick={requestClear}>
+          <Refresh />
+        </button>
+        <button type="button" onClick={undo}>
+          <Undo color={parsedLines.length === 0 ? 'gray' : 'white'} />
+        </button>
+        <button type="button" onClick={redo}>
+          <Redo color={erasedLines.length === 0 ? 'gray' : 'white'} />
+        </button>
+      </div>
+      <div ref={targetRef}>
+        <WidthToolbar
+          className="absolute -top-16 "
+          isShown={toolMode === 'width'}
+        />
+        <ColorToolbar
+          className="absolute -top-16 "
+          isShown={toolMode === 'color'}
+        />
+      </div>
+      <ClearDialog
+        isOpen={showClearDialog}
+        onClose={closeClearDialog}
+        onClear={clear}
+      />
+    </>
   );
 }
 
