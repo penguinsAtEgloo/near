@@ -136,7 +136,7 @@ function DrawingPage(): React.ReactElement {
 
   return (
     <div className="fixed inset-0 flex flex-col">
-      <div className="w-full h-[75px] flex p-4 justify-between">
+      <div className="w-full min-h-[75px] flex p-4 justify-between">
         {/* to prevent occupying full width in safari browser */}
         <div className="w-20 flex space-x-1">
           <button type="button" onClick={moveBack}>
@@ -155,7 +155,7 @@ function DrawingPage(): React.ReactElement {
         </div>
         <Link className="flex items-center" to={'/pages/preview'}>
           <button
-            className="px-2 rounded-full bg-white"
+            className="px-2 rounded-full bg-white font-semibold"
             type="button"
             onClick={complete}
           >
