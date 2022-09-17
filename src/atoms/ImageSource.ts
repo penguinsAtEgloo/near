@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-export const imageSourceState = atom<string | null>({
+export const imageSourceState = atom<string>({
   key: 'imageSource',
-  default: null,
+  default: '',
 });
