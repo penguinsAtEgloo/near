@@ -11,7 +11,6 @@ import ToolBar from '../components/ToolBar';
 
 import Picture from '../icons/Picture';
 import Back from '../icons/Back';
-import Opacity from 'icons/Opacity';
 
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
@@ -56,8 +55,6 @@ function DrawingPage(): React.ReactElement {
     setShowLoadImageModal(false);
   }, []);
 
-  const [opacity, setOpacity] = useState<number>(0.5);
-
   const setDrawing = useSetRecoilState(drawingState);
   const setHistory = useSetRecoilState(historyState);
 
@@ -70,7 +67,8 @@ function DrawingPage(): React.ReactElement {
       if (e.target.files && e.target.files.length > 0) {
         const reader = new FileReader();
         reader.addEventListener('load', () => {
-          setImgSrc(reader.result?.toString() || null);
+          if (!reader.result) return;
+          setImgSrc(reader.result.toString());
           e.target.value = '';
         });
         reader.readAsDataURL(e.target.files[0]);
@@ -88,13 +86,6 @@ function DrawingPage(): React.ReactElement {
       setShowLoadImageModal(true);
     }
   }, [imageSource]);
-
-  const onChangeOpacity = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setOpacity(parseInt(e.target.value) / 100);
-    },
-    [setOpacity]
-  );
 
   const onChangeCanvas = useCallback(
     (e: CanvasDraw) => {
@@ -120,6 +111,8 @@ function DrawingPage(): React.ReactElement {
   const complete = useCallback(() => {
     setDrawingStep('wait');
     if (!canvasRef) return;
+    (canvasRef as any).setView({ scale: 1.0 });
+    (canvasRef as any).setView({ x: 0, y: 0 });
     const imageUrl = (canvasRef as any).getDataURL('image/png');
     const blob = dataURLtoBlob(imageUrl);
     const formData = new FormData();
@@ -164,19 +157,13 @@ function DrawingPage(): React.ReactElement {
         </Link>
       </div>
       <div className="absolute bottom-0 w-full">
-        {backImage && (
-          <img
-            className="absolute"
-            src={backImage}
-            alt="배경이미지"
-            style={{ opacity, height: `${size.height - 75}px` }}
-          />
-        )}
         <CanvasDraw
           className="CanvasDraw"
+          imgSrc={backImage}
           ref={(canvasDraw) => {
             setCanvasRef(canvasDraw);
           }}
+          clampLinesToDocument={true}
           onChange={onChangeCanvas}
           canvasWidth={size.width}
           canvasHeight={size.height - 75}
@@ -187,14 +174,10 @@ function DrawingPage(): React.ReactElement {
           hideGrid
           hideInterface
           enablePanAndZoom={true}
-          mouseZoomFactor={1}
+          mouseZoomFactor={0.5}
           zoomExtents={{ min: 0.33, max: 3 }}
           disabled={drawingStep !== 'play'}
         />
-      </div>
-      <div className="absolute top-1/2 -left-14 transform -translate-y-1/2 flex space-x-4 justify-center items-center box-border bg-black w-[185px] h-[38px] border-solid border-1 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[100px] rotate-90">
-        <Opacity />
-        <input type="range" onChange={onChangeOpacity} />
       </div>
       <Timer className="absolute top-20 left-4 flex" onComplete={complete} />
       <div className="absolute left-1/2 -translate-x-1/2 bottom-11">

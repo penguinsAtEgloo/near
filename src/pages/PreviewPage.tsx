@@ -27,14 +27,12 @@ function PreviewPage(): React.ReactElement {
   }, [drawing]);
 
   const saveAsPNG = useCallback(() => {
-    if (!canvasRef) return;
     if (!drawing) return;
-    const canvasImage = document.createElement('a');
-    canvasImage.href = drawing;
-    canvasImage.download = 'IMAGE.png';
-    document.body.appendChild(canvasImage);
+    const canvasImage: HTMLAnchorElement = document.querySelector(
+      '#download_link'
+    ) as HTMLAnchorElement;
     canvasImage.click();
-  }, [canvasRef, drawing]);
+  }, [drawing]);
 
   useEffect(() => {
     if (!canvasRef) return;
@@ -129,6 +127,14 @@ function PreviewPage(): React.ReactElement {
           onClick={saveAsPNG}
         >
           <Download />
+          <a
+            id="download_link"
+            className="invisible"
+            href={drawing}
+            download="IMAGE.png"
+          >
+            <span></span>
+          </a>
         </button>
         <button
           className="flex p-4 justify-center items-center bg-black rounded-full"
