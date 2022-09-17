@@ -43,7 +43,7 @@ function Dialog({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <HeadlessDialog.Panel className="w-full max-w-md transform overflow-hidden rounded-3xl bg-white text-left align-middle shadow-xl transition-all">
+              <HeadlessDialog.Panel className="w-full max-w-md transform overflow-hidden rounded-3xl bg-white shadow-xl transition-all">
                 {title && (
                   <HeadlessDialog.Title
                     as="h3"
@@ -52,8 +52,7 @@ function Dialog({
                     {title}
                   </HeadlessDialog.Title>
                 )}
-                <div className="mt-2">{children}</div>
-
+                {children}
                 {closeContent && (
                   <div className="mt-4">
                     <button
