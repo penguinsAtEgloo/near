@@ -43,7 +43,7 @@ function DrawingPage(): React.ReactElement {
   const penColor = useRecoilValue(penColorState);
   const penWidth = useRecoilValue(penWidthState);
 
-  const [backImage, setBackImg] = useRecoilState(backImageState);
+  const backImage = useRecoilValue(backImageState);
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
 
   const imageinput = useRef<HTMLInputElement>(null);
@@ -112,9 +112,9 @@ function DrawingPage(): React.ReactElement {
 
   const navigate = useNavigate();
   const moveBack = useCallback(() => {
-    setBackImg(null);
     navigate('/');
-  }, [navigate, setBackImg]);
+    window.location.reload();
+  }, [navigate]);
 
   const [drawingStep, setDrawingStep] = useRecoilState(drawingStepState);
   const complete = useCallback(() => {
