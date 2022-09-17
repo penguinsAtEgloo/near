@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { drawingState } from '../atoms/Drawing';
 import { historyState } from '../atoms/History';
+import CopyDialog from '../dialog/CopyDialog';
 import Back from '../icons/Back';
 import Download from '../icons/Download';
 import Share from '../icons/Share';
@@ -15,10 +16,13 @@ function PreviewPage(): React.ReactElement {
   const drawing = useRecoilValue(drawingState);
   const history = useRecoilValue(historyState);
 
+  const [showCopyDialog, setShowCopyDialog] = useState(false);
+  const closeCopyDialog = useCallback(() => setShowCopyDialog(false), []);
+
   const copyURL = useCallback(() => {
     if (!drawing) return;
     window.navigator.clipboard.writeText(drawing).then(() => {
-      alert('링크가 복사되었습니다! 그림을 친구에게 전달해보세요.');
+      setShowCopyDialog(true);
     });
   }, [drawing]);
 
@@ -133,6 +137,9 @@ function PreviewPage(): React.ReactElement {
           <Share />
         </button>
       </div>
+      {showCopyDialog && (
+        <CopyDialog isOpen={showCopyDialog} onClose={closeCopyDialog} />
+      )}
     </div>
   );
 }
