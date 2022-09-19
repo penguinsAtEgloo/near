@@ -94,6 +94,8 @@ function LoadImageModal({
             crop={crop}
             zoom={zoom}
             rotation={0}
+            minZoom={0.5}
+            maxZoom={3}
             aspect={size.width / (size.height - 75)}
             onCropChange={setCrop}
             onCropComplete={onCropComplete}
@@ -108,7 +110,7 @@ function LoadImageModal({
             onClick={onConfirm}
             className="z-10 absolute top-[30px] right-[30px]"
           >
-            <Check></Check>
+            <Check color="white"></Check>
           </button>
         )}
       </>

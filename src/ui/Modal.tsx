@@ -56,7 +56,7 @@ function Modal({
                   className="absolute top-[30px] left-[30px]"
                   onClick={onClose}
                 >
-                  <Close></Close>
+                  <Close color="white"></Close>
                 </button>
               </HeadlessModal.Panel>
             </Transition.Child>

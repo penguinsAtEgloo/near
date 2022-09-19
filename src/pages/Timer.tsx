@@ -1,31 +1,13 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 
 import { useRecoilState } from 'recoil';
 import { drawingStepState } from '../atoms/DrawingStep';
-import PauseDialog from '../dialog/PauseDialog';
 import clsx from 'clsx';
+import { secondsState } from '../atoms/Seconds';
 
-// TODO: replace
-const TIME_LIMIT = 180;
-// const TIME_LIMIT = 3;
-
-function Timer({
-  className,
-  onComplete,
-}: {
-  className: string;
-  onComplete: () => void;
-}): React.ReactElement {
-  const [seconds, setSeconds] = useState(TIME_LIMIT);
+function Timer({ className }: { className: string }): React.ReactElement {
+  const [seconds, setSeconds] = useRecoilState(secondsState);
   const [drawingStep, setDrawingStep] = useRecoilState(drawingStepState);
-
-  const retryDrawing = useCallback(() => {
-    window.location.reload();
-  }, []);
-
-  const playDrawing = useCallback(() => {
-    setDrawingStep('play');
-  }, [setDrawingStep]);
 
   const toggleDrawing = useCallback(() => {
     if (drawingStep === 'play') {
@@ -43,7 +25,7 @@ function Timer({
       }
     }, 1000);
     return () => clearInterval(countdown);
-  }, [drawingStep, seconds]);
+  }, [drawingStep, seconds, setSeconds]);
 
   const timeStyle = useMemo(() => {
     if (seconds <= 10) {
@@ -73,12 +55,6 @@ function Timer({
       >
         {drawingStep === 'play' ? 'STOP' : 'START'}
       </button>
-      <PauseDialog
-        isOpen={drawingStep === 'pause' || seconds === 0}
-        isTimeout={seconds === 0}
-        onClose={seconds === 0 ? retryDrawing : playDrawing}
-        onProceed={onComplete}
-      />
     </div>
   );
 }

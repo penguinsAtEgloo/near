@@ -11,6 +11,8 @@ import ToolBar from '../components/ToolBar';
 
 import Picture from '../icons/Picture';
 import Back from '../icons/Back';
+import EyeOpen from '../icons/EyeOpen';
+import EyeClosed from '../icons/EyeClosed';
 
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
@@ -20,46 +22,68 @@ import { imageSourceState } from '../atoms/ImageSource';
 import { linesState } from '../atoms/Lines';
 import { erasedLinesState } from '../atoms/ErasedLines';
 import Timer from './Timer';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { drawingState } from '../atoms/Drawing';
 import { historyState } from '../atoms/History';
 import { drawingStepState } from '../atoms/DrawingStep';
 import { postImage } from '../api/images';
-
-const dataURLtoBlob = (dataurl: any) => {
-  const arr = dataurl.split(','),
-    mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[1]);
-  let n = bstr.length;
-  const u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return new Blob([u8arr], { type: mime });
-};
+import FinishDialog from '../dialog/FinishDialog';
+import { secondsState } from '../atoms/Seconds';
 
 function DrawingPage(): React.ReactElement {
   const penColor = useRecoilValue(penColorState);
   const penWidth = useRecoilValue(penWidthState);
-
   const backImage = useRecoilValue(backImageState);
-  const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
-
-  const imageinput = useRef<HTMLInputElement>(null);
   const [imageSource, setImgSrc] = useRecoilState(imageSourceState);
   const setLines = useSetRecoilState(linesState);
   const setErasedLines = useSetRecoilState(erasedLinesState);
-
-  const [showLoadImageModal, setShowLoadImageModal] = useState(false);
-  const closeLoadImageModal = useCallback(() => {
-    setShowLoadImageModal(false);
-  }, []);
-
   const setDrawing = useSetRecoilState(drawingState);
   const setHistory = useSetRecoilState(historyState);
+  const [backgroundShown, setBackgroundShown] = useState<boolean>(true);
+
+  const imageinput = useRef<HTMLInputElement>(null);
+  const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
+  const [showLoadImageModal, setShowLoadImageModal] = useState(false);
+  const closeLoadImageModal = useCallback(
+    () => setShowLoadImageModal(false),
+    []
+  );
+
+  const switchBackground = useCallback(() => {
+    setBackgroundShown(!backgroundShown);
+  }, [backgroundShown]);
 
   const size = useMemo(() => {
     return { width: window.innerWidth, height: window.innerHeight };
+  }, []);
+
+  const [blankImage, setBlankImage] = useState('');
+  useEffect(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = size.width;
+    canvas.height = size.height;
+    const res = canvas?.getContext('2d');
+    if (!res || !(res instanceof CanvasRenderingContext2D)) {
+      return;
+    }
+    const ctx: CanvasRenderingContext2D = res;
+    if (!ctx) return;
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    setBlankImage(canvas.toDataURL('image/jpeg'));
+  }, [setBlankImage, size]);
+
+  const dataURLtoBlob = useCallback((dataurl: any) => {
+    const arr = dataurl.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
   }, []);
 
   const onSelectFile = useCallback(
@@ -106,14 +130,27 @@ function DrawingPage(): React.ReactElement {
     navigate('/');
     window.location.reload();
   }, [navigate]);
+  const refresh = useCallback(() => {
+    window.location.reload();
+  }, []);
 
   const [drawingStep, setDrawingStep] = useRecoilState(drawingStepState);
+  const playDrawing = useCallback(
+    () => setDrawingStep('play'),
+    [setDrawingStep]
+  );
+  const requestCompleteDrawing = useCallback(() => {
+    setDrawingStep('end');
+  }, [setDrawingStep]);
   const complete = useCallback(() => {
-    setDrawingStep('wait');
     if (!canvasRef) return;
     (canvasRef as any).setView({ scale: 1.0 });
     (canvasRef as any).setView({ x: 0, y: 0 });
-    const imageUrl = (canvasRef as any).getDataURL('image/png');
+    const imageUrl = (canvasRef as any).getDataURL(
+      'image/png',
+      false,
+      '#FFFFFF'
+    );
     const blob = dataURLtoBlob(imageUrl);
     const formData = new FormData();
     formData.append('image', blob);
@@ -125,7 +162,11 @@ function DrawingPage(): React.ReactElement {
       .catch((error) => {
         console.log(error.response);
       });
-  }, [canvasRef, setDrawing, setDrawingStep, setHistory]);
+
+    navigate('/pages/preview');
+  }, [canvasRef, dataURLtoBlob, navigate, setDrawing, setHistory]);
+
+  const seconds = useRecoilValue(secondsState);
 
   return (
     <div className="fixed inset-0 flex flex-col">
@@ -146,23 +187,31 @@ function DrawingPage(): React.ReactElement {
             accept="image/*"
           />
         </div>
-        <Link className="flex items-center" to={'/pages/preview'}>
-          <button
-            className="px-2 rounded-full bg-white font-semibold"
-            type="button"
-            onClick={complete}
-          >
-            완료
-          </button>
-        </Link>
+        <button
+          className="px-2 rounded-full bg-white font-semibold"
+          type="button"
+          onClick={requestCompleteDrawing}
+        >
+          완료
+        </button>
       </div>
       <div className="absolute bottom-0 w-full">
+        {backImage && (
+          <button
+            type="button"
+            className="absolute right-[30px] top-[10px] z-10"
+            onClick={switchBackground}
+          >
+            {backgroundShown ? <EyeOpen /> : <EyeClosed />}
+          </button>
+        )}
         <CanvasDraw
           className="CanvasDraw"
-          imgSrc={backImage}
+          imgSrc={backgroundShown ? backImage : blankImage}
           ref={(canvasDraw) => {
             setCanvasRef(canvasDraw);
           }}
+          backgroundColor={'#FFF'}
           clampLinesToDocument={true}
           onChange={onChangeCanvas}
           canvasWidth={size.width}
@@ -179,13 +228,19 @@ function DrawingPage(): React.ReactElement {
           disabled={drawingStep !== 'play'}
         />
       </div>
-      <Timer className="absolute top-20 left-4 flex" onComplete={complete} />
+      <Timer className="absolute top-20 left-4 flex" />
       <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
         <ToolBar canvasDraw={canvasRef} />
       </div>
       <LoadImageModal
         isOpen={showLoadImageModal}
         onClose={closeLoadImageModal}
+      />
+      <FinishDialog
+        isOpen={drawingStep === 'end' || seconds === 0}
+        isTimeout={seconds === 0}
+        onClose={seconds === 0 ? refresh : playDrawing}
+        onProceed={complete}
       />
     </div>
   );

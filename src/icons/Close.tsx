@@ -1,7 +1,9 @@
 import type { ReactElement } from 'react';
 import React from 'react';
 
-const Close: React.FC<React.SVGProps<SVGSVGElement>> = (): ReactElement => (
+const Close: React.FC<React.SVGProps<SVGSVGElement>> = ({
+  color = 'black',
+}): ReactElement => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="30"
@@ -11,7 +13,7 @@ const Close: React.FC<React.SVGProps<SVGSVGElement>> = (): ReactElement => (
   >
     <path
       d="M22.5 7.5L7.5 22.5M7.5 7.5L22.5 22.5"
-      stroke="black"
+      stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
