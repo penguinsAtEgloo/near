@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-export const backImageState = atom<string>({
+export const backImageState = atom<string | undefined>({
   key: 'backImage',
-  default: '',
+  default: undefined,
 });
