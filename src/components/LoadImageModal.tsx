@@ -108,7 +108,7 @@ function LoadImageModal({
             onClick={onConfirm}
             className="z-10 absolute top-[30px] right-[30px]"
           >
-            <Check></Check>
+            <Check color="white"></Check>
           </button>
         )}
       </>
