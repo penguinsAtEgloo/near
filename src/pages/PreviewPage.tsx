@@ -53,6 +53,10 @@ function PreviewPage(): React.ReactElement {
   const handleImgType = useCallback(() => setSaveType('drawing'), []);
   const handleHistoryType = useCallback(() => setSaveType('history'), []);
 
+  const [pageType, setPageType] = useState<'preview' | 'gift'>('preview');
+  const pageTypeHandler = useCallback(() => {
+    setPageType('gift');
+  }, []);
   return (
     <div className="fixed inset-0 flex flex-col items-center bg-gray-200">
       <div className="relative min-h-[75px] w-full flex bg-white">
@@ -60,38 +64,43 @@ function PreviewPage(): React.ReactElement {
           <Back />
         </button>
         <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 font-semibold">
-          저장하기
+          {pageType === 'preview' ? '저장하기' : '그림 확인하기'}
         </div>
       </div>
       <div className="relative flex flex-col">
-        <div className="flex">
-          <button
-            className={clsx(
-              'py-2 bg-white text-center font-semibold border-b-[3px]',
-              saveType === 'drawing'
-                ? 'text-black border-black'
-                : 'text-gray-400 border-gray-200'
-            )}
-            style={{ width: size.width / 2 }}
-            type="button"
-            onClick={handleImgType}
-          >
-            이미지 타입
-          </button>
-          <button
-            className={clsx(
-              'py-2 bg-white text-center font-semibold border-b-[3px]',
-              saveType === 'history'
-                ? 'text-black border-black'
-                : 'text-gray-400 border-gray-200'
-            )}
-            style={{ width: size.width / 2 }}
-            type="button"
-            onClick={handleHistoryType}
-          >
-            영상 타입
-          </button>
-        </div>
+        {pageType === 'preview' ? (
+          <div className="flex">
+            <button
+              className={clsx(
+                'py-2 bg-white text-center font-semibold border-b-[3px]',
+                saveType === 'drawing'
+                  ? 'text-black border-black'
+                  : 'text-gray-400 border-gray-200'
+              )}
+              style={{ width: size.width / 2 }}
+              type="button"
+              onClick={handleImgType}
+            >
+              이미지 타입
+            </button>
+            <button
+              className={clsx(
+                'py-2 bg-white text-center font-semibold border-b-[3px]',
+                saveType === 'history'
+                  ? 'text-black border-black'
+                  : 'text-gray-400 border-gray-200'
+              )}
+              style={{ width: size.width / 2 }}
+              type="button"
+              onClick={handleHistoryType}
+            >
+              영상 타입
+            </button>
+          </div>
+        ) : (
+          <div className="flex"></div>
+        )}
+
         {saveType === 'drawing' ? (
           <img
             className="bg-white"
@@ -118,7 +127,7 @@ function PreviewPage(): React.ReactElement {
           />
         )}
       </div>
-      <div className="absolute right-5 bottom-5 space-y-2.5">
+      <div className="absolute right-[5vw] bottom-[20vh] space-y-2.5">
         <button
           className="flex p-4 justify-center items-center bg-black rounded-full"
           onClick={saveAsPNG}
@@ -133,12 +142,31 @@ function PreviewPage(): React.ReactElement {
             <span></span>
           </a>
         </button>
-        <button
-          className="flex p-4 justify-center items-center bg-black rounded-full"
-          onClick={copyURL}
-        >
-          <Share />
-        </button>
+        {pageType === 'preview' && (
+          <button
+            className="flex p-4 justify-center items-center bg-black rounded-full"
+            onClick={copyURL}
+          >
+            <Share />
+          </button>
+        )}
+      </div>
+      <div className="absolute bottom-[8vh]">
+        {pageType === 'preview' ? (
+          <button
+            className="flex w-[318px] h-[64px] space-x-3.5 justify-center items-center bg-black rounded-full"
+            onClick={pageTypeHandler}
+          >
+            <span className="text-white">내 그림 확인하기</span>
+          </button>
+        ) : (
+          <button
+            className="flex w-[318px] h-[64px] space-x-3.5 justify-center items-center bg-black rounded-full"
+            onClick={moveBack}
+          >
+            <span className="text-white">또 그리러 가기 GO !</span>
+          </button>
+        )}
       </div>
       {showCopyDialog && (
         <CopyDialog isOpen={showCopyDialog} onClose={closeCopyDialog} />
