@@ -53,7 +53,7 @@ function ColorToolbar({
           }}
         />
         <input
-          className="invisible w-0 h-0 bg-white"
+          className="w-0 h-0 opacity-0"
           type="color"
           onChange={setColorValue}
         />
