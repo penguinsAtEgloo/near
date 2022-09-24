@@ -11,6 +11,8 @@ import ToolBar from '../components/ToolBar';
 
 import Picture from '../icons/Picture';
 import Back from '../icons/Back';
+import EyeOpen from '../icons/EyeOpen';
+import EyeClosed from '../icons/EyeClosed';
 
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { penWidthState } from '../atoms/PenWidth';
@@ -37,6 +39,7 @@ function DrawingPage(): React.ReactElement {
   const setErasedLines = useSetRecoilState(erasedLinesState);
   const setDrawing = useSetRecoilState(drawingState);
   const setHistory = useSetRecoilState(historyState);
+  const [backgroundShown, setBackgroundShown] = useState<boolean>(true);
 
   const imageinput = useRef<HTMLInputElement>(null);
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
@@ -46,9 +49,30 @@ function DrawingPage(): React.ReactElement {
     []
   );
 
+  const switchBackground = useCallback(() => {
+    setBackgroundShown(!backgroundShown);
+  }, [backgroundShown]);
+
   const size = useMemo(() => {
     return { width: window.innerWidth, height: window.innerHeight };
   }, []);
+
+  const [blankImage, setBlankImage] = useState('');
+  useEffect(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = size.width;
+    canvas.height = size.height;
+    const res = canvas?.getContext('2d');
+    if (!res || !(res instanceof CanvasRenderingContext2D)) {
+      return;
+    }
+    const ctx: CanvasRenderingContext2D = res;
+    if (!ctx) return;
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    setBlankImage(canvas.toDataURL('image/jpeg'));
+  }, [setBlankImage, size]);
 
   const dataURLtoBlob = useCallback((dataurl: any) => {
     const arr = dataurl.split(','),
@@ -122,7 +146,11 @@ function DrawingPage(): React.ReactElement {
     if (!canvasRef) return;
     (canvasRef as any).setView({ scale: 1.0 });
     (canvasRef as any).setView({ x: 0, y: 0 });
-    const imageUrl = (canvasRef as any).getDataURL('image/png');
+    const imageUrl = (canvasRef as any).getDataURL(
+      'image/png',
+      false,
+      '#FFFFFF'
+    );
     const blob = dataURLtoBlob(imageUrl);
     const formData = new FormData();
     formData.append('image', blob);
@@ -168,12 +196,22 @@ function DrawingPage(): React.ReactElement {
         </button>
       </div>
       <div className="absolute bottom-0 w-full">
+        {backImage && (
+          <button
+            type="button"
+            className="absolute right-[30px] top-[10px] z-10"
+            onClick={switchBackground}
+          >
+            {backgroundShown ? <EyeOpen /> : <EyeClosed />}
+          </button>
+        )}
         <CanvasDraw
           className="CanvasDraw"
-          imgSrc={backImage}
+          imgSrc={backgroundShown ? backImage : blankImage}
           ref={(canvasDraw) => {
             setCanvasRef(canvasDraw);
           }}
+          backgroundColor={'#FFF'}
           clampLinesToDocument={true}
           onChange={onChangeCanvas}
           canvasWidth={size.width}
