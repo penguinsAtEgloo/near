@@ -94,6 +94,8 @@ function LoadImageModal({
             crop={crop}
             zoom={zoom}
             rotation={0}
+            minZoom={0.5}
+            maxZoom={3}
             aspect={size.width / (size.height - 75)}
             onCropChange={setCrop}
             onCropComplete={onCropComplete}
