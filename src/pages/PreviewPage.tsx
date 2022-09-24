@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import CanvasDraw from 'react-canvas-draw';
-import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { drawingState } from '../atoms/Drawing';
 import { historyState } from '../atoms/History';
@@ -42,11 +41,9 @@ function PreviewPage(): React.ReactElement {
     }, 500);
   }, [canvasRef, history]);
 
-  const navigate = useNavigate();
   const moveBack = useCallback(() => {
-    navigate('/');
-    window.location.reload();
-  }, [navigate]);
+    window.location.replace('/');
+  }, []);
 
   const size = useMemo(() => {
     return { width: window.innerWidth, height: window.innerHeight };
