@@ -8,12 +8,15 @@ import CopyDialog from '../dialog/CopyDialog';
 import Back from '../icons/Back';
 import Download from '../icons/Download';
 import Share from '../icons/Share';
+import { cuidState } from '../atoms/CUid';
+import { getGift } from '../api/images';
 
 function PreviewPage(): React.ReactElement {
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
 
   const drawing = useRecoilValue(drawingState);
   const history = useRecoilValue(historyState);
+  const cuid = useRecoilValue(cuidState);
 
   const [showCopyDialog, setShowCopyDialog] = useState(false);
   const closeCopyDialog = useCallback(() => setShowCopyDialog(false), []);
@@ -56,7 +59,9 @@ function PreviewPage(): React.ReactElement {
   const [pageType, setPageType] = useState<'preview' | 'gift'>('preview');
   const pageTypeHandler = useCallback(() => {
     setPageType('gift');
-  }, []);
+    getGift(cuid);
+  }, [cuid]);
+
   return (
     <div className="fixed inset-0 flex flex-col items-center bg-gray-200">
       <div className="relative min-h-[75px] w-full flex bg-white">
@@ -100,7 +105,6 @@ function PreviewPage(): React.ReactElement {
         ) : (
           <div className="flex"></div>
         )}
-
         {saveType === 'drawing' ? (
           <img
             className="bg-white"

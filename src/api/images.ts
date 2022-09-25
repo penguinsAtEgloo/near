@@ -11,6 +11,13 @@ export const postImage = async (data: FormData) => {
     });
 };
 
-export const getImage = async (cuid?: string) => {
-  return await api.post(`/v1/images/${cuid}`, cuid);
+export const getGift = async (cuid?: string) => {
+  return await api
+    .post(`/v1/images/${cuid}`, cuid)
+    .then((response: any) => {
+      console.log(response);
+    })
+    .catch((error: any) => {
+      console.log(error.response);
+    });
 };
