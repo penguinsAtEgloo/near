@@ -73,8 +73,8 @@ function PreviewPage(): React.ReactElement {
         </div>
       </div>
       <div className="relative flex flex-col">
-        {pageType === 'preview' ? (
-          <div className="flex">
+        {pageType === 'preview' && (
+          <div className="relative flex">
             <button
               className={clsx(
                 'py-2 bg-white text-center font-semibold border-b-[3px]',
@@ -102,8 +102,6 @@ function PreviewPage(): React.ReactElement {
               영상 타입
             </button>
           </div>
-        ) : (
-          <div className="flex"></div>
         )}
         {saveType === 'drawing' ? (
           <img
@@ -130,47 +128,44 @@ function PreviewPage(): React.ReactElement {
             disabled={true}
           />
         )}
-      </div>
-      <div className="absolute right-[5vw] bottom-[20vh] space-y-2.5">
-        <button
-          className="flex p-4 justify-center items-center bg-black rounded-full"
-          onClick={saveAsPNG}
-        >
-          <Download />
-          <a
-            id="download_link"
-            className="invisible"
-            href={drawing}
-            download="IMAGE.png"
-          >
-            <span></span>
-          </a>
-        </button>
-        {pageType === 'preview' && (
-          <button
-            className="flex p-4 justify-center items-center bg-black rounded-full"
-            onClick={copyURL}
-          >
-            <Share />
-          </button>
+        {saveType === 'drawing' && (
+          <div className="absolute top-16 right-[5vw] space-y-2.5">
+            <button
+              className="flex p-4 justify-center items-center bg-black rounded-full"
+              onClick={saveAsPNG}
+            >
+              <Download />
+              <a
+                id="download_link"
+                className="invisible"
+                href={drawing}
+                download="IMAGE.png"
+              >
+                <span></span>
+              </a>
+            </button>
+            {pageType === 'preview' && (
+              <button
+                className="flex p-4 justify-center items-center bg-black rounded-full"
+                onClick={copyURL}
+              >
+                <Share />
+              </button>
+            )}
+          </div>
         )}
       </div>
       <div className="absolute bottom-[8vh]">
-        {pageType === 'preview' ? (
-          <button
-            className="flex w-[318px] h-[64px] space-x-3.5 justify-center items-center bg-black rounded-full"
-            onClick={pageTypeHandler}
-          >
-            <span className="text-white">내 그림 확인하기</span>
-          </button>
-        ) : (
-          <button
-            className="flex w-[318px] h-[64px] space-x-3.5 justify-center items-center bg-black rounded-full"
-            onClick={moveBack}
-          >
-            <span className="text-white">또 그리러 가기 GO !</span>
-          </button>
-        )}
+        <button
+          className="flex w-[318px] h-[64px] space-x-3.5 justify-center items-center bg-black rounded-full"
+          onClick={pageType === 'preview' ? pageTypeHandler : moveBack}
+        >
+          <span className="text-white">
+            {pageType === 'preview'
+              ? '내 그림 확인하기'
+              : '또 그리러 가기 GO !'}
+          </span>
+        </button>
       </div>
       {showCopyDialog && (
         <CopyDialog isOpen={showCopyDialog} onClose={closeCopyDialog} />

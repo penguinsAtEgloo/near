@@ -41,7 +41,7 @@ function DrawingPage(): React.ReactElement {
   const setHistory = useSetRecoilState(historyState);
   const [backgroundShown, setBackgroundShown] = useState<boolean>(true);
 
-  const imageinput = useRef<HTMLInputElement>(null);
+  const imageInput = useRef<HTMLInputElement>(null);
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
   const [showLoadImageModal, setShowLoadImageModal] = useState(false);
   const closeLoadImageModal = useCallback(
@@ -50,8 +50,8 @@ function DrawingPage(): React.ReactElement {
   );
 
   const switchBackground = useCallback(() => {
-    setBackgroundShown(!backgroundShown);
-  }, [backgroundShown]);
+    setBackgroundShown((prev) => !prev);
+  }, []);
 
   const size = useMemo(() => {
     return { width: window.innerWidth, height: window.innerHeight };
@@ -102,7 +102,7 @@ function DrawingPage(): React.ReactElement {
   );
 
   const loadImage = useCallback(() => {
-    imageinput.current?.click();
+    imageInput.current?.click();
   }, []);
 
   useEffect(() => {
@@ -127,9 +127,8 @@ function DrawingPage(): React.ReactElement {
 
   const navigate = useNavigate();
   const moveBack = useCallback(() => {
-    navigate('/');
-    window.location.reload();
-  }, [navigate]);
+    window.location.replace('/');
+  }, []);
   const refresh = useCallback(() => {
     window.location.reload();
   }, []);
@@ -139,9 +138,23 @@ function DrawingPage(): React.ReactElement {
     () => setDrawingStep('play'),
     [setDrawingStep]
   );
+
+  const targetRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const start = (event: Event) => {
+      if (!event.target) return;
+      const targetElement = targetRef.current;
+      if (!targetElement) return;
+      if (targetElement.contains(event.target as HTMLElement)) playDrawing();
+    };
+    document.addEventListener('pointerdown', start);
+    return () => document.removeEventListener('pointerdown', start);
+  }, [playDrawing]);
+
   const requestCompleteDrawing = useCallback(() => {
     setDrawingStep('end');
   }, [setDrawingStep]);
+
   const complete = useCallback(() => {
     if (!canvasRef) return;
     (canvasRef as any).setView({ scale: 1.0 });
@@ -160,7 +173,7 @@ function DrawingPage(): React.ReactElement {
     postImage(formData)
       .then((res) => console.log(res))
       .catch((error) => {
-        console.log(error.response);
+        console.error(error.response);
       });
 
     navigate('/pages/preview');
@@ -180,7 +193,7 @@ function DrawingPage(): React.ReactElement {
             <Picture />
           </button>
           <input
-            ref={imageinput}
+            ref={imageInput}
             onChange={onSelectFile}
             type="file"
             className="invisible w-0 h-0"
@@ -195,7 +208,7 @@ function DrawingPage(): React.ReactElement {
           완료
         </button>
       </div>
-      <div className="absolute bottom-0 w-full">
+      <div className="absolute bottom-0 w-full" ref={targetRef}>
         {backImage && (
           <button
             type="button"
