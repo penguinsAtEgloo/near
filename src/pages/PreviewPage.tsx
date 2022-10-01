@@ -167,9 +167,7 @@ function PreviewPage(): React.ReactElement {
           </span>
         </button>
       </div>
-      {showCopyDialog && (
-        <CopyDialog isOpen={showCopyDialog} onClose={closeCopyDialog} />
-      )}
+      <CopyDialog isOpen={showCopyDialog} onClose={closeCopyDialog} />
     </div>
   );
 }
