@@ -31,7 +31,7 @@ function Timer({ className }: { className: string }): React.ReactElement {
     if (seconds <= 10) {
       return 'text-red-500';
     }
-    if (seconds <= 59) {
+    if (seconds <= 30) {
       return 'text-orange-500';
     }
     return 'text-slate-900';
@@ -44,12 +44,15 @@ function Timer({ className }: { className: string }): React.ReactElement {
         className
       )}
     >
-      <div className={clsx('w-9', timeStyle)}>
+      <div className={clsx('w-9 font-medium', timeStyle)}>
         {Math.floor(seconds / 60)}:
         {seconds % 60 < 10 ? `0${seconds % 60}` : seconds % 60}
       </div>
       <button
-        className="w-[54px] px-2 py-1 rounded-full bg-black text-white text-xs"
+        className={clsx(
+          'w-[54px] p-1 rounded-full border border-black text-xs font-bold',
+          drawingStep === 'play' ? 'bg-white text-black' : 'bg-black text-white'
+        )}
         type="button"
         onClick={toggleDrawing}
       >
