@@ -29,6 +29,7 @@ import { drawingStepState } from '../atoms/DrawingStep';
 import { postImage } from '../api/images';
 import FinishDialog from '../dialog/FinishDialog';
 import { secondsState } from '../atoms/Seconds';
+import StartDialog from '../dialog/StartDialog';
 
 function DrawingPage(): React.ReactElement {
   const penColor = useRecoilValue(penColorState);
@@ -48,6 +49,9 @@ function DrawingPage(): React.ReactElement {
     () => setShowLoadImageModal(false),
     []
   );
+
+  const [showStartDialog, setShowStartDialog] = useState(true);
+  const closeStartDialog = useCallback(() => setShowStartDialog(false), []);
 
   const switchBackground = useCallback(() => {
     setBackgroundShown((prev) => !prev);
@@ -255,6 +259,7 @@ function DrawingPage(): React.ReactElement {
         onClose={seconds === 0 ? refresh : playDrawing}
         onProceed={complete}
       />
+      <StartDialog isOpen={showStartDialog} onClose={closeStartDialog} />
     </div>
   );
 }
