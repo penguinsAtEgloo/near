@@ -245,7 +245,7 @@ function DrawingPage(): React.ReactElement {
           disabled={drawingStep !== 'play'}
         />
       </div>
-      <Timer className="absolute top-20 left-4 flex" />
+      <Timer className="absolute top-20 left-4 flex text-center" />
       <div className="absolute left-1/2 -translate-x-1/2 bottom-11">
         <ToolBar canvasDraw={canvasRef} />
       </div>
