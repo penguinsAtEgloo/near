@@ -8,7 +8,7 @@ import CopyDialog from '../dialog/CopyDialog';
 import Back from '../icons/Back';
 import Download from '../icons/Download';
 import Share from '../icons/Share';
-import { cuidState } from '../atoms/CUid';
+import { myDrawingCUidState } from '../atoms/CUid';
 import { getGift } from '../api/images';
 
 function PreviewPage(): React.ReactElement {
@@ -16,17 +16,23 @@ function PreviewPage(): React.ReactElement {
 
   const drawing = useRecoilValue(drawingState);
   const history = useRecoilValue(historyState);
-  const cuid = useRecoilValue(cuidState);
+  const myCUid = useRecoilValue(myDrawingCUidState);
 
   const [showCopyDialog, setShowCopyDialog] = useState(false);
   const closeCopyDialog = useCallback(() => setShowCopyDialog(false), []);
 
   const copyURL = useCallback(() => {
     if (!drawing) return;
-    window.navigator.clipboard.writeText(drawing).then(() => {
-      setShowCopyDialog(true);
-    });
-  }, [drawing]);
+    const url = encodeURI(myCUid as string);
+    window.navigator.clipboard
+      .writeText('https://drawingface.com/' + url)
+      .then(() => {
+        setShowCopyDialog(true);
+      })
+      .catch(() => {
+        console.error();
+      });
+  }, [drawing, myCUid]);
 
   const saveAsPNG = useCallback(() => {
     if (!drawing) return;
@@ -59,8 +65,8 @@ function PreviewPage(): React.ReactElement {
   const [pageType, setPageType] = useState<'preview' | 'gift'>('preview');
   const pageTypeHandler = useCallback(() => {
     setPageType('gift');
-    getGift(cuid);
-  }, [cuid]);
+    getGift(myCUid);
+  }, [myCUid]);
 
   return (
     <div className="fixed inset-0 flex flex-col items-center bg-gray-200">

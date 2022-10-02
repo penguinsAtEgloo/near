@@ -30,6 +30,7 @@ import { postImage } from '../api/images';
 import FinishDialog from '../dialog/FinishDialog';
 import { secondsState } from '../atoms/Seconds';
 import StartDialog from '../dialog/StartDialog';
+import { myDrawingCUidState } from '../atoms/CUid';
 
 function DrawingPage(): React.ReactElement {
   const penColor = useRecoilValue(penColorState);
@@ -41,6 +42,7 @@ function DrawingPage(): React.ReactElement {
   const setDrawing = useSetRecoilState(drawingState);
   const setHistory = useSetRecoilState(historyState);
   const [backgroundShown, setBackgroundShown] = useState<boolean>(true);
+  const setMyCUid = useSetRecoilState(myDrawingCUidState);
 
   const imageInput = useRef<HTMLInputElement>(null);
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
@@ -175,13 +177,16 @@ function DrawingPage(): React.ReactElement {
     setDrawing(imageUrl);
     setHistory(canvasRef.getSaveData());
     postImage(formData)
-      .then((res) => console.log(res))
+      .then((res: any) => {
+        if (!res || !res.data || !res.data.message) return;
+        setMyCUid(res.data.message);
+      })
       .catch((error) => {
         console.error(error.response);
       });
 
     navigate('/pages/preview');
-  }, [canvasRef, dataURLtoBlob, navigate, setDrawing, setHistory]);
+  }, [canvasRef, dataURLtoBlob, navigate, setDrawing, setHistory, setMyCUid]);
 
   const seconds = useRecoilValue(secondsState);
 
