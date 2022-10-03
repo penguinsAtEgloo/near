@@ -178,7 +178,7 @@ function DrawingPage(): React.ReactElement {
     setHistory(canvasRef.getSaveData());
     postImage(formData)
       .then((res: any) => {
-        if (!res || !res.data || !res.data.message) return;
+        if (!res.data.message) return;
         setMyCUid(res.data.message);
       })
       .catch((error) => {
