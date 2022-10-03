@@ -10,7 +10,10 @@ function App() {
     <RecoilRoot>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<MainPage />} />
+          <Route path="/">
+            <Route path=":cuid" element={<MainPage />} />
+            <Route path="" element={<MainPage />} />
+          </Route>
           <Route path="pages/draw" element={<DrawingPage />} />
           <Route path="pages/preview" element={<PreviewPage />} />
         </Routes>
