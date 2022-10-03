@@ -25,7 +25,7 @@ function PreviewPage(): React.ReactElement {
     if (!drawing) return;
     const url = encodeURI(myCUid as string);
     window.navigator.clipboard
-      .writeText('https://drawingface.com/' + url)
+      .writeText(`https://drawingface.com/ + ${url}`)
       .then(() => {
         setShowCopyDialog(true);
       })
