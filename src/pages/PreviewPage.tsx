@@ -10,8 +10,10 @@ import Download from '../icons/Download';
 import Share from '../icons/Share';
 import { myDrawingCuidState } from '../atoms/MyCuid';
 import { friendCuidState } from '../atoms/FriendCuid';
-// import { getGift } from '../api/images';
 import { friendImageState } from '../atoms/FriendImage';
+import { useNavigate } from 'react-router-dom';
+
+const HEADER_HEIGHT = 70;
 
 function PreviewPage(): React.ReactElement {
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
@@ -33,8 +35,8 @@ function PreviewPage(): React.ReactElement {
       .then(() => {
         setShowCopyDialog(true);
       })
-      .catch(() => {
-        console.error();
+      .catch((e) => {
+        console.error(e);
       });
   }, [drawing, myCuid]);
 
@@ -46,27 +48,15 @@ function PreviewPage(): React.ReactElement {
     canvasImage.click();
   }, [drawing]);
 
-  const saveFriendImage = useCallback(() => {
-    if (!friendImage) return;
-    const canvasImage: HTMLAnchorElement = document.querySelector(
-      '#download_link_friend'
-    ) as HTMLAnchorElement;
-    canvasImage.click();
-  }, [friendImage]);
-
   useEffect(() => {
     if (!canvasRef) return;
     if (!history) return;
-    console.log('friendImage', friendImage);
-    console.log('friendCuid', friendCuid);
     setTimeout(() => {
       canvasRef.loadSaveData(history);
     }, 500);
   }, [canvasRef, history, friendImage, friendCuid]);
 
-  const moveBack = useCallback(() => {
-    window.location.replace('/');
-  }, []);
+  const moveToMain = useCallback(() => window.location.replace('/'), []);
 
   const size = useMemo(() => {
     return { width: window.innerWidth, height: window.innerHeight };
@@ -76,70 +66,92 @@ function PreviewPage(): React.ReactElement {
   const handleImgType = useCallback(() => setSaveType('drawing'), []);
   const handleHistoryType = useCallback(() => setSaveType('history'), []);
 
-  const [pageType, setPageType] = useState<'preview' | 'gift'>('preview');
-  const [showFriendsGift, setShowfriendsGift] = useState(false);
+  const navigate = useNavigate();
 
-  const pageTypeHandler = useCallback(() => {
-    setPageType('gift');
-  }, []);
+  const moveToGiftPage = useCallback(() => navigate('/pages/gift'), [navigate]);
 
   useEffect(() => {
     if (!myCuid) {
       window.location.replace('/');
     }
-    if (friendCuid) {
-      setShowfriendsGift(true);
-    }
-  }, [myCuid, pageType, friendCuid, setShowfriendsGift]);
+  }, [myCuid]);
 
   return (
     <div className="fixed inset-0 flex flex-col items-center bg-gray-200">
-      <div className="absolute min-h-[70px] w-full flex bg-white">
-        <button type="button" className="pl-4" onClick={moveBack}>
+      <div
+        className="absolute w-full flex bg-white"
+        style={{ minHeight: `${HEADER_HEIGHT}px` }}
+      >
+        <button type="button" className="pl-4" onClick={moveToMain}>
           <Back />
         </button>
         <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 font-semibold">
-          {pageType === 'preview' ? '미리보기' : '그림 확인하기'}
+          미리보기
         </div>
       </div>
-      <div className="absolute top-[70px] flex flex-col">
-        {pageType === 'preview' && (
-          <div className="relative flex">
-            <button
-              className={clsx(
-                'py-2 bg-white text-center font-semibold border-b-[3px]',
-                saveType === 'drawing'
-                  ? 'text-black border-black'
-                  : 'text-gray-400 border-gray-200'
-              )}
-              style={{ width: size.width / 2 }}
-              type="button"
-              onClick={handleImgType}
-            >
-              이미지 타입
-            </button>
-            <button
-              className={clsx(
-                'py-2 bg-white text-center font-semibold border-b-[3px]',
-                saveType === 'history'
-                  ? 'text-black border-black'
-                  : 'text-gray-400 border-gray-200'
-              )}
-              style={{ width: size.width / 2 }}
-              type="button"
-              onClick={handleHistoryType}
-            >
-              영상 타입
-            </button>
-          </div>
-        )}
+      <div
+        className="absolute flex flex-col"
+        style={{ top: `${HEADER_HEIGHT}px` }}
+      >
+        <div className="relative flex">
+          <button
+            className={clsx(
+              'py-2 bg-white text-center font-semibold border-b-[3px]',
+              saveType === 'drawing'
+                ? 'text-black border-black'
+                : 'text-gray-400 border-gray-200'
+            )}
+            style={{ width: size.width / 2 }}
+            type="button"
+            onClick={handleImgType}
+          >
+            이미지 타입
+          </button>
+          <button
+            className={clsx(
+              'py-2 bg-white text-center font-semibold border-b-[3px]',
+              saveType === 'history'
+                ? 'text-black border-black'
+                : 'text-gray-400 border-gray-200'
+            )}
+            style={{ width: size.width / 2 }}
+            type="button"
+            onClick={handleHistoryType}
+          >
+            영상 타입
+          </button>
+        </div>
         {saveType === 'drawing' ? (
-          <img
-            className="bg-white"
-            src={drawing || ''}
-            alt="미리보기"
-            style={{ width: size.width, height: size.height - 75 }}
-          />
+          <>
+            <img
+              className="bg-white"
+              src={drawing || ''}
+              alt="미리보기"
+              style={{ width: size.width, height: size.height - HEADER_HEIGHT }}
+            />
+            <div className="absolute top-16 right-[5vw] space-y-2.5">
+              <button
+                className="flex p-4 justify-center items-center bg-black rounded-full"
+                onClick={saveAsPNG}
+              >
+                <Download />
+                <a
+                  id="download_link"
+                  className="invisible"
+                  href={drawing}
+                  download="IMAGE.png"
+                >
+                  <span />
+                </a>
+              </button>
+              <button
+                className="flex p-4 justify-center items-center bg-black rounded-full"
+                onClick={copyURL}
+              >
+                <Share />
+              </button>
+            </div>
+          </>
         ) : (
           <CanvasDraw
             className="CanvasDraw"
@@ -147,7 +159,7 @@ function PreviewPage(): React.ReactElement {
               setCanvasRef(canvasDraw);
             }}
             canvasWidth={size.width}
-            canvasHeight={size.height - 75}
+            canvasHeight={size.height - HEADER_HEIGHT}
             catenaryColor=""
             lazyRadius={0}
             hideGrid
@@ -158,68 +170,17 @@ function PreviewPage(): React.ReactElement {
             disabled={true}
           />
         )}
-        {saveType === 'drawing' && (
-          <div className="absolute top-16 right-[5vw] space-y-2.5">
-            <button
-              className="flex p-4 justify-center items-center bg-black rounded-full"
-              onClick={saveAsPNG}
-            >
-              <Download />
-              <a
-                id="download_link"
-                className="invisible"
-                href={drawing}
-                download="IMAGE.png"
-              >
-                <span></span>
-              </a>
-            </button>
-            {pageType === 'preview' && (
-              <button
-                className="flex p-4 justify-center items-center bg-black rounded-full"
-                onClick={copyURL}
-              >
-                <Share />
-              </button>
-            )}
-          </div>
-        )}
       </div>
-      {showFriendsGift && (
-        <div className="absolute top-[75px] bottom-[30px] flex flex-col items-center">
-          {pageType === 'gift' && (
-            <>
-              <button
-                className="absolute right-[5vw] bg-black p-4 rounded-full"
-                onClick={saveFriendImage}
-              >
-                <Download />
-                <a
-                  id="download_link_friend"
-                  className="invisible"
-                  href={drawing}
-                  download="IMAGE.png"
-                >
-                  <span></span>
-                </a>
-              </button>
-              <img
-                src={friendImage}
-                alt="친구그림"
-                className="bg-white"
-                style={{ width: size.width, height: size.height - 75 }}
-              />
-            </>
-          )}
+      {friendCuid && (
+        <div
+          className="absolute bottom-[30px] flex flex-col items-center"
+          style={{ top: `${HEADER_HEIGHT}px` }}
+        >
           <button
             className="absolute bottom-[30px] w-[318px] h-[64px] bg-black rounded-full"
-            onClick={pageType === 'preview' ? pageTypeHandler : moveBack}
+            onClick={moveToGiftPage}
           >
-            <span className="text-white">
-              {pageType === 'preview'
-                ? '내 그림 확인하기'
-                : '또 그리러 가기 GO !'}
-            </span>
+            <span className="text-white">친구가 그린 내 그림 확인하기</span>
           </button>
         </div>
       )}
