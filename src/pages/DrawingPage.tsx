@@ -191,7 +191,7 @@ function DrawingPage(): React.ReactElement {
 
   return (
     <div className="fixed inset-0 flex flex-col">
-      <div className="w-full min-h-[75px] flex p-4 justify-between">
+      <div className="w-full min-h-[70px] flex p-4 justify-between">
         {/* to prevent occupying full width in safari browser */}
         <div className="w-20 flex space-x-1">
           <button type="button" onClick={moveBack}>
@@ -220,7 +220,7 @@ function DrawingPage(): React.ReactElement {
         {backImage && (
           <button
             type="button"
-            className="absolute right-[30px] top-[10px] z-10"
+            className="absolute right-5 top-[10px] z-10"
             onClick={switchBackground}
           >
             {backgroundShown ? <EyeOpen /> : <EyeClosed />}
