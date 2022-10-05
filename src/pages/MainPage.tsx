@@ -36,13 +36,13 @@ function MainPage(): React.ReactElement {
       const res: any = getGift(cuid);
       if (
         !res ||
-        !res.data ||
-        !res.data.imgUrl ||
-        !res.data.imgUrl.contains('http')
+        !res.imageUrl ||
+        !res.data.imageUrl ||
+        !res.data.imageUrl.contains('http')
       )
         return;
       setCuid(cuid);
-      setFriendImage(res.data.imgUrl);
+      setFriendImage(res.data.imageUrl);
     }
     // setCuid(cuid);
   }, [cuid, setCuid, setFriendImage]);
