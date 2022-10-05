@@ -15,7 +15,7 @@ export const getGift = async (cuid?: string) => {
   return await api
     .post(`/v1/images/${cuid}`, cuid)
     .then((response: any) => {
-      console.log(response);
+      return response;
     })
     .catch((error: any) => {
       console.log(error.response);
