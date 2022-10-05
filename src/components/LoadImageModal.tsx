@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import Modal, { ModalProps } from '../ui/Modal';
 import Cropper from 'react-easy-crop';
 
@@ -21,10 +21,32 @@ function LoadImageModal({
 
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+  const [os, setOs] = useState('');
 
   const size = useMemo(() => {
     return { width: window.innerWidth, height: window.innerHeight };
   }, []);
+
+  useEffect(() => {
+    const mobile = /iphone|ipad|ipod|android/i.test(
+      navigator.userAgent.toLowerCase()
+    );
+
+    if (mobile) {
+      const userAgent = navigator.userAgent.toLowerCase();
+      if (userAgent.search('android') > -1) {
+        setOs('android');
+      } else if (
+        userAgent.search('iphone') > -1 ||
+        userAgent.search('ipod') > -1 ||
+        userAgent.search('ipad') > -1
+      ) {
+        setOs('ios');
+      } else {
+        setOs('nonMobile');
+      }
+    }
+  }, [setOs]);
 
   const beforeClose = useCallback(() => {
     setLocalCropped(null);
@@ -85,8 +107,13 @@ function LoadImageModal({
     [setLocalCropped]
   );
 
-  const onLoadMedia = (size: any) => {
-    console.log('size:::', size);
+  const onLoadMedia = ({ naturalWidth, naturalHeight }: any) => {
+    if (os === 'ios') {
+      if (naturalWidth * naturalHeight > 5000000) {
+        alert('사진이 너무 커용용이');
+        beforeClose();
+      }
+    }
   };
 
   return (
