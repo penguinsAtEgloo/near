@@ -33,10 +33,11 @@ function MainPage(): React.ReactElement {
 
   useEffect(() => {
     if (cuid) {
-      const res: any = getGift(cuid);
-      if (!res || !res.imageUrl || !res.data.imageUrl) return;
-      setCuid(cuid);
-      setFriendImage(res.data.imageUrl);
+      getGift(cuid).then((res) => {
+        if (!res || !res.data || !res.data.imageUrl) return;
+        setCuid(cuid);
+        setFriendImage(res.data.imageUrl);
+      });
     }
     // setCuid(cuid);
   }, [cuid, setCuid, setFriendImage]);
