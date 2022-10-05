@@ -2,11 +2,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import near from '../assets/near.png';
-import title from '../assets/main.png';
+// import title from '../assets/main.png';
 import drawingface from '../assets/drawing-face.png';
 import { countUpVisitor } from '../api/counter';
 import { isKakaotalk } from '../helpers/device';
-import { myDrawingCUidState } from '../atoms/CUid';
+import { myDrawingCuidState } from '../atoms/MyCuid';
 import { friendImageState } from '../atoms/FriendImage';
 import { getGift } from '../api/images';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -15,7 +15,7 @@ function MainPage(): React.ReactElement {
   const [isDrawing, setDrawing] = useState(false);
   const [visitCounter, setVisitCounter] = useState(0);
   const { cuid } = useParams();
-  const setCuid = useSetRecoilState(myDrawingCUidState);
+  const setCuid = useSetRecoilState(myDrawingCuidState);
   const [friendImage, setFriendImage] = useRecoilState(friendImageState);
 
   useEffect(() => {
@@ -54,24 +54,32 @@ function MainPage(): React.ReactElement {
 
   return (
     <div className="fixed inset-0 flex flex-col space-y-10 justify-center items-center bg-white">
-      <img className="absolute top-20" src={title} />
       {!isKakaotalk && !cuid && (
-        <div className="w-[250px] h-[290px] flex justify-center items-center">
-          <img src={isDrawing ? drawingface : near} />
-        </div>
+        <>
+          <div className="font-extrabold text-3xl text-center">
+            친구야.. 이게 나라고?
+          </div>
+          <div className="font-normal text-xl text-center my-2">
+            3분 안에 그리는 내 친구
+          </div>
+          <div className="w-[250px] h-[290px] flex justify-center items-center">
+            <img src={isDrawing ? drawingface : near} />
+          </div>
+        </>
       )}
       {!isKakaotalk && cuid && (
         <>
-          <div className="w-[428px] h-[390px] flex justify-center items-center">
+          <div className="font-normal text-xl text-center mb-0">
+            친구가 그린 내 모습이 도착했다..!
+          </div>
+          <div className="font-extrabold text-3xl text-center mt-0 leading-3">
+            확인해 볼까?
+          </div>
+          <div className="w-[250px] h-[290px] flex justify-center items-center">
             <img
               className="absolute w-[250px] h-[290px] border-0 blur-md"
               src={friendImage}
             />
-            <div className="absolute w-full h-[390px] bg-[#D3D3D3]/[.9] text-center inset-x-0 shadow-lg flex flex-col justify-center">
-              <p className="text-xl font-normal leading-[33px]">
-                그럼 너도 그려.
-              </p>
-            </div>
           </div>
         </>
       )}
@@ -93,14 +101,16 @@ function MainPage(): React.ReactElement {
         </button>
       )}
       {!isKakaotalk && cuid && (
-        <button
-          className="rounded-[100px] w-[318px] h-[78px] bg-black font-normal text-white"
-          type="button"
-          onClick={moveNext}
-        >
-          <p className="text-[20px] leading-[24px]">3분안에 친구 얼굴 그리고</p>
-          <p className="text-[28px] leading-[24px]">내 그림 확인하기</p>
-        </button>
+        <div className="space-y-[10px] text-center">
+          <p className="text-[20px] leading-[24px">3분안에 친구 얼굴 그리고</p>
+          <button
+            className="px-24 py-5 rounded-[100px] bg-black font-semibold text-xl text-white"
+            type="button"
+            onClick={moveNext}
+          >
+            내 그림 확인하기
+          </button>
+        </div>
       )}
     </div>
   );
