@@ -46,6 +46,14 @@ function PreviewPage(): React.ReactElement {
     canvasImage.click();
   }, [drawing]);
 
+  const saveFriendImage = useCallback(() => {
+    if (!friendImage) return;
+    const canvasImage: HTMLAnchorElement = document.querySelector(
+      '#download_link_friend'
+    ) as HTMLAnchorElement;
+    canvasImage.click();
+  }, [friendImage]);
+
   useEffect(() => {
     if (!canvasRef) return;
     if (!history) return;
@@ -86,7 +94,7 @@ function PreviewPage(): React.ReactElement {
 
   return (
     <div className="fixed inset-0 flex flex-col items-center bg-gray-200">
-      <div className="relative min-h-[75px] w-full flex bg-white">
+      <div className="absolute min-h-[75px] w-full flex bg-white">
         <button type="button" className="pl-4" onClick={moveBack}>
           <Back />
         </button>
@@ -94,7 +102,7 @@ function PreviewPage(): React.ReactElement {
           {pageType === 'preview' ? '저장하기' : '그림 확인하기'}
         </div>
       </div>
-      <div className="relative flex flex-col">
+      <div className="absolute top-[75px] flex flex-col">
         {pageType === 'preview' && (
           <div className="relative flex">
             <button
@@ -178,17 +186,33 @@ function PreviewPage(): React.ReactElement {
         )}
       </div>
       {showFriendsGift && (
-        <div className="absolute bottom-[8vh] top-[8vh] flex flex-col items-center">
+        <div className="absolute top-[75px] bottom-[30px] flex flex-col items-center">
           {pageType === 'gift' && (
-            <img
-              src={friendImage}
-              alt="친구그림"
-              className="bg-white"
-              style={{ width: size.width, height: size.height - 75 }}
-            />
+            <>
+              <button
+                className="absolute right-[5vw] bg-black p-4 rounded-full"
+                onClick={saveFriendImage}
+              >
+                <Download />
+                <a
+                  id="download_link_friend"
+                  className="invisible"
+                  href={drawing}
+                  download="IMAGE.png"
+                >
+                  <span></span>
+                </a>
+              </button>
+              <img
+                src={friendImage}
+                alt="친구그림"
+                className="bg-white"
+                style={{ width: size.width, height: size.height - 75 }}
+              />
+            </>
           )}
           <button
-            className="absolute bottom-[8vh] flex w-[318px] h-[64px] space-x-3.5 justify-center items-center bg-black rounded-full"
+            className="absolute bottom-[30px] w-[318px] h-[64px] bg-black rounded-full"
             onClick={pageType === 'preview' ? pageTypeHandler : moveBack}
           >
             <span className="text-white">
