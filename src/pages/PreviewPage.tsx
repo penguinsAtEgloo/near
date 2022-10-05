@@ -10,7 +10,8 @@ import Download from '../icons/Download';
 import Share from '../icons/Share';
 import { myDrawingCuidState } from '../atoms/MyCuid';
 import { friendCuidState } from '../atoms/FriendCuid';
-import { getGift } from '../api/images';
+// import { getGift } from '../api/images';
+import { friendImageState } from '../atoms/FriendImage';
 
 function PreviewPage(): React.ReactElement {
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
@@ -22,6 +23,7 @@ function PreviewPage(): React.ReactElement {
 
   const [showCopyDialog, setShowCopyDialog] = useState(false);
   const closeCopyDialog = useCallback(() => setShowCopyDialog(false), []);
+  const friendImage = useRecoilValue(friendImageState);
 
   const copyURL = useCallback(() => {
     if (!drawing) return;
@@ -47,10 +49,12 @@ function PreviewPage(): React.ReactElement {
   useEffect(() => {
     if (!canvasRef) return;
     if (!history) return;
+    console.log('friendImage', friendImage);
+    console.log('friendCuid', friendCuid);
     setTimeout(() => {
       canvasRef.loadSaveData(history);
     }, 500);
-  }, [canvasRef, history]);
+  }, [canvasRef, history, friendImage, friendCuid]);
 
   const moveBack = useCallback(() => {
     window.location.replace('/');
@@ -69,8 +73,7 @@ function PreviewPage(): React.ReactElement {
 
   const pageTypeHandler = useCallback(() => {
     setPageType('gift');
-    getGift(myCuid);
-  }, [myCuid]);
+  }, []);
 
   useEffect(() => {
     if (!myCuid) {
@@ -175,7 +178,15 @@ function PreviewPage(): React.ReactElement {
         )}
       </div>
       {showFriendsGift && (
-        <div className="absolute bottom-[8vh]">
+        <div className="absolute bottom-[8vh] flex flex-col items-center">
+          {pageType === 'gift' && (
+            <img
+              src={friendImage}
+              alt="친구그림"
+              className="bg-white"
+              style={{ width: size.width, height: size.height - 75 }}
+            />
+          )}
           <button
             className="flex w-[318px] h-[64px] space-x-3.5 justify-center items-center bg-black rounded-full"
             onClick={pageType === 'preview' ? pageTypeHandler : moveBack}
