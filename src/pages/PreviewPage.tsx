@@ -94,15 +94,15 @@ function PreviewPage(): React.ReactElement {
 
   return (
     <div className="fixed inset-0 flex flex-col items-center bg-gray-200">
-      <div className="absolute min-h-[75px] w-full flex bg-white">
+      <div className="absolute min-h-[70px] w-full flex bg-white">
         <button type="button" className="pl-4" onClick={moveBack}>
           <Back />
         </button>
         <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 font-semibold">
-          {pageType === 'preview' ? '저장하기' : '그림 확인하기'}
+          {pageType === 'preview' ? '미리보기' : '그림 확인하기'}
         </div>
       </div>
-      <div className="absolute top-[75px] flex flex-col">
+      <div className="absolute top-[70px] flex flex-col">
         {pageType === 'preview' && (
           <div className="relative flex">
             <button
