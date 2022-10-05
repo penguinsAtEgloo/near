@@ -34,13 +34,7 @@ function MainPage(): React.ReactElement {
   useEffect(() => {
     if (cuid) {
       const res: any = getGift(cuid);
-      if (
-        !res ||
-        !res.imageUrl ||
-        !res.data.imageUrl ||
-        !res.data.imageUrl.contains('http')
-      )
-        return;
+      if (!res || !res.imageUrl || !res.data.imageUrl) return;
       setCuid(cuid);
       setFriendImage(res.data.imageUrl);
     }
