@@ -6,7 +6,7 @@ import near from '../assets/near.png';
 import drawingface from '../assets/drawing-face.png';
 import { countUpVisitor } from '../api/counter';
 import { isKakaotalk } from '../helpers/device';
-import { myDrawingCuidState } from '../atoms/MyCuid';
+import { friendCuidState } from '../atoms/FriendCuid';
 import { friendImageState } from '../atoms/FriendImage';
 import { getGift } from '../api/images';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -15,7 +15,7 @@ function MainPage(): React.ReactElement {
   const [isDrawing, setDrawing] = useState(false);
   const [visitCounter, setVisitCounter] = useState(0);
   const { cuid } = useParams();
-  const setCuid = useSetRecoilState(myDrawingCuidState);
+  const setCuid = useSetRecoilState(friendCuidState);
   const [friendImage, setFriendImage] = useRecoilState(friendImageState);
 
   useEffect(() => {
@@ -39,7 +39,6 @@ function MainPage(): React.ReactElement {
         setFriendImage(res.data.imageUrl);
       });
     }
-    // setCuid(cuid);
   }, [cuid, setCuid, setFriendImage]);
 
   const navigate = useNavigate();
