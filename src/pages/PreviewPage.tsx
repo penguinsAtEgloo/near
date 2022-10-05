@@ -178,7 +178,7 @@ function PreviewPage(): React.ReactElement {
         )}
       </div>
       {showFriendsGift && (
-        <div className="absolute bottom-[8vh] flex flex-col items-center">
+        <div className="absolute bottom-[8vh] top-[8vh] flex flex-col items-center">
           {pageType === 'gift' && (
             <img
               src={friendImage}
@@ -188,7 +188,7 @@ function PreviewPage(): React.ReactElement {
             />
           )}
           <button
-            className="flex w-[318px] h-[64px] space-x-3.5 justify-center items-center bg-black rounded-full"
+            className="absolute bottom-[8vh] flex w-[318px] h-[64px] space-x-3.5 justify-center items-center bg-black rounded-full"
             onClick={pageType === 'preview' ? pageTypeHandler : moveBack}
           >
             <span className="text-white">
