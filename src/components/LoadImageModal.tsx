@@ -85,6 +85,10 @@ function LoadImageModal({
     [setLocalCropped]
   );
 
+  const onLoadMedia = (size: any) => {
+    console.log('size:::', size);
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={beforeClose}>
       <>
@@ -102,6 +106,7 @@ function LoadImageModal({
             onZoomChange={setZoom}
             restrictPosition={false}
             objectFit={'contain'}
+            onMediaLoaded={onLoadMedia}
           />
         )}
         {imgSrc && (
