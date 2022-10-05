@@ -1,8 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import near from '../assets/near.png';
-// import title from '../assets/main.png';
+import face from '../assets/face.png';
 import drawingface from '../assets/drawing-face.png';
 import { countUpVisitor } from '../api/counter';
 import { isKakaotalk } from '../helpers/device';
@@ -27,7 +26,7 @@ function MainPage(): React.ReactElement {
   }, []);
 
   const defaultImage = useMemo(() => {
-    return isDrawing ? drawingface : near;
+    return isDrawing ? drawingface : face;
   }, [isDrawing]);
 
   useEffect(() => {

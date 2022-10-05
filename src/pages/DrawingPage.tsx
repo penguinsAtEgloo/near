@@ -32,6 +32,18 @@ import { secondsState } from '../atoms/Seconds';
 import StartDialog from '../dialog/StartDialog';
 import { myDrawingCuidState } from '../atoms/MyCuid';
 
+const dataURLtoBlob = (dataurl: any) => {
+  const arr = dataurl.split(','),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+};
+
 function DrawingPage(): React.ReactElement {
   const penColor = useRecoilValue(penColorState);
   const penWidth = useRecoilValue(penWidthState);
@@ -79,18 +91,6 @@ function DrawingPage(): React.ReactElement {
 
     setBlankImage(canvas.toDataURL('image/jpeg'));
   }, [setBlankImage, size]);
-
-  const dataURLtoBlob = useCallback((dataurl: any) => {
-    const arr = dataurl.split(','),
-      mime = arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], { type: mime });
-  }, []);
 
   const onSelectFile = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,7 +185,7 @@ function DrawingPage(): React.ReactElement {
       .catch((error) => {
         console.error(error.response);
       });
-  }, [canvasRef, dataURLtoBlob, navigate, setDrawing, setHistory, setMyCuid]);
+  }, [canvasRef, navigate, setDrawing, setHistory, setMyCuid]);
 
   const seconds = useRecoilValue(secondsState);
 
