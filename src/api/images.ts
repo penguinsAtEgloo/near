@@ -13,7 +13,7 @@ export const postImage = async (data: FormData) => {
 
 export const getGift = async (cuid?: string) => {
   return await api
-    .post(`/v1/images/${cuid}`, cuid)
+    .get(`/v1/images/${cuid}`)
     .then((response: any) => {
       return response;
     })
