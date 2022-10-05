@@ -8,7 +8,8 @@ import CopyDialog from '../dialog/CopyDialog';
 import Back from '../icons/Back';
 import Download from '../icons/Download';
 import Share from '../icons/Share';
-import { myDrawingCUidState } from '../atoms/CUid';
+import { myDrawingCuidState } from '../atoms/MyCuid';
+import { friendCuidState } from '../atoms/FriendCuid';
 import { getGift } from '../api/images';
 
 function PreviewPage(): React.ReactElement {
@@ -16,23 +17,24 @@ function PreviewPage(): React.ReactElement {
 
   const drawing = useRecoilValue(drawingState);
   const history = useRecoilValue(historyState);
-  const myCUid = useRecoilValue(myDrawingCUidState);
+  const myCuid = useRecoilValue(myDrawingCuidState);
+  const friendCuid = useRecoilValue(friendCuidState);
 
   const [showCopyDialog, setShowCopyDialog] = useState(false);
   const closeCopyDialog = useCallback(() => setShowCopyDialog(false), []);
 
   const copyURL = useCallback(() => {
     if (!drawing) return;
-    const url = encodeURI(myCUid as string);
+    const url = encodeURI(myCuid as string);
     window.navigator.clipboard
-      .writeText(`https://drawingface.com/ + ${url}`)
+      .writeText(`https://drawingface.com/${url}`)
       .then(() => {
         setShowCopyDialog(true);
       })
       .catch(() => {
         console.error();
       });
-  }, [drawing, myCUid]);
+  }, [drawing, myCuid]);
 
   const saveAsPNG = useCallback(() => {
     if (!drawing) return;
@@ -63,10 +65,21 @@ function PreviewPage(): React.ReactElement {
   const handleHistoryType = useCallback(() => setSaveType('history'), []);
 
   const [pageType, setPageType] = useState<'preview' | 'gift'>('preview');
+  const [showFriendsGift, setShowfriendsGift] = useState(false);
+
   const pageTypeHandler = useCallback(() => {
     setPageType('gift');
-    getGift(myCUid);
-  }, [myCUid]);
+    getGift(myCuid);
+  }, [myCuid]);
+
+  useEffect(() => {
+    if (!myCuid) {
+      window.location.replace('/');
+    }
+    if (friendCuid) {
+      setShowfriendsGift(true);
+    }
+  }, [myCuid, pageType, friendCuid, setShowfriendsGift]);
 
   return (
     <div className="fixed inset-0 flex flex-col items-center bg-gray-200">
@@ -161,18 +174,20 @@ function PreviewPage(): React.ReactElement {
           </div>
         )}
       </div>
-      <div className="absolute bottom-[8vh]">
-        <button
-          className="flex w-[318px] h-[64px] space-x-3.5 justify-center items-center bg-black rounded-full"
-          onClick={pageType === 'preview' ? pageTypeHandler : moveBack}
-        >
-          <span className="text-white">
-            {pageType === 'preview'
-              ? '내 그림 확인하기'
-              : '또 그리러 가기 GO !'}
-          </span>
-        </button>
-      </div>
+      {showFriendsGift && (
+        <div className="absolute bottom-[8vh]">
+          <button
+            className="flex w-[318px] h-[64px] space-x-3.5 justify-center items-center bg-black rounded-full"
+            onClick={pageType === 'preview' ? pageTypeHandler : moveBack}
+          >
+            <span className="text-white">
+              {pageType === 'preview'
+                ? '내 그림 확인하기'
+                : '또 그리러 가기 GO !'}
+            </span>
+          </button>
+        </div>
+      )}
       <CopyDialog isOpen={showCopyDialog} onClose={closeCopyDialog} />
     </div>
   );
