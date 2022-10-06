@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 
 export const countUpVisitor = async () => {
   return await api
-    .patch(`/v1/visitors/countUp`)
+    .get(`/v1/visitors/countUp`)
     .then((response: AxiosResponse<VisitorCountDTO>) => {
       return response;
     })
