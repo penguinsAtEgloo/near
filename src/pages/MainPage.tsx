@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import face from '../assets/face.png';
 import drawingface from '../assets/drawing-face.png';
+import unsupportedFace from '../assets/unsupported-face.png';
 import { countUpVisitor } from '../api/counter';
 import { isKakaotalk } from '../helpers/device';
 import { friendCuidState } from '../atoms/FriendCuid';
@@ -25,9 +26,11 @@ function MainPage(): React.ReactElement {
     return () => clearInterval(timer);
   }, []);
 
-  const defaultImage = useMemo(() => {
+  const mainImage = useMemo(() => {
+    if (isKakaotalk) return unsupportedFace;
+    if (cuid) return friendImage;
     return isDrawing ? drawingface : face;
-  }, [isDrawing]);
+  }, [cuid, friendImage, isDrawing]);
 
   useEffect(() => {
     countUpVisitor().then((res: any) => {
@@ -61,7 +64,7 @@ function MainPage(): React.ReactElement {
         </div>
       </div>
       <div className="w-[250px] h-[290px] flex justify-center items-center">
-        <img src={cuid ? friendImage : defaultImage} />
+        <img src={mainImage} />
       </div>
       {isKakaotalk ? (
         <div className="text-lg font-semibold">

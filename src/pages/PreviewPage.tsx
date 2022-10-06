@@ -13,7 +13,7 @@ import { friendCuidState } from '../atoms/FriendCuid';
 import { friendImageState } from '../atoms/FriendImage';
 import { useNavigate } from 'react-router-dom';
 
-const HEADER_HEIGHT = 70;
+const HEADER_HEIGHT = 63;
 
 function PreviewPage(): React.ReactElement {
   const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>(null);
@@ -85,7 +85,7 @@ function PreviewPage(): React.ReactElement {
         <button type="button" className="pl-4" onClick={moveToMain}>
           <Back />
         </button>
-        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 font-semibold">
+        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg font-semibold">
           미리보기
         </div>
       </div>

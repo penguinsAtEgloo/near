@@ -6,7 +6,7 @@ import Download from '../icons/Download';
 import { myDrawingCuidState } from '../atoms/MyCuid';
 import { friendImageState } from '../atoms/FriendImage';
 
-const HEADER_HEIGHT = 70;
+const HEADER_HEIGHT = 63;
 
 function GiftPage(): React.ReactElement {
   const drawing = useRecoilValue(drawingState);
@@ -43,7 +43,7 @@ function GiftPage(): React.ReactElement {
         <button type="button" className="pl-4" onClick={moveToMain}>
           <Back />
         </button>
-        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 font-semibold">
+        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg font-semibold">
           그림 확인하기
         </div>
       </div>
