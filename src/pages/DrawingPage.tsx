@@ -32,6 +32,8 @@ import { secondsState } from '../atoms/Seconds';
 import StartDialog from '../dialog/StartDialog';
 import { myDrawingCuidState } from '../atoms/MyCuid';
 
+const HEADER_HEIGHT = 63;
+
 const dataURLtoBlob = (dataurl: any) => {
   const arr = dataurl.split(','),
     mime = arr[0].match(/:(.*?);/)[1],
@@ -191,7 +193,10 @@ function DrawingPage(): React.ReactElement {
 
   return (
     <div className="fixed inset-0 flex flex-col">
-      <div className="w-full min-h-[70px] flex p-4 justify-between">
+      <div
+        className="w-full flex p-4 justify-between"
+        style={{ minHeight: `${HEADER_HEIGHT}px` }}
+      >
         {/* to prevent occupying full width in safari browser */}
         <div className="w-20 flex space-x-1">
           <button type="button" onClick={moveBack}>
@@ -236,7 +241,7 @@ function DrawingPage(): React.ReactElement {
           clampLinesToDocument={true}
           onChange={onChangeCanvas}
           canvasWidth={size.width}
-          canvasHeight={size.height - 75}
+          canvasHeight={size.height - HEADER_HEIGHT}
           catenaryColor=""
           brushColor={penColor}
           brushRadius={penWidth}
