@@ -10,7 +10,6 @@ import Download from '../icons/Download';
 import Share from '../icons/Share';
 import { myDrawingCuidState } from '../atoms/MyCuid';
 import { friendCuidState } from '../atoms/FriendCuid';
-import { friendImageState } from '../atoms/FriendImage';
 import { useNavigate } from 'react-router-dom';
 
 const HEADER_HEIGHT = 63;
@@ -25,7 +24,6 @@ function PreviewPage(): React.ReactElement {
 
   const [showCopyDialog, setShowCopyDialog] = useState(false);
   const closeCopyDialog = useCallback(() => setShowCopyDialog(false), []);
-  const friendImage = useRecoilValue(friendImageState);
 
   const copyURL = useCallback(() => {
     if (!drawing) return;
@@ -46,6 +44,7 @@ function PreviewPage(): React.ReactElement {
       '#download_link'
     ) as HTMLAnchorElement;
     canvasImage.click();
+    canvasImage.remove();
   }, [drawing]);
 
   useEffect(() => {
@@ -54,7 +53,7 @@ function PreviewPage(): React.ReactElement {
     setTimeout(() => {
       canvasRef.loadSaveData(history);
     }, 500);
-  }, [canvasRef, history, friendImage, friendCuid]);
+  }, [canvasRef, history]);
 
   const moveToMain = useCallback(() => window.location.replace('/'), []);
 
@@ -173,14 +172,16 @@ function PreviewPage(): React.ReactElement {
       </div>
       {friendCuid && (
         <div
-          className="absolute bottom-[30px] flex flex-col items-center"
+          className="absolute bottom-5 flex flex-col items-center"
           style={{ top: `${HEADER_HEIGHT}px` }}
         >
           <button
             className="absolute bottom-[30px] w-[318px] h-[64px] bg-black rounded-full"
             onClick={moveToGiftPage}
           >
-            <span className="text-white">친구가 그린 내 그림 확인하기</span>
+            <span className="text-white text-lg font-semibold">
+              친구가 그린 내 그림 확인하기
+            </span>
           </button>
         </div>
       )}

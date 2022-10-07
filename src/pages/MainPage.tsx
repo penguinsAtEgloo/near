@@ -64,7 +64,10 @@ function MainPage(): React.ReactElement {
         </div>
       </div>
       <div className="w-[250px] h-[290px] flex justify-center items-center">
-        <img src={mainImage} />
+        <img
+          className={clsx('w-full h-full', !isKakaotalk && cuid && 'blur-md')}
+          src={mainImage}
+        />
       </div>
       {isKakaotalk ? (
         <div className="text-lg font-semibold">
