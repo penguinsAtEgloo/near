@@ -13,6 +13,8 @@ function StartDialog({
         상단의 START 버튼을 누르면
         <br />
         그리기가 시작됩니다.
+        <br />
+        배경 이미지를 추가하여 그려보세요!
       </div>
     </Dialog>
   );
