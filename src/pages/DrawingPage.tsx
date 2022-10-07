@@ -257,7 +257,7 @@ function DrawingPage(): React.ReactElement {
           hideInterface
           enablePanAndZoom={true}
           mouseZoomFactor={0.5}
-          zoomExtents={{ min: 0.33, max: 3 }}
+          zoomExtents={{ min: 1, max: 3 }}
           disabled={drawingStep !== 'play'}
         />
       </div>
