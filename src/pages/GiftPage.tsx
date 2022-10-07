@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import Back from '../icons/Back';
 import Download from '../icons/Download';
@@ -23,6 +23,12 @@ function GiftPage(): React.ReactElement {
   const size = useMemo(() => {
     return { width: window.innerWidth, height: window.innerHeight };
   }, []);
+
+  useEffect(() => {
+    if (!friendImage) {
+      window.location.replace('/');
+    }
+  }, [friendImage]);
 
   return (
     <div className="fixed inset-0 flex flex-col items-center bg-gray-200">
@@ -64,15 +70,15 @@ function GiftPage(): React.ReactElement {
             height: size.height - HEADER_HEIGHT,
           }}
         />
-        <button
-          className="absolute bottom-5 w-[318px] h-[64px] bg-black rounded-full"
-          onClick={moveToMain}
-        >
-          <span className="text-white text-lg font-semibold">
-            또 그리러 가기 GO !
-          </span>
-        </button>
       </div>
+      <button
+        className="absolute bottom-5 w-[318px] h-[64px] bg-black rounded-full"
+        onClick={moveToMain}
+      >
+        <span className="text-white text-lg font-semibold">
+          또 그리러 가기 GO !
+        </span>
+      </button>
     </div>
   );
 }
