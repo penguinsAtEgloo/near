@@ -31,6 +31,7 @@ import FinishDialog from '../dialog/FinishDialog';
 import { secondsState } from '../atoms/Seconds';
 import StartDialog from '../dialog/StartDialog';
 import { myDrawingCuidState } from '../atoms/MyCuid';
+import ErrorDialog from '../dialog/ErrorDialog';
 
 const HEADER_HEIGHT = 63;
 
@@ -68,6 +69,8 @@ function DrawingPage(): React.ReactElement {
 
   const [showStartDialog, setShowStartDialog] = useState(true);
   const closeStartDialog = useCallback(() => setShowStartDialog(false), []);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const closeErrorDialog = useCallback(() => setShowErrorDialog(false), []);
 
   const switchBackground = useCallback(() => {
     setBackgroundShown((prev) => !prev);
@@ -180,11 +183,15 @@ function DrawingPage(): React.ReactElement {
     setHistory(canvasRef.getSaveData());
     postImage(formData)
       .then((res: any) => {
-        if (!res.data.message) return;
+        if (!res.data.message) {
+          setShowErrorDialog(true);
+          return;
+        }
         setMyCuid(res.data.message);
         navigate('/pages/preview');
       })
       .catch((error) => {
+        setShowErrorDialog(true);
         console.error(error.response);
       });
   }, [canvasRef, navigate, setDrawing, setHistory, setMyCuid]);
@@ -269,6 +276,7 @@ function DrawingPage(): React.ReactElement {
         onProceed={complete}
       />
       <StartDialog isOpen={showStartDialog} onClose={closeStartDialog} />
+      <ErrorDialog isOpen={showErrorDialog} onClose={closeErrorDialog} />
     </div>
   );
 }
