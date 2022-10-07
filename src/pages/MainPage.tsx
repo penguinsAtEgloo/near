@@ -43,11 +43,11 @@ function MainPage(): React.ReactElement | null {
     if (cuid) {
       getGift(cuid)
         .then((res) => {
-          if (!res || !res.data || !res.data.imageUrl) {
+          if (!res || !res.data || !res.data.encodedImageUrl) {
             return;
           }
           setFriendCuid(cuid);
-          setFriendImage(res.data.imageUrl);
+          setFriendImage(res.data.encodedImageUrl);
         })
         .catch((e) => {
           console.log(e);
@@ -87,6 +87,7 @@ function MainPage(): React.ReactElement | null {
               !isKakaotalk && friendImage && 'blur-md'
             )}
             src={mainImage}
+            alt="메인이미지"
           />
         </div>
       </div>
