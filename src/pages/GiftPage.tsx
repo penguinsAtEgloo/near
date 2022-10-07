@@ -1,17 +1,12 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
-import { drawingState } from '../atoms/Drawing';
 import Back from '../icons/Back';
 import Download from '../icons/Download';
-import { myDrawingCuidState } from '../atoms/MyCuid';
 import { friendImageState } from '../atoms/FriendImage';
 
 const HEADER_HEIGHT = 63;
 
 function GiftPage(): React.ReactElement {
-  const drawing = useRecoilValue(drawingState);
-  const myCuid = useRecoilValue(myDrawingCuidState);
-
   const friendImage = useRecoilValue(friendImageState);
 
   const saveFriendImage = useCallback(() => {
@@ -20,6 +15,7 @@ function GiftPage(): React.ReactElement {
       '#download_link_friend'
     ) as HTMLAnchorElement;
     canvasImage.click();
+    canvasImage.remove();
   }, [friendImage]);
 
   const moveToMain = useCallback(() => window.location.replace('/'), []);
@@ -27,12 +23,6 @@ function GiftPage(): React.ReactElement {
   const size = useMemo(() => {
     return { width: window.innerWidth, height: window.innerHeight };
   }, []);
-
-  useEffect(() => {
-    if (!myCuid) {
-      window.location.replace('/');
-    }
-  }, [myCuid]);
 
   return (
     <div className="fixed inset-0 flex flex-col items-center bg-gray-200">
@@ -59,7 +49,7 @@ function GiftPage(): React.ReactElement {
           <a
             id="download_link_friend"
             className="invisible"
-            href={drawing}
+            href={friendImage}
             download="IMAGE.png"
           >
             <span />
@@ -75,10 +65,12 @@ function GiftPage(): React.ReactElement {
           }}
         />
         <button
-          className="absolute bottom-[30px] w-[318px] h-[64px] bg-black rounded-full"
+          className="absolute bottom-5 w-[318px] h-[64px] bg-black rounded-full"
           onClick={moveToMain}
         >
-          <span className="text-white">또 그리러 가기 GO !</span>
+          <span className="text-white text-lg font-semibold">
+            또 그리러 가기 GO !
+          </span>
         </button>
       </div>
     </div>
