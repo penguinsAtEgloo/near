@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import Back from '../icons/Back';
 import Download from '../icons/Download';
@@ -18,7 +19,9 @@ function GiftPage(): React.ReactElement {
     canvasImage.remove();
   }, [friendImage]);
 
-  const moveToMain = useCallback(() => window.location.replace('/'), []);
+  const navigate = useNavigate();
+
+  const moveToPreview = useCallback(() => navigate(-1), [navigate]);
 
   const size = useMemo(() => {
     return { width: window.innerWidth, height: window.innerHeight };
@@ -36,7 +39,7 @@ function GiftPage(): React.ReactElement {
         className="absolute w-full flex bg-white"
         style={{ minHeight: `${HEADER_HEIGHT}px` }}
       >
-        <button type="button" className="pl-4" onClick={moveToMain}>
+        <button type="button" className="pl-4" onClick={moveToPreview}>
           <Back />
         </button>
         <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg font-semibold">
@@ -73,7 +76,7 @@ function GiftPage(): React.ReactElement {
       </div>
       <button
         className="absolute bottom-5 w-[318px] h-[64px] bg-black rounded-full"
-        onClick={moveToMain}
+        onClick={moveToPreview}
       >
         <span className="text-white text-lg font-semibold">
           또 그리러 가기 GO !
